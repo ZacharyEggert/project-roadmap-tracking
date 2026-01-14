@@ -40,19 +40,38 @@ export enum TASK_TYPE {
   Research = 'research',
 }
 
+export enum TASK_TYPE_LETTER {
+  Bug = 'B',
+  Feature = 'F',
+  Improvement = 'I',
+  Planning = 'P',
+  Research = 'R',
+}
+
+export const TASK_TYPE_MAP: Map<TASK_TYPE, TASK_TYPE_LETTER> = new Map([
+  [TASK_TYPE.Bug, TASK_TYPE_LETTER.Bug],
+  [TASK_TYPE.Feature, TASK_TYPE_LETTER.Feature],
+  [TASK_TYPE.Improvement, TASK_TYPE_LETTER.Improvement],
+  [TASK_TYPE.Planning, TASK_TYPE_LETTER.Planning],
+  [TASK_TYPE.Research, TASK_TYPE_LETTER.Research],
+])
+
 export type SingleDigit = `${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}`
 
-export type TaskID = `${TASK_TYPE}-${SingleDigit}${SingleDigit}${SingleDigit}`
-export const TASK_ID_REGEX = /^(bug|feature|improvement|planning|research)-[0-9]{3}$/
+export type TaskID = `${TASK_TYPE_LETTER}-${SingleDigit}${SingleDigit}${SingleDigit}`
+export const TASK_ID_REGEX = /^(B|F|I|P|R)-[0-9]{3}$/
 
 export type Task = {
   assignedTo?: null | string
-  blocking: Array<Task['id']>
+  blocks: Array<Task['id']>
   createdAt?: null | string
   'depends-on': Array<Task['id']>
   details: string
   dueDate?: null | string
+  effort?: null | number
+  'github-refs'?: Array<string>
   id: TaskID
+  notes?: null | string
   'passes-tests': boolean
   priority: PRIORITY
   status: STATUS

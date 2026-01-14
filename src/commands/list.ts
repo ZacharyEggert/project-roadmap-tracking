@@ -2,14 +2,14 @@ import {/* Args, */ Command, Flags} from '@oclif/core'
 
 import {readConfigFile} from '../util/read-config.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
-import {STATUS} from '../util/types.js'
+import {PRIORITY, STATUS} from '../util/types.js'
 
 export default class List extends Command {
   static override args = {
     // file: Args.string({description: 'file to read'}),
   }
-  static override description = 'describe the command here'
-  static override examples = ['<%= config.bin %> <%= command.id %>']
+  static override description = 'list tasks in the project roadmap'
+  static override examples = ['<%= config.bin %> <%= command.id %> -p=h --incomplete --sort=createdAt']
   static override flags = {
     // flag with no value (-f, --force)
     // force: Flags.boolean({char: 'f'}),
@@ -19,7 +19,7 @@ export default class List extends Command {
     priority: Flags.string({
       char: 'p',
       description: 'filter tasks by priority (high, medium, low)',
-      options: ['high', 'medium', 'low'],
+      options: ['high', 'medium', 'low', 'h', 'm', 'l'],
     }),
     sort: Flags.string({
       char: 'o',
@@ -30,7 +30,6 @@ export default class List extends Command {
       char: 's',
       description: 'filter tasks by status (completed, in-progress, not-started)',
       options: ['completed', 'in-progress', 'not-started'],
-      type: 'option',
     }),
   }
 
@@ -38,9 +37,21 @@ export default class List extends Command {
     const {flags} = await this.parse(List)
 
     const incompleteOnly = flags.incomplete ?? false
-    const priorityFilter = (flags.priority ?? null) as 'high' | 'low' | 'medium' | null
+    const priority = (flags.priority ?? null) as 'h' | 'high' | 'l' | 'low' | 'm' | 'medium' | null
     const sortBy = (flags.sort ?? null) as 'createdAt' | 'dueDate' | 'priority' | null
     const statusFilter = (flags.status ?? null) as null | STATUS
+
+    const priorityFilter = (
+      priority
+        ? priority === 'high' || priority === 'h'
+          ? 'high'
+          : priority === 'medium' || priority === 'm'
+            ? 'medium'
+            : priority === 'low' || priority === 'l'
+              ? 'low'
+              : null
+        : null
+    ) as null | PRIORITY
 
     // if statusFilter is set, it overrides incompleteOnly
     const effectiveStatusFilter: STATUS[] = statusFilter
@@ -49,7 +60,9 @@ export default class List extends Command {
         ? (['in-progress', 'not-started'] as STATUS[])
         : (['completed', 'in-progress', 'not-started'] as STATUS[])
 
-    const config = await readConfigFile()
+    const config = await readConfigFile().catch((error) => {
+      this.error(`failed to read config file: ${error ? error.message : String(error)}`)
+    })
 
     const roadmapPath = config.path
 

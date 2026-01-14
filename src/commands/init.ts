@@ -1,7 +1,7 @@
 import {Args, Command, Flags} from '@oclif/core'
 import {mkdir, readdir, writeFile} from 'node:fs/promises'
 
-import {Config, Roadmap} from '../util/types.js'
+import {Config, PRIORITY, Roadmap, STATUS, TASK_TYPE} from '../util/types.js'
 
 export default class Init extends Command {
   static override args = {
@@ -15,9 +15,18 @@ export default class Init extends Command {
     force: Flags.boolean({char: 'f', description: 'force initialization even if files already exist'}),
     // flag with a value (-n, --name=VALUE)
     name: Flags.string({char: 'n', description: 'name to print'}),
+    withSampleTasks: Flags.boolean({description: 'include sample tasks in the initialized roadmap'}),
   }
 
-  buildBlankRoadmap({description, name}: {description: string; name: string}): Roadmap {
+  buildBlankRoadmap({
+    description,
+    name,
+    withSampleTasks,
+  }: {
+    description: string
+    name: string
+    withSampleTasks: boolean
+  }): Roadmap {
     return {
       $schema: 'https://project-roadmap-tracking.com/schemas/roadmap/v1.json',
       metadata: {
@@ -26,7 +35,26 @@ export default class Init extends Command {
         description: `${description}`,
         name: `${name}`,
       },
-      tasks: [],
+      tasks: withSampleTasks
+        ? [
+            {
+              assignedTo: null,
+              blocks: [],
+              createdAt: new Date().toISOString(),
+              'depends-on': [],
+              details: 'This is a sample task to get you started.',
+              dueDate: null,
+              id: 'F-001',
+              'passes-tests': true,
+              priority: PRIORITY.Medium,
+              status: STATUS.NotStarted,
+              tags: ['sample'],
+              title: 'Sample Task',
+              type: TASK_TYPE.Feature,
+              updatedAt: new Date().toISOString(),
+            },
+          ]
+        : [],
     }
   }
 
@@ -51,7 +79,7 @@ export default class Init extends Command {
 
     // create prt.json and prt.config.json files here
     const config = this.buildConfig({description, name, path})
-    const roadmap = this.buildBlankRoadmap({description, name})
+    const roadmap = this.buildBlankRoadmap({description, name, withSampleTasks: flags.withSampleTasks ?? false})
 
     if (path !== '.') {
       // check if target directory exists
@@ -79,7 +107,7 @@ export default class Init extends Command {
         }
 
         await writeFile(`./.prtrc.json`, JSON.stringify(config, null, 2))
-        this.log('project roadmap initialized')
+        this.log('project roadmap config initialized')
       })
       .catch((error) => {
         this.error(`failed to read current directory: ${error.message}`)
