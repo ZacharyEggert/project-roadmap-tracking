@@ -29,13 +29,13 @@
       "details": "add a utility to update the prt file in place",
       "id": "F-002",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
       "status": "completed",
       "tags": [],
       "title": "Update util",
       "type": "feature",
-      "updatedAt": "2026-01-14T22:38:27.820Z"
+      "updatedAt": "2026-01-14T22:45:28.752Z"
     }
   ]
 }

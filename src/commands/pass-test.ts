@@ -1,13 +1,16 @@
 import {Args, Command, Flags} from '@oclif/core'
 
+import {readConfigFile} from '../util/read-config.js'
+import {readRoadmapFile} from '../util/read-roadmap.js'
+import {updateTaskInRoadmap} from '../util/update-task.js'
+import {writeRoadmapFile} from '../util/write-roadmap.js'
+
 export default class PassTest extends Command {
   static override args = {
-    file: Args.string({description: 'file to read'}),
+    taskID: Args.string({description: 'ID of the task to complete', required: true}),
   }
   static override description = 'describe the command here'
-  static override examples = [
-    '<%= config.bin %> <%= command.id %>',
-  ]
+  static override examples = ['<%= config.bin %> <%= command.id %>']
   static override flags = {
     // flag with no value (-f, --force)
     force: Flags.boolean({char: 'f'}),
@@ -16,12 +19,17 @@ export default class PassTest extends Command {
   }
 
   public async run(): Promise<void> {
-    const {args, flags} = await this.parse(PassTest)
+    const {args} = await this.parse(PassTest)
 
-    const name = flags.name ?? 'world'
-    this.log(`hello ${name} from /Users/zachary/code/ts/project-roadmap-tracking/src/commands/pass-test.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
-    }
+    const config = await readConfigFile()
+    const roadmap = await readRoadmapFile(config.path)
+
+    const updatedRoadmap = await updateTaskInRoadmap(roadmap, args.taskID, {
+      'passes-tests': true,
+    })
+
+    await writeRoadmapFile(config.path, updatedRoadmap)
+
+    this.log(`Task ${args.taskID} marked as passes-tests.`)
   }
 }
