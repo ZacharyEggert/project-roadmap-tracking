@@ -9,21 +9,32 @@ export default class Init extends Command {
   static override examples = ['<%= config.bin %> <%= command.id %> [path/to/directory]']
   static override flags = {
     // flag with no value (-f, --force)
+    description: Flags.string({char: 'd', description: 'description to print'}),
     force: Flags.boolean({char: 'f', description: 'force initialization even if files already exist'}),
     // flag with a value (-n, --name=VALUE)
-    // name: Flags.string({char: 'n', description: 'name to print'}),
+    name: Flags.string({char: 'n', description: 'name to print'}),
   }
 
-  buildBlankRoadmap() {
+  buildBlankRoadmap({description, name}: {description: string; name: string}) {
     return {
       $schema: 'https://project-roadmap-tracking.com/schemas/roadmap/v1.json',
+      metadata: {
+        createdAt: new Date().toISOString(),
+        createdBy: `project-roadmap-tracking CLI`,
+        description: `${description}`,
+        name: `${name}`,
+      },
       projects: [],
     }
   }
 
-  buildConfig({path}: {path: string}) {
+  buildConfig({description, name, path}: {description: string; name: string; path: string}) {
     return {
       $schema: 'https://project-roadmap-tracking.com/schemas/config/v1.json',
+      metadata: {
+        description: `${description}`,
+        name: `${name}`,
+      },
       path: `${path}/prt.json`,
     }
   }
@@ -33,10 +44,12 @@ export default class Init extends Command {
 
     const path = args.folder ?? '.'
     this.log(`creating project roadmap in${path === '.' ? ' current directory' : ': ' + args.folder}`)
+    const name = flags.name ?? 'My Project Roadmap'
+    const description = flags.description ?? 'A project roadmap managed by Project Roadmap Tracking'
 
     // create prt.json and prt.config.json files here
-    const config = this.buildConfig({path})
-    const roadmap = this.buildBlankRoadmap()
+    const config = this.buildConfig({description, name, path})
+    const roadmap = this.buildBlankRoadmap({description, name})
 
     if (path !== '.') {
       // check if target directory exists
