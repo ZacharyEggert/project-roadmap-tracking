@@ -20,7 +20,7 @@ $ npm install -g project-roadmap-tracking
 $ prt COMMAND
 running command...
 $ prt (--version)
-project-roadmap-tracking/0.0.0 darwin-arm64 node-v25.2.1
+project-roadmap-tracking/0.0.0 darwin-arm64 node-v24.12.0
 $ prt --help [COMMAND]
 USAGE
   $ prt COMMAND
@@ -31,12 +31,10 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`prt add [FILE]`](#prt-add-file)
-* [`prt complete [FILE]`](#prt-complete-file)
+* [`prt add TITLE`](#prt-add-title)
 * [`prt help [COMMAND]`](#prt-help-command)
 * [`prt init [FOLDER]`](#prt-init-folder)
-* [`prt list [FILE]`](#prt-list-file)
-* [`prt pass-test [FILE]`](#prt-pass-test-file)
+* [`prt list`](#prt-list)
 * [`prt plugins`](#prt-plugins)
 * [`prt plugins add PLUGIN`](#prt-plugins-add-plugin)
 * [`prt plugins:inspect PLUGIN...`](#prt-pluginsinspect-plugin)
@@ -47,56 +45,33 @@ USAGE
 * [`prt plugins uninstall [PLUGIN]`](#prt-plugins-uninstall-plugin)
 * [`prt plugins unlink [PLUGIN]`](#prt-plugins-unlink-plugin)
 * [`prt plugins update`](#prt-plugins-update)
-* [`prt show [FILE]`](#prt-show-file)
-* [`prt update [FILE]`](#prt-update-file)
+* [`prt show TASK`](#prt-show-task)
+* [`prt validate`](#prt-validate)
 
-## `prt add [FILE]`
+## `prt add TITLE`
 
-describe the command here
+add a new task to the roadmap
 
 ```
 USAGE
-  $ prt add [FILE] [-f] [-n <value>]
+  $ prt add TITLE -d <value> -t bug|feature|improvement|planning|research
 
 ARGUMENTS
-  [FILE]  file to read
+  TITLE  title of the task to add
 
 FLAGS
-  -f, --force
-  -n, --name=<value>  name to print
+  -d, --details=<value>  (required) description of the task to add
+  -t, --type=<option>    (required) type of the task to add
+                         <options: bug|feature|improvement|planning|research>
 
 DESCRIPTION
-  describe the command here
+  add a new task to the roadmap
 
 EXAMPLES
   $ prt add
 ```
 
 _See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/add.ts)_
-
-## `prt complete [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ prt complete [FILE] [-f] [-n <value>]
-
-ARGUMENTS
-  [FILE]  file to read
-
-FLAGS
-  -f, --force
-  -n, --name=<value>  name to print
-
-DESCRIPTION
-  describe the command here
-
-EXAMPLES
-  $ prt complete
-```
-
-_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/complete.ts)_
 
 ## `prt help [COMMAND]`
 
@@ -124,13 +99,16 @@ initialize a new project roadmap (prt.json and prt.config.json)
 
 ```
 USAGE
-  $ prt init [FOLDER] [-f]
+  $ prt init [FOLDER] [-d <value>] [-f] [-n <value>] [--withSampleTasks]
 
 ARGUMENTS
   [FOLDER]  folder to initialize the project roadmap in
 
 FLAGS
-  -f, --force  force initialization even if files already exist
+  -d, --description=<value>  description to print
+  -f, --force                force initialization even if files already exist
+  -n, --name=<value>         name to print
+      --withSampleTasks      include sample tasks in the initialized roadmap
 
 DESCRIPTION
   initialize a new project roadmap (prt.json and prt.config.json)
@@ -141,53 +119,32 @@ EXAMPLES
 
 _See code: [src/commands/init.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/init.ts)_
 
-## `prt list [FILE]`
+## `prt list`
 
-describe the command here
+list tasks in the project roadmap
 
 ```
 USAGE
-  $ prt list [FILE] [-f] [-n <value>]
-
-ARGUMENTS
-  [FILE]  file to read
+  $ prt list [-i] [-p high|medium|low|h|m|l] [-o dueDate|priority|createdAt] [-s
+    completed|in-progress|not-started]
 
 FLAGS
-  -f, --force
-  -n, --name=<value>  name to print
+  -i, --incomplete         filter tasks to show in-progress and not-started only
+  -o, --sort=<option>      sort tasks by field (dueDate, priority, createdAt)
+                           <options: dueDate|priority|createdAt>
+  -p, --priority=<option>  filter tasks by priority (high, medium, low)
+                           <options: high|medium|low|h|m|l>
+  -s, --status=<option>    filter tasks by status (completed, in-progress, not-started)
+                           <options: completed|in-progress|not-started>
 
 DESCRIPTION
-  describe the command here
+  list tasks in the project roadmap
 
 EXAMPLES
-  $ prt list
+  $ prt list -p=h --incomplete --sort=createdAt
 ```
 
 _See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/list.ts)_
-
-## `prt pass-test [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ prt pass-test [FILE] [-f] [-n <value>]
-
-ARGUMENTS
-  [FILE]  file to read
-
-FLAGS
-  -f, --force
-  -n, --name=<value>  name to print
-
-DESCRIPTION
-  describe the command here
-
-EXAMPLES
-  $ prt pass-test
-```
-
-_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/pass-test.ts)_
 
 ## `prt plugins`
 
@@ -479,51 +436,40 @@ DESCRIPTION
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.54/src/commands/plugins/update.ts)_
 
-## `prt show [FILE]`
+## `prt show TASK`
 
-describe the command here
+show details of a specific task in the project roadmap
 
 ```
 USAGE
-  $ prt show [FILE] [-f] [-n <value>]
+  $ prt show TASK
 
 ARGUMENTS
-  [FILE]  file to read
-
-FLAGS
-  -f, --force
-  -n, --name=<value>  name to print
+  TASK  task ID to show
 
 DESCRIPTION
-  describe the command here
+  show details of a specific task in the project roadmap
 
 EXAMPLES
-  $ prt show
+  $ prt show F-001
 ```
 
 _See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/show.ts)_
 
-## `prt update [FILE]`
+## `prt validate`
 
 describe the command here
 
 ```
 USAGE
-  $ prt update [FILE] [-f] [-n <value>]
-
-ARGUMENTS
-  [FILE]  file to read
-
-FLAGS
-  -f, --force
-  -n, --name=<value>  name to print
+  $ prt validate
 
 DESCRIPTION
   describe the command here
 
 EXAMPLES
-  $ prt update
+  $ prt validate
 ```
 
-_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/update.ts)_
+_See code: [src/commands/validate.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/validate.ts)_
 <!-- commandsstop -->
