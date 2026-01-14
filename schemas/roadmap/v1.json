@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://project-roadmap-tracking.com/schemas/roadmap/v1.json",
+  "title": "Project Roadmap",
+  "description": "Schema for Project Roadmap Tracking roadmap files (prt.json)",
+  "type": "object",
+  "definitions": {
+    "taskId": {
+      "type": "string",
+      "pattern": "^(B|F|I|P|R)-[0-9]{3}$",
+      "description": "Task ID in format: TYPE_LETTER-NNN (e.g., F-001, B-023)"
+    },
+    "task": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/taskId"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the task"
+        },
+        "details": {
+          "type": "string",
+          "description": "Detailed description of the task"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["bug", "feature", "improvement", "planning", "research"],
+          "description": "Type of task"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["completed", "in-progress", "not-started"],
+          "description": "Current status of the task"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["high", "medium", "low"],
+          "description": "Priority level of the task"
+        },
+        "passes-tests": {
+          "type": "boolean",
+          "description": "Whether the task passes tests"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags associated with the task"
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/taskId"
+          },
+          "description": "List of task IDs that this task blocks"
+        },
+        "depends-on": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/taskId"
+          },
+          "description": "List of task IDs that this task depends on"
+        },
+        "assignedTo": {
+          "type": ["string", "null"],
+          "description": "Person assigned to the task"
+        },
+        "createdAt": {
+          "type": ["string"],
+          "description": "ISO 8601 timestamp when the task was created"
+        },
+        "updatedAt": {
+          "type": ["string"],
+          "description": "ISO 8601 timestamp when the task was last updated"
+        },
+        "dueDate": {
+          "type": ["string", "null"],
+          "description": "Due date for the task"
+        },
+        "effort": {
+          "type": ["number", "null"],
+          "description": "Estimated effort for the task"
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "description": "Additional notes for the task"
+        },
+        "github-refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "GitHub references (issues, PRs) related to the task"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "details",
+        "type",
+        "status",
+        "priority",
+        "passes-tests",
+        "tags",
+        "blocks",
+        "depends-on",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to the JSON schema for validation"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the project roadmap"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the project roadmap"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO 8601 timestamp when the roadmap was created"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "Creator of the roadmap"
+        }
+      },
+      "required": ["name", "description", "createdAt", "createdBy"],
+      "additionalProperties": false
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/task"
+      },
+      "description": "List of tasks in the roadmap"
+    }
+  },
+  "required": ["metadata", "tasks"],
+  "additionalProperties": false
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://project-roadmap-tracking.com/schemas/config/v1.json",
+  "title": "Project Roadmap Tracking Configuration",
+  "description": "Configuration file schema for Project Roadmap Tracking (.prtrc.json)",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to the JSON schema for validation"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Metadata about the project roadmap",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the project roadmap"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the project roadmap"
+        }
+      },
+      "additionalProperties": false
+    },
+    "path": {
+      "type": "string",
+      "description": "Path to the prt.json roadmap file",
+      "default": "./prt.json"
+    }
+  },
+  "required": ["path"],
+  "additionalProperties": false
+}
