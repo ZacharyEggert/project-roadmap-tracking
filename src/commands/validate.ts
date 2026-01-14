@@ -3,6 +3,7 @@ import {readFile} from 'node:fs/promises'
 
 import {readConfigFile} from '../util/read-config.js'
 import {Roadmap} from '../util/types.js'
+import {validateTask} from '../util/validate-task.js'
 
 export default class Validate extends Command {
   static override args = {
@@ -46,20 +47,10 @@ export default class Validate extends Command {
     }
 
     for (const task of roadmap.tasks) {
-      if (!/^(B|F|I|P|R)-[0-9]{3}$/.test(task.id)) {
-        this.error(`task ID ${task.id} is not valid. Must match format: [B|F|I|P|R]-[000-999]`)
-      }
-
-      if (!['bug', 'feature', 'improvement', 'planning', 'research'].includes(task.type)) {
-        this.error(`task ID ${task.id} has invalid type: ${task.type}`)
-      }
-
-      if (!['high', 'low', 'medium'].includes(task.priority)) {
-        this.error(`task ID ${task.id} has invalid priority: ${task.priority}`)
-      }
-
-      if (!['completed', 'in-progress', 'not-started'].includes(task.status)) {
-        this.error(`task ID ${task.id} has invalid status: ${task.status}`)
+      try {
+        validateTask(task)
+      } catch (error: unknown) {
+        this.error(`task ID ${task.id} is invalid: ${error ? (error as Error).message : String(error)}`)
       }
     }
 
