@@ -14,13 +14,28 @@
       "details": "implement the add command to be able to add tasks to the prt.json from the command line",
       "id": "F-001",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
       "status": "completed",
       "tags": [],
       "title": "Add command",
       "type": "feature",
-      "updatedAt": "2026-01-14T20:15:07.258Z"
+      "updatedAt": "2026-01-14T22:15:07.453Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-14T22:37:22.008Z",
+      "depends-on": [],
+      "details": "add a utility to update the prt file in place",
+      "id": "F-002",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "not-started",
+      "tags": [],
+      "title": "Update util",
+      "type": "feature",
+      "updatedAt": "2026-01-14T22:37:22.010Z"
     }
   ]
 }
