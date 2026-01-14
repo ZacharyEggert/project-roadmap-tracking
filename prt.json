@@ -1,5 +1,5 @@
 {
-  "$schema": "https://project-roadmap-tracking.com/schemas/roadmap/v1.json",
+  "$schema": "https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/roadmap/v1.json",
   "metadata": {
     "createdAt": "2026-01-14T20:02:16.944Z",
     "createdBy": "project-roadmap-tracking CLI",

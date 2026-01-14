@@ -28,7 +28,8 @@ export default class Init extends Command {
     withSampleTasks: boolean
   }): Roadmap {
     return {
-      $schema: 'https://project-roadmap-tracking.com/schemas/roadmap/v1.json',
+      $schema:
+        'https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/roadmap/v1.json',
       metadata: {
         createdAt: new Date().toISOString(),
         createdBy: `project-roadmap-tracking CLI`,
@@ -60,7 +61,8 @@ export default class Init extends Command {
 
   buildConfig({description, name, path}: {description: string; name: string; path: string}): Config {
     return {
-      $schema: 'https://project-roadmap-tracking.com/schemas/config/v1.json',
+      $schema:
+        'https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/config/v1.json',
       metadata: {
         description: `${description}`,
         name: `${name}`,
