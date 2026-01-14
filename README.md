@@ -32,9 +32,11 @@ USAGE
 
 <!-- commands -->
 * [`prt add TITLE`](#prt-add-title)
+* [`prt complete TASKID`](#prt-complete-taskid)
 * [`prt help [COMMAND]`](#prt-help-command)
 * [`prt init [FOLDER]`](#prt-init-folder)
 * [`prt list`](#prt-list)
+* [`prt pass-test TASKID`](#prt-pass-test-taskid)
 * [`prt plugins`](#prt-plugins)
 * [`prt plugins add PLUGIN`](#prt-plugins-add-plugin)
 * [`prt plugins:inspect PLUGIN...`](#prt-pluginsinspect-plugin)
@@ -46,6 +48,7 @@ USAGE
 * [`prt plugins unlink [PLUGIN]`](#prt-plugins-unlink-plugin)
 * [`prt plugins update`](#prt-plugins-update)
 * [`prt show TASK`](#prt-show-task)
+* [`prt update [FILE]`](#prt-update-file)
 * [`prt validate`](#prt-validate)
 
 ## `prt add TITLE`
@@ -54,15 +57,21 @@ add a new task to the roadmap
 
 ```
 USAGE
-  $ prt add TITLE -d <value> -t bug|feature|improvement|planning|research
+  $ prt add TITLE -d <value> -t bug|feature|improvement|planning|research [-p high|medium|low] [-s
+    not-started|in-progress|completed] [-g <value>]
 
 ARGUMENTS
   TITLE  title of the task to add
 
 FLAGS
-  -d, --details=<value>  (required) description of the task to add
-  -t, --type=<option>    (required) type of the task to add
-                         <options: bug|feature|improvement|planning|research>
+  -d, --details=<value>    (required) description of the task to add
+  -g, --tags=<value>       comma-separated list of tags to add to the task
+  -p, --priority=<option>  [default: medium] priority of the task to add
+                           <options: high|medium|low>
+  -s, --status=<option>    [default: not-started] status of the task to add
+                           <options: not-started|in-progress|completed>
+  -t, --type=<option>      (required) type of the task to add
+                           <options: bug|feature|improvement|planning|research>
 
 DESCRIPTION
   add a new task to the roadmap
@@ -72,6 +81,29 @@ EXAMPLES
 ```
 
 _See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/add.ts)_
+
+## `prt complete TASKID`
+
+Mark a task as completed
+
+```
+USAGE
+  $ prt complete TASKID [-t]
+
+ARGUMENTS
+  TASKID  ID of the task to complete
+
+FLAGS
+  -t, --tests  mark task as passes-tests
+
+DESCRIPTION
+  Mark a task as completed
+
+EXAMPLES
+  $ prt complete F-001 --tests
+```
+
+_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/complete.ts)_
 
 ## `prt help [COMMAND]`
 
@@ -145,6 +177,26 @@ EXAMPLES
 ```
 
 _See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/list.ts)_
+
+## `prt pass-test TASKID`
+
+Mark a task as passes-tests
+
+```
+USAGE
+  $ prt pass-test TASKID
+
+ARGUMENTS
+  TASKID  ID of the task to mark as passing tests
+
+DESCRIPTION
+  Mark a task as passes-tests
+
+EXAMPLES
+  $ prt pass-test F-001
+```
+
+_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/pass-test.ts)_
 
 ## `prt plugins`
 
@@ -455,6 +507,30 @@ EXAMPLES
 ```
 
 _See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/show.ts)_
+
+## `prt update [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ prt update [FILE] [-f] [-n <value>]
+
+ARGUMENTS
+  [FILE]  file to read
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ prt update
+```
+
+_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/update.ts)_
 
 ## `prt validate`
 
