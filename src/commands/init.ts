@@ -1,6 +1,8 @@
 import {Args, Command, Flags} from '@oclif/core'
 import {mkdir, readdir, writeFile} from 'node:fs/promises'
 
+import {Config, Roadmap} from '../util/types.js'
+
 export default class Init extends Command {
   static override args = {
     folder: Args.string({description: 'folder to initialize the project roadmap in'}),
@@ -15,7 +17,7 @@ export default class Init extends Command {
     name: Flags.string({char: 'n', description: 'name to print'}),
   }
 
-  buildBlankRoadmap({description, name}: {description: string; name: string}) {
+  buildBlankRoadmap({description, name}: {description: string; name: string}): Roadmap {
     return {
       $schema: 'https://project-roadmap-tracking.com/schemas/roadmap/v1.json',
       metadata: {
@@ -24,11 +26,11 @@ export default class Init extends Command {
         description: `${description}`,
         name: `${name}`,
       },
-      projects: [],
+      tasks: [],
     }
   }
 
-  buildConfig({description, name, path}: {description: string; name: string; path: string}) {
+  buildConfig({description, name, path}: {description: string; name: string; path: string}): Config {
     return {
       $schema: 'https://project-roadmap-tracking.com/schemas/config/v1.json',
       metadata: {
