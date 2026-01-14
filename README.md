@@ -1,19 +1,19 @@
-project-roadmap-tracking
-=================
+# project-roadmap-tracking
 
 CLI based project task tracking
-
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/project-roadmap-tracking.svg)](https://npmjs.org/package/project-roadmap-tracking)
 [![Downloads/week](https://img.shields.io/npm/dw/project-roadmap-tracking.svg)](https://npmjs.org/package/project-roadmap-tracking)
 
-
 <!-- toc -->
+* [project-roadmap-tracking](#project-roadmap-tracking)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
 ```sh-session
 $ npm install -g project-roadmap-tracking
@@ -27,11 +27,16 @@ USAGE
 ...
 ```
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
-* [`prt hello PERSON`](#prt-hello-person)
-* [`prt hello world`](#prt-hello-world)
+* [`prt add [FILE]`](#prt-add-file)
+* [`prt complete [FILE]`](#prt-complete-file)
 * [`prt help [COMMAND]`](#prt-help-command)
+* [`prt init [FOLDER]`](#prt-init-folder)
+* [`prt list [FILE]`](#prt-list-file)
+* [`prt pass-test [FILE]`](#prt-pass-test-file)
 * [`prt plugins`](#prt-plugins)
 * [`prt plugins add PLUGIN`](#prt-plugins-add-plugin)
 * [`prt plugins:inspect PLUGIN...`](#prt-pluginsinspect-plugin)
@@ -42,48 +47,56 @@ USAGE
 * [`prt plugins uninstall [PLUGIN]`](#prt-plugins-uninstall-plugin)
 * [`prt plugins unlink [PLUGIN]`](#prt-plugins-unlink-plugin)
 * [`prt plugins update`](#prt-plugins-update)
+* [`prt show [FILE]`](#prt-show-file)
+* [`prt update [FILE]`](#prt-update-file)
 
-## `prt hello PERSON`
+## `prt add [FILE]`
 
-Say hello
+describe the command here
 
 ```
 USAGE
-  $ prt hello PERSON -f <value>
+  $ prt add [FILE] [-f] [-n <value>]
 
 ARGUMENTS
-  PERSON  Person to say hello to
+  [FILE]  file to read
 
 FLAGS
-  -f, --from=<value>  (required) Who is saying hello
+  -f, --force
+  -n, --name=<value>  name to print
 
 DESCRIPTION
-  Say hello
+  describe the command here
 
 EXAMPLES
-  $ prt hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
+  $ prt add
 ```
 
-_See code: [src/commands/hello/index.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/hello/index.ts)_
+_See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/add.ts)_
 
-## `prt hello world`
+## `prt complete [FILE]`
 
-Say hello world
+describe the command here
 
 ```
 USAGE
-  $ prt hello world
+  $ prt complete [FILE] [-f] [-n <value>]
+
+ARGUMENTS
+  [FILE]  file to read
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
 
 DESCRIPTION
-  Say hello world
+  describe the command here
 
 EXAMPLES
-  $ prt hello world
-  hello world! (./src/commands/hello/world.ts)
+  $ prt complete
 ```
 
-_See code: [src/commands/hello/world.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/hello/world.ts)_
+_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/complete.ts)_
 
 ## `prt help [COMMAND]`
 
@@ -104,6 +117,77 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.2.36/src/commands/help.ts)_
+
+## `prt init [FOLDER]`
+
+initialize a new project roadmap (prt.json and prt.config.json)
+
+```
+USAGE
+  $ prt init [FOLDER] [-f]
+
+ARGUMENTS
+  [FOLDER]  folder to initialize the project roadmap in
+
+FLAGS
+  -f, --force  force initialization even if files already exist
+
+DESCRIPTION
+  initialize a new project roadmap (prt.json and prt.config.json)
+
+EXAMPLES
+  $ prt init [path/to/directory]
+```
+
+_See code: [src/commands/init.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/init.ts)_
+
+## `prt list [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ prt list [FILE] [-f] [-n <value>]
+
+ARGUMENTS
+  [FILE]  file to read
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ prt list
+```
+
+_See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/list.ts)_
+
+## `prt pass-test [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ prt pass-test [FILE] [-f] [-n <value>]
+
+ARGUMENTS
+  [FILE]  file to read
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ prt pass-test
+```
+
+_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/pass-test.ts)_
 
 ## `prt plugins`
 
@@ -394,4 +478,52 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.54/src/commands/plugins/update.ts)_
+
+## `prt show [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ prt show [FILE] [-f] [-n <value>]
+
+ARGUMENTS
+  [FILE]  file to read
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ prt show
+```
+
+_See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/show.ts)_
+
+## `prt update [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ prt update [FILE] [-f] [-n <value>]
+
+ARGUMENTS
+  [FILE]  file to read
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ prt update
+```
+
+_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/update.ts)_
 <!-- commandsstop -->
