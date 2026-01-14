@@ -1,27 +1,95 @@
 import {Args, Command, Flags} from '@oclif/core'
 
+import {readConfigFile} from '../util/read-config.js'
+import {readRoadmapFile} from '../util/read-roadmap.js'
+import {STATUS, Task, TaskID} from '../util/types.js'
+import {updateTaskInRoadmap} from '../util/update-task.js'
+import {validateTaskID} from '../util/validate-task-id.js'
+import {writeRoadmapFile} from '../util/write-roadmap.js'
+
 export default class Update extends Command {
   static override args = {
-    file: Args.string({description: 'file to read'}),
+    taskID: Args.string({description: 'ID of the task to update', required: true}),
   }
-  static override description = 'describe the command here'
+  static override description = 'Update a task in place'
   static override examples = [
-    '<%= config.bin %> <%= command.id %>',
+    '<%= config.bin %> <%= command.id %> F-001 --status=completed --tested=true --notes="Fixed all bugs"',
+    '<%= config.bin %> <%= command.id %> F-002 --deps="F-001" --clear-notes',
   ]
   static override flags = {
+    'clear-notes': Flags.boolean({description: 'clear all notes from the task'}),
+    deps: Flags.string({
+      char: 'd',
+      description: 'update the dependencies of the task (comma-separated list of task IDs)',
+    }),
+    notes: Flags.string({char: 'n', description: 'append notes to the task'}),
+    status: Flags.string({
+      char: 's',
+      description: 'set the status of the task (completed, in-progress, not-started)',
+      options: [STATUS.Completed, STATUS.InProgress, STATUS.NotStarted],
+    }),
+    tested: Flags.string({
+      char: 't',
+      description: 'update whether the task passes tests',
+      options: ['true', 'false'],
+    }),
+
     // flag with no value (-f, --force)
-    force: Flags.boolean({char: 'f'}),
+    // force: Flags.boolean({char: 'f'}),
     // flag with a value (-n, --name=VALUE)
-    name: Flags.string({char: 'n', description: 'name to print'}),
+    // name: Flags.string({char: 'n', description: 'name to print'}),
   }
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Update)
 
-    const name = flags.name ?? 'world'
-    this.log(`hello ${name} from /Users/zachary/code/ts/project-roadmap-tracking/src/commands/update.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    const config = await readConfigFile()
+    const roadmap = await readRoadmapFile(config.path)
+
+    const updateObject: Partial<Task> = {}
+
+    if (flags['clear-notes']) {
+      updateObject.notes = ''
     }
+
+    if (flags.notes) {
+      let existingNotes = ''
+
+      if (!flags['clear-notes']) {
+        const existingTask = roadmap.tasks.find((task) => task.id === args.taskID)
+        existingNotes = existingTask?.notes ? existingTask.notes + '\n' : ''
+      }
+
+      updateObject.notes = existingNotes + flags.notes
+    }
+
+    if (flags.status) {
+      updateObject.status = flags.status as STATUS
+    }
+
+    if (flags.tested) {
+      updateObject['passes-tests'] = flags.tested === 'true'
+    }
+
+    if (flags.deps) {
+      const depsArray = flags.deps.split(',').map((dep) => dep.trim())
+
+      // checking that each depArray item matches TaskID format
+      for (const dep of depsArray) {
+        try {
+          validateTaskID(dep)
+        } catch {
+          this.error(`Invalid task ID in dependencies: ${dep}`)
+        }
+      }
+
+      updateObject['depends-on'] = depsArray as TaskID[]
+    }
+
+    const updatedRoadmap = await updateTaskInRoadmap(roadmap, args.taskID, updateObject)
+
+    await writeRoadmapFile(config.path, updatedRoadmap)
+
+    this.log(`Task ${args.taskID} updated.`)
   }
 }
