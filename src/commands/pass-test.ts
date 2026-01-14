@@ -1,4 +1,4 @@
-import {Args, Command, Flags} from '@oclif/core'
+import {Args, Command} from '@oclif/core'
 
 import {readConfigFile} from '../util/read-config.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
@@ -7,15 +7,15 @@ import {writeRoadmapFile} from '../util/write-roadmap.js'
 
 export default class PassTest extends Command {
   static override args = {
-    taskID: Args.string({description: 'ID of the task to complete', required: true}),
+    taskID: Args.string({description: 'ID of the task to mark as passing tests', required: true}),
   }
-  static override description = 'describe the command here'
-  static override examples = ['<%= config.bin %> <%= command.id %>']
+  static override description = 'Mark a task as passes-tests'
+  static override examples = ['<%= config.bin %> <%= command.id %> F-001']
   static override flags = {
     // flag with no value (-f, --force)
-    force: Flags.boolean({char: 'f'}),
+    // force: Flags.boolean({char: 'f'}),
     // flag with a value (-n, --name=VALUE)
-    name: Flags.string({char: 'n', description: 'name to print'}),
+    // name: Flags.string({char: 'n', description: 'name to print'}),
   }
 
   public async run(): Promise<void> {
@@ -30,6 +30,6 @@ export default class PassTest extends Command {
 
     await writeRoadmapFile(config.path, updatedRoadmap)
 
-    this.log(`Task ${args.taskID} marked as passes-tests.`)
+    this.log(`Task ${args.taskID} marked as passing tests.`)
   }
 }
