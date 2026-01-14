@@ -1,27 +1,88 @@
 import {Args, Command, Flags} from '@oclif/core'
 
+import {readConfigFile} from '../util/read-config.js'
+import {readRoadmapFile} from '../util/read-roadmap.js'
+import {PRIORITY, STATUS, Task, TASK_TYPE, TASK_TYPE_MAP} from '../util/types.js'
+import {writeRoadmapFile} from '../util/write-roadmap.js'
+
 export default class Add extends Command {
   static override args = {
-    file: Args.string({description: 'file to read'}),
+    title: Args.string({description: 'title of the task to add', required: true}),
   }
-  static override description = 'describe the command here'
-  static override examples = [
-    '<%= config.bin %> <%= command.id %>',
-  ]
+  static override description = 'add a new task to the roadmap'
+  static override examples = ['<%= config.bin %> <%= command.id %>']
   static override flags = {
-    // flag with no value (-f, --force)
-    force: Flags.boolean({char: 'f'}),
-    // flag with a value (-n, --name=VALUE)
-    name: Flags.string({char: 'n', description: 'name to print'}),
+    // force: Flags.boolean({char: 'f'}),
+    // name: Flags.string({char: 'n', description: 'name to print'}),
+    details: Flags.string({char: 'd', description: 'description of the task to add', required: true}),
+    priority: Flags.string({
+      char: 'p',
+      default: PRIORITY.Medium,
+      description: 'priority of the task to add',
+      options: [PRIORITY.High, PRIORITY.Medium, PRIORITY.Low],
+      required: false,
+    }),
+    status: Flags.string({
+      char: 's',
+      default: STATUS.NotStarted,
+      description: 'status of the task to add',
+      options: [STATUS.NotStarted, STATUS.InProgress, STATUS.Completed],
+      required: false,
+    }),
+    tags: Flags.string({
+      char: 'g',
+      description: 'comma-separated list of tags to add to the task',
+      required: false,
+    }),
+    type: Flags.string({
+      char: 't',
+      description: 'type of the task to add',
+      options: [TASK_TYPE.Bug, TASK_TYPE.Feature, TASK_TYPE.Improvement, TASK_TYPE.Planning, TASK_TYPE.Research],
+      required: true,
+    }),
   }
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Add)
 
-    const name = flags.name ?? 'world'
-    this.log(`hello ${name} from /Users/zachary/code/ts/project-roadmap-tracking/src/commands/add.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    const config = await readConfigFile()
+
+    const roadmapFile = await readRoadmapFile(config.path)
+    const taskType = flags.type as TASK_TYPE
+
+    const existingTaskIDs = new Set(roadmapFile.tasks.filter((task) => task.type === taskType).map((task) => task.id))
+
+    let newIDNumber = 1
+    let newTaskID: Task['id']
+
+    while (true) {
+      const potentialID = `${TASK_TYPE_MAP.get(taskType)}-${String(newIDNumber).padStart(3, '0')}` as Task['id']
+      if (!existingTaskIDs.has(potentialID)) {
+        newTaskID = potentialID
+        break
+      }
+
+      newIDNumber++
     }
+
+    const newTask = {
+      blocks: [],
+      createdAt: new Date().toISOString(),
+      'depends-on': [],
+      details: flags.details,
+      id: newTaskID!,
+      notes: '',
+      'passes-tests': false,
+      priority: flags.priority as PRIORITY,
+      status: flags.status as STATUS,
+      tags: flags.tags ? flags.tags.split(',').map((tag) => tag.trim()) : [],
+      title: args.title,
+      type: taskType,
+      updatedAt: new Date().toISOString(),
+    } satisfies Task
+
+    roadmapFile.tasks.push(newTask)
+
+    await writeRoadmapFile(config.path, roadmapFile)
   }
 }

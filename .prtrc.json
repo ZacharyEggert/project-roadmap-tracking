@@ -1,0 +1,8 @@
+{
+  "$schema": "https://project-roadmap-tracking.com/schemas/config/v1.json",
+  "metadata": {
+    "description": "A project roadmap managed by Project Roadmap Tracking",
+    "name": "My Project Roadmap"
+  },
+  "path": "./prt.json"
+}
