@@ -96,6 +96,21 @@
       "title": "Add PRT skill to Claude",
       "type": "planning",
       "updatedAt": "2026-01-16T03:25:28.147Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T03:27:37.383Z",
+      "depends-on": [],
+      "details": "Update README.md to reflect current project state, commands, and documentation",
+      "id": "I-001",
+      "notes": "",
+      "passes-tests": true,
+      "priority": "medium",
+      "status": "completed",
+      "tags": [],
+      "title": "Update README",
+      "type": "improvement",
+      "updatedAt": "2026-01-16T03:27:41.243Z"
     }
   ]
 }
