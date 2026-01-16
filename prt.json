@@ -36,6 +36,66 @@
       "title": "Update util",
       "type": "feature",
       "updatedAt": "2026-01-14T22:45:28.752Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T03:23:23.626Z",
+      "depends-on": [],
+      "details": "Publish the project-roadmap-tracking package to the NPM registry to make it publicly available for installation",
+      "id": "P-001",
+      "notes": "",
+      "passes-tests": true,
+      "priority": "medium",
+      "status": "completed",
+      "tags": [],
+      "title": "Publish package to NPM",
+      "type": "planning",
+      "updatedAt": "2026-01-16T03:25:26.981Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T03:24:37.777Z",
+      "depends-on": [],
+      "details": "Install project-roadmap-tracking as a local development dependency for testing and development purposes",
+      "id": "P-002",
+      "notes": "",
+      "passes-tests": true,
+      "priority": "medium",
+      "status": "completed",
+      "tags": [],
+      "title": "Install PRT locally",
+      "type": "planning",
+      "updatedAt": "2026-01-16T03:25:27.369Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T03:24:38.166Z",
+      "depends-on": [],
+      "details": "Install project-roadmap-tracking globally via npm to make the prt command available system-wide for all projects",
+      "id": "P-003",
+      "notes": "",
+      "passes-tests": true,
+      "priority": "medium",
+      "status": "completed",
+      "tags": [],
+      "title": "Install PRT globally",
+      "type": "planning",
+      "updatedAt": "2026-01-16T03:25:27.759Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T03:24:38.564Z",
+      "depends-on": [],
+      "details": "Create and configure a PRT skill integration for Claude Code to enable AI-assisted project roadmap management through natural language commands",
+      "id": "P-004",
+      "notes": "",
+      "passes-tests": true,
+      "priority": "medium",
+      "status": "completed",
+      "tags": [],
+      "title": "Add PRT skill to Claude",
+      "type": "planning",
+      "updatedAt": "2026-01-16T03:25:28.147Z"
     }
   ]
 }
