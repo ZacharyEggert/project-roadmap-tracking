@@ -20,7 +20,7 @@ $ npm install -g project-roadmap-tracking
 $ prt COMMAND
 running command...
 $ prt (--version)
-project-roadmap-tracking/0.0.0 darwin-arm64 node-v24.12.0
+project-roadmap-tracking/0.1.0 darwin-arm64 node-v25.2.1
 $ prt --help [COMMAND]
 USAGE
   $ prt COMMAND
@@ -48,7 +48,7 @@ USAGE
 * [`prt plugins unlink [PLUGIN]`](#prt-plugins-unlink-plugin)
 * [`prt plugins update`](#prt-plugins-update)
 * [`prt show TASK`](#prt-show-task)
-* [`prt update [FILE]`](#prt-update-file)
+* [`prt update TASKID`](#prt-update-taskid)
 * [`prt validate`](#prt-validate)
 
 ## `prt add TITLE`
@@ -80,7 +80,7 @@ EXAMPLES
   $ prt add
 ```
 
-_See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/add.ts)_
+_See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/add.ts)_
 
 ## `prt complete TASKID`
 
@@ -103,7 +103,7 @@ EXAMPLES
   $ prt complete F-001 --tests
 ```
 
-_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/complete.ts)_
+_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/complete.ts)_
 
 ## `prt help [COMMAND]`
 
@@ -149,7 +149,7 @@ EXAMPLES
   $ prt init [path/to/directory]
 ```
 
-_See code: [src/commands/init.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/init.ts)_
 
 ## `prt list`
 
@@ -176,7 +176,7 @@ EXAMPLES
   $ prt list -p=h --incomplete --sort=createdAt
 ```
 
-_See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/list.ts)_
+_See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/list.ts)_
 
 ## `prt pass-test TASKID`
 
@@ -196,7 +196,7 @@ EXAMPLES
   $ prt pass-test F-001
 ```
 
-_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/pass-test.ts)_
+_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/pass-test.ts)_
 
 ## `prt plugins`
 
@@ -506,31 +506,39 @@ EXAMPLES
   $ prt show F-001
 ```
 
-_See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/show.ts)_
+_See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/show.ts)_
 
-## `prt update [FILE]`
+## `prt update TASKID`
 
-describe the command here
+Update a task in place
 
 ```
 USAGE
-  $ prt update [FILE] [-f] [-n <value>]
+  $ prt update TASKID [--clear-notes] [-d <value>] [-n <value>] [-s completed|in-progress|not-started] [-t
+    true|false]
 
 ARGUMENTS
-  [FILE]  file to read
+  TASKID  ID of the task to update
 
 FLAGS
-  -f, --force
-  -n, --name=<value>  name to print
+  -d, --deps=<value>     update the dependencies of the task (comma-separated list of task IDs)
+  -n, --notes=<value>    append notes to the task
+  -s, --status=<option>  set the status of the task (completed, in-progress, not-started)
+                         <options: completed|in-progress|not-started>
+  -t, --tested=<option>  update whether the task passes tests
+                         <options: true|false>
+      --clear-notes      clear all notes from the task
 
 DESCRIPTION
-  describe the command here
+  Update a task in place
 
 EXAMPLES
-  $ prt update
+  $ prt update F-001 --status=completed --tested=true --notes="Fixed all bugs"
+
+  $ prt update F-002 --deps="F-001" --clear-notes
 ```
 
-_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/update.ts)_
+_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/update.ts)_
 
 ## `prt validate`
 
@@ -547,5 +555,5 @@ EXAMPLES
   $ prt validate
 ```
 
-_See code: [src/commands/validate.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.0.0/src/commands/validate.ts)_
+_See code: [src/commands/validate.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/validate.ts)_
 <!-- commandsstop -->
