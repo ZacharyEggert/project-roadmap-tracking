@@ -111,6 +111,21 @@
       "title": "Update README",
       "type": "improvement",
       "updatedAt": "2026-01-16T03:27:41.243Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T03:36:03.294Z",
+      "depends-on": [],
+      "details": "Create ARCHITECTURE.md documentation showing the ideal structure of the project including layer architecture, design patterns, data flow, and extension points",
+      "id": "P-005",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "in-progress",
+      "tags": [],
+      "title": "Generate ARCHITECTURE.md file",
+      "type": "planning",
+      "updatedAt": "2026-01-16T03:37:00.268Z"
     }
   ]
 }
