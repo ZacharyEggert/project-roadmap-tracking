@@ -1,0 +1,37 @@
+# Development files
+test/
+.mocharc.json
+.eslintrc*
+eslint.config.mjs
+
+# Build artifacts
+src/
+tsconfig.json
+tsconfig.tsbuildinfo
+
+# Development dependencies
+.github/
+.vscode/
+.prettierrc.json
+
+# Git files
+.git/
+.gitignore
+
+# Editor files
+.claude/
+.idea/
+
+# Test configuration
+.prtrc.json
+prt.json
+
+# Development tools
+node_modules/
+yarn.lock
+package-lock.json
+
+# OS files
+.DS_Store
+*-debug.log
+*-error.log
