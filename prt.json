@@ -242,7 +242,7 @@
       "notes": "",
       "passes-tests": false,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-1",
         "test-infrastructure",
@@ -250,7 +250,7 @@
       ],
       "title": "Create file system test helpers",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:00:05.000Z"
+      "updatedAt": "2026-01-17T03:15:41.888Z"
     },
     {
       "blocks": [],
