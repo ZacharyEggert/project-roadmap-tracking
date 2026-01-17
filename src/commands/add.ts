@@ -1,8 +1,9 @@
 import {Args, Command, Flags} from '@oclif/core'
 
+import taskService from '../services/task.service.js'
 import {readConfigFile} from '../util/read-config.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
-import {PRIORITY, STATUS, Task, TASK_TYPE, TASK_TYPE_MAP} from '../util/types.js'
+import {PRIORITY, STATUS, TASK_TYPE} from '../util/types.js'
 import {writeRoadmapFile} from '../util/write-roadmap.js'
 
 export default class Add extends Command {
@@ -50,36 +51,17 @@ export default class Add extends Command {
     const roadmapFile = await readRoadmapFile(config.path)
     const taskType = flags.type as TASK_TYPE
 
-    const existingTaskIDs = new Set(roadmapFile.tasks.filter((task) => task.type === taskType).map((task) => task.id))
+    const newTaskID = taskService.generateNextId(roadmapFile, taskType)
 
-    let newIDNumber = 1
-    let newTaskID: Task['id']
-
-    while (true) {
-      const potentialID = `${TASK_TYPE_MAP.get(taskType)}-${String(newIDNumber).padStart(3, '0')}` as Task['id']
-      if (!existingTaskIDs.has(potentialID)) {
-        newTaskID = potentialID
-        break
-      }
-
-      newIDNumber++
-    }
-
-    const newTask = {
-      blocks: [],
-      createdAt: new Date().toISOString(),
-      'depends-on': [],
+    const newTask = taskService.createTask({
       details: flags.details,
-      id: newTaskID!,
-      notes: '',
-      'passes-tests': false,
+      id: newTaskID,
       priority: flags.priority as PRIORITY,
       status: flags.status as STATUS,
       tags: flags.tags ? flags.tags.split(',').map((tag) => tag.trim()) : [],
       title: args.title,
       type: taskType,
-      updatedAt: new Date().toISOString(),
-    } satisfies Task
+    })
 
     roadmapFile.tasks.push(newTask)
 

@@ -478,9 +478,9 @@
       "details": "Extract ID generation algorithm from src/commands/add.ts:53-66 to TaskService.\n\nImplement generateNextId() method:\n- Takes roadmap and task type as inputs\n- Finds existing IDs for that type\n- Returns next available ID (fills gaps, e.g., if B-001, B-003 exist, returns B-002)\n- Handles edge cases: empty roadmap, all IDs taken up to 999\n\nMove logic from add.ts lines 53-66 to src/services/task.service.ts\nEnsure add.ts still works by calling the service method.",
       "id": "P-022",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-3",
         "service-layer",
@@ -488,7 +488,7 @@
       ],
       "title": "Extract ID generation from add command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:02:01.000Z"
+      "updatedAt": "2026-01-17T04:37:57.191Z"
     },
     {
       "blocks": [],
@@ -1439,6 +1439,21 @@
       "title": "Add ConfigRepository",
       "type": "planning",
       "updatedAt": "2026-01-16T04:09:03.000Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-17T04:37:42.773Z",
+      "depends-on": [],
+      "details": "This is a test to verify the refactored add command works correctly",
+      "id": "F-003",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "completed",
+      "tags": [],
+      "title": "Test task for P-022",
+      "type": "feature",
+      "updatedAt": "2026-01-17T04:37:53.494Z"
     }
   ]
 }
