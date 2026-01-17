@@ -173,8 +173,12 @@ export class RoadmapService {
     // Validate roadmap structure
     this.validateStructure(roadmap, errors)
 
-    // If structure is invalid, return early
-    if (errors.some((e) => e.type === 'structure' && e.message.includes('tasks array'))) {
+    // If structure is invalid (null/not an object or missing tasks array), return early
+    if (
+      errors.some(
+        (e) => e.type === 'structure' && (e.message.includes('tasks array') || e.message.includes('must be an object')),
+      )
+    ) {
       return errors
     }
 
