@@ -411,9 +411,9 @@
       "details": "Create test/unit/util/write-roadmap.test.ts for file writing operations.\n\nTest cases:\n- Write valid roadmap to file\n- Serialize to JSON correctly\n- Handle write errors (permissions, disk full simulation)\n- Overwrite existing file\n- Create parent directories if needed\n- Preserve JSON formatting\n\nFile: test/unit/util/write-roadmap.test.ts\nTarget: src/util/write-roadmap.ts",
       "id": "P-019",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-2",
         "unit-tests",
@@ -421,7 +421,7 @@
       ],
       "title": "Unit tests for write-roadmap",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:01:06.000Z"
+      "updatedAt": "2026-01-17T04:16:14.819Z"
     },
     {
       "blocks": [],
