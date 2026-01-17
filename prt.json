@@ -134,7 +134,7 @@
       "details": "Create the foundational test directory structure:\n- test/fixtures/ - Test data factories and sample data\n- test/helpers/ - Test utility functions\n- test/unit/util/ - Unit tests for utilities\n- test/unit/services/ - Unit tests for services (to be created)\n\nThis structure will organize all test files and make them easy to find. Creates the foundation for all subsequent test infrastructure work.",
       "id": "P-006",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -144,7 +144,7 @@
       ],
       "title": "Create test directory structure",
       "type": "planning",
-      "updatedAt": "2026-01-17T02:48:25.346Z"
+      "updatedAt": "2026-01-17T05:31:13.510Z"
     },
     {
       "blocks": [],
@@ -155,7 +155,7 @@
       "details": "Create test/fixtures/task-factory.ts to generate test Task objects with sensible defaults.\n\nFactory should provide:\n- createTask(overrides?) - Generate single task with optional field overrides\n- createTasks(count, overrides?) - Generate multiple tasks\n- Preset factories: createBugTask(), createFeatureTask(), createPlanningTask()\n- Realistic default values for all fields (id, title, details, status, priority, etc.)\n\nThis factory will be used by every test file that needs task data. Essential for avoiding test data duplication.",
       "id": "P-007",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -165,7 +165,7 @@
       ],
       "title": "Create task factory for test data",
       "type": "planning",
-      "updatedAt": "2026-01-17T02:56:51.053Z"
+      "updatedAt": "2026-01-17T05:31:13.570Z"
     },
     {
       "blocks": [],
@@ -177,7 +177,7 @@
       "details": "Create test/fixtures/roadmap-factory.ts to generate test Roadmap objects.\n\nFactory should provide:\n- createRoadmap(overrides?) - Generate roadmap with optional overrides\n- createEmptyRoadmap() - Roadmap with no tasks\n- createSimpleRoadmap() - Roadmap with 3-5 tasks\n- createComplexRoadmap() - Roadmap with dependencies, various statuses, etc.\n\nShould integrate with task-factory.ts to generate realistic task data. This enables testing roadmap-level operations without manual JSON construction.",
       "id": "P-008",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -187,7 +187,7 @@
       ],
       "title": "Create roadmap factory for test data",
       "type": "planning",
-      "updatedAt": "2026-01-17T02:59:54.988Z"
+      "updatedAt": "2026-01-17T05:31:13.630Z"
     },
     {
       "blocks": [],
@@ -198,7 +198,7 @@
       "details": "Create test/fixtures/config-factory.ts to generate test Config objects (.prtrc.json).\n\nFactory should provide:\n- createConfig(overrides?) - Generate config with optional overrides\n- Default values for roadmapPath, version, etc.\n- Ability to generate configs pointing to temp test directories\n\nThis enables testing of config reading/writing without polluting real config files.",
       "id": "P-009",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -208,7 +208,7 @@
       ],
       "title": "Create config factory for test data",
       "type": "planning",
-      "updatedAt": "2026-01-17T03:06:06.033Z"
+      "updatedAt": "2026-01-17T05:31:13.692Z"
     },
     {
       "blocks": [],
@@ -219,7 +219,7 @@
       "details": "Create static JSON fixture files in test/fixtures/json/:\n- empty-roadmap.json - Valid roadmap with no tasks\n- simple-roadmap.json - 3-5 tasks, no dependencies\n- complex-roadmap.json - 10+ tasks with dependencies, various statuses, multiple types\n- invalid-roadmap.json - Malformed JSON for error testing\n- circular-deps-roadmap.json - Tasks with circular dependencies\n\nThese fixtures enable testing of file parsing, validation, and edge cases without generating data programmatically.",
       "id": "P-010",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -229,7 +229,7 @@
       ],
       "title": "Create sample JSON fixtures",
       "type": "planning",
-      "updatedAt": "2026-01-17T03:12:18.026Z"
+      "updatedAt": "2026-01-17T05:31:13.752Z"
     },
     {
       "blocks": [],
@@ -240,7 +240,7 @@
       "details": "Create test/helpers/fs-helpers.ts with utilities for file system testing:\n- createTempDir() - Create temporary test directory\n- cleanupTempDir(path) - Clean up after tests\n- createTempRoadmapFile(roadmap) - Write roadmap to temp file\n- createTempConfigFile(config) - Write config to temp file\n- readTempFile(path) - Read temp file contents\n\nShould integrate with Mocha's beforeEach/afterEach hooks. Essential for testing all file I/O operations without affecting real project files.",
       "id": "P-011",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -250,7 +250,7 @@
       ],
       "title": "Create file system test helpers",
       "type": "planning",
-      "updatedAt": "2026-01-17T03:15:41.888Z"
+      "updatedAt": "2026-01-17T05:31:13.814Z"
     },
     {
       "blocks": [],
@@ -261,7 +261,7 @@
       "details": "Create test/helpers/assertions.ts with PRT-specific test assertions:\n- assertValidTaskId(id) - Verify TaskID format\n- assertValidTask(task) - Verify complete task structure\n- assertTaskEquals(actual, expected) - Deep comparison ignoring timestamps\n- assertRoadmapValid(roadmap) - Verify roadmap structure\n- assertHasTasks(roadmap, count) - Verify task count\n\nThese helpers make test assertions more readable and reduce boilerplate in test files.",
       "id": "P-012",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -271,7 +271,7 @@
       ],
       "title": "Create custom assertion helpers",
       "type": "planning",
-      "updatedAt": "2026-01-17T03:20:00.039Z"
+      "updatedAt": "2026-01-17T05:31:13.876Z"
     },
     {
       "blocks": [],
@@ -520,7 +520,7 @@
       "details": "Extend test/unit/services/task.service.test.ts Part 2 - edge cases and gap filling.\n\nTest cases:\n- Gap filling: if B-001, B-003 exist, next ID is B-002\n- Handle deleted tasks (gaps in sequence)\n- Maximum ID boundary (999)\n- Empty roadmap edge case\n- Multiple gaps: B-001, B-005, B-010 -> next is B-002\n\nExtends existing test file: test/unit/services/task.service.test.ts\nTarget: src/services/task.service.ts",
       "id": "P-024",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -530,7 +530,7 @@
       ],
       "title": "Unit tests for ID generation Part 2",
       "type": "planning",
-      "updatedAt": "2026-01-17T04:43:37.963Z"
+      "updatedAt": "2026-01-17T05:31:13.936Z"
     },
     {
       "blocks": [],
@@ -541,7 +541,7 @@
       "details": "Implement createTask() and addTask() methods in TaskService.\n\ncreateTask():\n- Takes task data (title, details, type, etc.)\n- Generates task ID using generateNextId()\n- Sets timestamps (createdAt, updatedAt)\n- Sets defaults for optional fields\n- Returns complete Task object\n\naddTask():\n- Takes roadmap and task object\n- Validates task\n- Adds to roadmap.tasks array\n- Returns updated roadmap\n\nFile: src/services/task.service.ts",
       "id": "P-025",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -551,7 +551,7 @@
       ],
       "title": "Implement createTask and addTask methods",
       "type": "planning",
-      "updatedAt": "2026-01-17T04:48:52.050Z"
+      "updatedAt": "2026-01-17T05:31:13.998Z"
     },
     {
       "blocks": [],
@@ -562,7 +562,7 @@
       "details": "Create tests for createTask() and addTask() methods.\n\nTest cases:\n- createTask generates valid task object\n- All required fields populated\n- Timestamps set correctly\n- addTask adds task to roadmap\n- Roadmap immutability\n- Validation runs during creation\n\nExtends existing test file: test/unit/services/task.service.test.ts\nTarget: src/services/task.service.ts",
       "id": "P-026",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -572,7 +572,7 @@
       ],
       "title": "Unit tests for task creation methods",
       "type": "planning",
-      "updatedAt": "2026-01-17T04:51:42.025Z"
+      "updatedAt": "2026-01-17T05:31:14.057Z"
     },
     {
       "blocks": [],
@@ -627,7 +627,7 @@
       "details": "Implement load() and save() methods in RoadmapService.\n\nload():\n- Wraps readRoadmapFile() utility\n- Adds error handling\n- Returns validated Roadmap object\n\nsave():\n- Wraps writeRoadmapFile() utility\n- Validates before writing\n- Adds error handling\n\nFile: src/services/roadmap.service.ts",
       "id": "P-029",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -637,7 +637,7 @@
       ],
       "title": "Implement load and save methods",
       "type": "planning",
-      "updatedAt": "2026-01-17T05:17:51.106Z"
+      "updatedAt": "2026-01-17T05:31:14.116Z"
     },
     {
       "blocks": [],
@@ -648,7 +648,7 @@
       "details": "Create test/unit/services/roadmap.service.test.ts for I/O methods.\n\nTest cases:\n- load() reads file correctly\n- save() writes file correctly\n- Error handling for missing files\n- Error handling for malformed JSON\n- Validation runs before save\n- File permissions errors handled\n\nFile: test/unit/services/roadmap.service.test.ts\nTarget: src/services/roadmap.service.ts",
       "id": "P-030",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -658,7 +658,7 @@
       ],
       "title": "Unit tests for I/O methods",
       "type": "planning",
-      "updatedAt": "2026-01-17T05:17:51.169Z"
+      "updatedAt": "2026-01-17T05:31:14.176Z"
     },
     {
       "blocks": [],
@@ -669,7 +669,7 @@
       "details": "Implement validate() orchestration method in RoadmapService.\n\nvalidate():\n- Check roadmap structure (metadata, tasks array)\n- Validate each task using validateTask utility\n- Check for duplicate task IDs\n- Validate TaskID references in depends-on/blocks\n- Return validation errors array or success\n\nFile: src/services/roadmap.service.ts",
       "id": "P-031",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -679,7 +679,7 @@
       ],
       "title": "Implement validate orchestration",
       "type": "planning",
-      "updatedAt": "2026-01-17T05:17:51.233Z"
+      "updatedAt": "2026-01-17T05:31:14.236Z"
     },
     {
       "blocks": [],
@@ -690,7 +690,7 @@
       "details": "Create tests for roadmap validation method.\n\nTest cases:\n- Valid roadmap passes validation\n- Invalid task structure caught\n- Duplicate task IDs detected\n- Invalid TaskID references in dependencies caught\n- Missing metadata fields caught\n- Returns detailed error messages\n\nExtends existing test file: test/unit/services/roadmap.service.test.ts\nTarget: src/services/roadmap.service.ts",
       "id": "P-032",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
       "status": "completed",
       "tags": [
@@ -700,7 +700,7 @@
       ],
       "title": "Unit tests for roadmap validation",
       "type": "planning",
-      "updatedAt": "2026-01-17T05:21:21.524Z"
+      "updatedAt": "2026-01-17T05:31:14.297Z"
     },
     {
       "blocks": [],
@@ -711,7 +711,7 @@
       "details": "Design TaskQueryService interface and create src/services/task-query.service.ts.\n\nInterface should include:\n- filter(tasks, criteria) - Filter tasks by status, type, priority, tags, etc.\n- sort(tasks, field, order) - Sort by dueDate, priority, createdAt, etc.\n- search(tasks, query) - Search in title/details\n- getByStatus(tasks, status) - Get tasks by status\n- getByType(tasks, type) - Get tasks by type\n\nFile: src/services/task-query.service.ts",
       "id": "P-033",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
       "status": "completed",
       "tags": [
@@ -721,7 +721,7 @@
       ],
       "title": "Design TaskQueryService interface",
       "type": "planning",
-      "updatedAt": "2026-01-17T05:26:12.661Z"
+      "updatedAt": "2026-01-17T05:31:14.357Z"
     },
     {
       "blocks": [],
@@ -1447,13 +1447,13 @@
       "details": "This is a test to verify the refactored add command works correctly",
       "id": "F-003",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
       "status": "completed",
       "tags": [],
       "title": "Test task for P-022",
       "type": "feature",
-      "updatedAt": "2026-01-17T04:37:53.494Z"
+      "updatedAt": "2026-01-17T05:31:14.416Z"
     }
   ]
 }
