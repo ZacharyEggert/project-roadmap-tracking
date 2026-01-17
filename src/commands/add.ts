@@ -48,10 +48,10 @@ export default class Add extends Command {
 
     const config = await readConfigFile()
 
-    const roadmapFile = await readRoadmapFile(config.path)
+    const roadmap = await readRoadmapFile(config.path)
     const taskType = flags.type as TASK_TYPE
 
-    const newTaskID = taskService.generateNextId(roadmapFile, taskType)
+    const newTaskID = taskService.generateNextId(roadmap, taskType)
 
     const newTask = taskService.createTask({
       details: flags.details,
@@ -63,8 +63,8 @@ export default class Add extends Command {
       type: taskType,
     })
 
-    roadmapFile.tasks.push(newTask)
+    const updatedRoadmap = taskService.addTask(roadmap, newTask)
 
-    await writeRoadmapFile(config.path, roadmapFile)
+    await writeRoadmapFile(config.path, updatedRoadmap)
   }
 }
