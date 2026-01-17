@@ -294,5 +294,106 @@ describe('TaskService', () => {
         expect(nextId2).to.have.lengthOf(5)
       })
     })
+
+    describe('edge cases and gap filling', () => {
+      it('should fill gap: B-001, B-003 exist, next ID is B-002', () => {
+        const roadmap = createRoadmap({
+          tasks: [createBugTask({id: 'B-001'}), createBugTask({id: 'B-003'})],
+        })
+
+        const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Bug)
+
+        expect(nextId).to.equal('B-002')
+      })
+
+      it('should fill smallest gap: B-001, B-005, B-010 exist, next ID is B-002', () => {
+        const roadmap = createRoadmap({
+          tasks: [createBugTask({id: 'B-001'}), createBugTask({id: 'B-005'}), createBugTask({id: 'B-010'})],
+        })
+
+        const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Bug)
+
+        expect(nextId).to.equal('B-002')
+      })
+
+      it('should fill middle gap: F-001, F-002, F-005 exist, next ID is F-003', () => {
+        const roadmap = createRoadmap({
+          tasks: [createFeatureTask({id: 'F-001'}), createFeatureTask({id: 'F-002'}), createFeatureTask({id: 'F-005'})],
+        })
+
+        const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Feature)
+
+        expect(nextId).to.equal('F-003')
+      })
+
+      it('should handle multiple gaps and fill the first one', () => {
+        const roadmap = createRoadmap({
+          tasks: [
+            createBugTask({id: 'B-001'}),
+            createBugTask({id: 'B-003'}),
+            createBugTask({id: 'B-007'}),
+            createBugTask({id: 'B-010'}),
+          ],
+        })
+
+        const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Bug)
+
+        expect(nextId).to.equal('B-002')
+      })
+
+      it('should handle non-sequential IDs (simulating deleted tasks)', () => {
+        const roadmap = createRoadmap({
+          tasks: [
+            createPlanningTask({id: 'P-001'}),
+            createPlanningTask({id: 'P-010'}),
+            createPlanningTask({id: 'P-020'}),
+          ],
+        })
+
+        const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Planning)
+
+        expect(nextId).to.equal('P-002')
+      })
+
+      it('should generate B-001 for empty roadmap', () => {
+        const roadmap = createEmptyRoadmap()
+
+        const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Bug)
+
+        expect(nextId).to.equal('B-001')
+      })
+
+      it('should handle maximum ID boundary: next after B-998 is B-999', () => {
+        const bugTasks = Array.from({length: 998}, (_, i) => {
+          const idNum = String(i + 1).padStart(3, '0')
+          return createBugTask({id: `B-${idNum}` as TaskID})
+        })
+        const roadmap = createRoadmap({tasks: bugTasks})
+
+        const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Bug)
+
+        expect(nextId).to.equal('B-999')
+      })
+
+      it('should fill gap even when approaching maximum: B-001, B-999 exist, next is B-002', () => {
+        const roadmap = createRoadmap({
+          tasks: [createBugTask({id: 'B-001'}), createBugTask({id: 'B-999'})],
+        })
+
+        const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Bug)
+
+        expect(nextId).to.equal('B-002')
+      })
+
+      it('should handle gaps in high number range: F-995, F-997, F-999 exist, next is F-996', () => {
+        const roadmap = createRoadmap({
+          tasks: [createFeatureTask({id: 'F-995'}), createFeatureTask({id: 'F-997'}), createFeatureTask({id: 'F-999'})],
+        })
+
+        const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Feature)
+
+        expect(nextId).to.equal('F-001')
+      })
+    })
   })
 })
