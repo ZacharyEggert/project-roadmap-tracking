@@ -303,9 +303,9 @@
       "details": "Create test/unit/util/validate-task.test.ts Part 1 - basic field validation.\n\nTest cases:\n- Required fields present (id, title, type, status, priority)\n- Valid enum values (status, priority, type)\n- Field type validation (strings, arrays, booleans)\n- Basic structure validation\n\nFile: test/unit/util/validate-task.test.ts\nTarget: src/util/validate-task.ts",
       "id": "P-014",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-2",
         "unit-tests",
@@ -313,7 +313,7 @@
       ],
       "title": "Unit tests for validate-task Part 1",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:01:01.000Z"
+      "updatedAt": "2026-01-17T03:36:41.829Z"
     },
     {
       "blocks": [],
