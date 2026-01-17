@@ -464,13 +464,13 @@
       "details": "Design RoadmapService interface and create src/services/roadmap.service.ts.\n\nInterface should include:\n- load(path) - Read roadmap from file\n- save(path, roadmap) - Write roadmap to file\n- validate(roadmap) - Validate roadmap structure\n- getStats(roadmap) - Get roadmap statistics (task counts by status, type, etc.)\n\nThis service abstracts all file I/O and roadmap-level operations.\n\nFile: src/services/roadmap.service.ts",
       "id": "P-028",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": ["phase-4", "service-layer", "high-priority"],
       "title": "Design RoadmapService interface",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:03:00.000Z"
+      "updatedAt": "2026-01-17T05:00:00.000Z"
     },
     {
       "blocks": [],
