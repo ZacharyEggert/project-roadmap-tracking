@@ -1,8 +1,8 @@
 import {expect} from 'chai'
 
-import {PRIORITY, STATUS, TASK_TYPE} from '../../../src/util/types.js'
+import {PRIORITY, STATUS, Task, TASK_TYPE} from '../../../src/util/types.js'
 import {updateTaskInRoadmap} from '../../../src/util/update-task.js'
-import {createRoadmap, createSimpleRoadmap} from '../../fixtures/roadmap-factory.js'
+import {createEmptyRoadmap, createRoadmap, createSimpleRoadmap} from '../../fixtures/roadmap-factory.js'
 import {createTask, resetTaskCounter} from '../../fixtures/task-factory.js'
 import {assertTaskEquals} from '../../helpers/assertions.js'
 
@@ -396,6 +396,166 @@ describe('updateTaskInRoadmap', () => {
       expect(updated.tasks[0].status).to.equal(STATUS.NotStarted)
       expect(updated.tasks[1].status).to.equal(STATUS.Completed)
       expect(updated.tasks[2].status).to.equal(STATUS.NotStarted)
+    })
+  })
+
+  describe('error cases', () => {
+    beforeEach(() => {
+      resetTaskCounter()
+    })
+
+    describe('task not found', () => {
+      it('should throw error when task ID does not exist in populated roadmap', async () => {
+        const roadmap = createSimpleRoadmap()
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'F-999', {status: STATUS.Completed})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID F-999 not found')
+        }
+      })
+
+      it('should throw error with valid TaskID format that does not exist', async () => {
+        const roadmap = createSimpleRoadmap()
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'B-100', {status: STATUS.Completed})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID B-100 not found')
+        }
+      })
+
+      it('should throw error when trying to update non-existent task by ID', async () => {
+        const task1 = createTask({status: STATUS.NotStarted, title: 'Task 1'})
+        const task2 = createTask({status: STATUS.NotStarted, title: 'Task 2'})
+        const roadmap = createRoadmap({tasks: [task1, task2]})
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'F-003', {status: STATUS.Completed})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID F-003 not found')
+        }
+      })
+    })
+
+    describe('invalid task ID format', () => {
+      it('should throw error for completely invalid task ID', async () => {
+        const roadmap = createSimpleRoadmap()
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'invalid', {status: STATUS.Completed})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID invalid not found')
+        }
+      })
+
+      it('should throw error for task ID with wrong prefix', async () => {
+        const roadmap = createSimpleRoadmap()
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'X-001', {status: STATUS.Completed})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID X-001 not found')
+        }
+      })
+
+      it('should throw error for lowercase task ID', async () => {
+        const roadmap = createSimpleRoadmap()
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'f-001', {status: STATUS.Completed})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID f-001 not found')
+        }
+      })
+
+      it('should throw error for task ID with wrong number format', async () => {
+        const roadmap = createSimpleRoadmap()
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'F-1', {status: STATUS.Completed})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID F-1 not found')
+        }
+      })
+
+      it('should throw error for task ID with too many digits', async () => {
+        const roadmap = createSimpleRoadmap()
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'F-0001', {status: STATUS.Completed})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID F-0001 not found')
+        }
+      })
+    })
+
+    describe('empty roadmap', () => {
+      it('should throw error when updating task in empty roadmap', async () => {
+        const roadmap = createEmptyRoadmap()
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'F-001', {status: STATUS.Completed})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID F-001 not found')
+        }
+      })
+
+      it('should throw error for any task ID in empty roadmap', async () => {
+        const roadmap = createEmptyRoadmap()
+
+        try {
+          await updateTaskInRoadmap(roadmap, 'B-002', {title: 'Updated title'})
+          throw new Error('Expected updateTaskInRoadmap to throw')
+        } catch (error: unknown) {
+          expect((error as Error).message).to.equal('Task with ID B-002 not found')
+        }
+      })
+    })
+
+    describe('duplicate task IDs', () => {
+      it('should update first occurrence when duplicate IDs exist (edge case)', async () => {
+        // This is an edge case that shouldn't happen in normal usage,
+        // but we test defensive code behavior
+        const task1 = createTask({status: STATUS.NotStarted, title: 'First task'})
+        const task2 = createTask({status: STATUS.NotStarted, title: 'Second task'})
+        // Manually create a duplicate ID (bypassing normal validation)
+        const task3 = {...task1, id: task1.id, title: 'Duplicate ID task'}
+        const roadmap = createRoadmap({tasks: [task1, task2, task3 as Task]})
+
+        const updated = await updateTaskInRoadmap(roadmap, task1.id, {status: STATUS.Completed})
+
+        // Should update the first occurrence
+        expect(updated.tasks[0].status).to.equal(STATUS.Completed)
+        expect(updated.tasks[0].title).to.equal('First task')
+        // Second task should be unchanged
+        expect(updated.tasks[1].status).to.equal(STATUS.NotStarted)
+        // Duplicate task should remain unchanged
+        expect(updated.tasks[2].status).to.equal(STATUS.NotStarted)
+        expect(updated.tasks[2].title).to.equal('Duplicate ID task')
+      })
+
+      it('should only update one task when duplicates exist', async () => {
+        const task1 = createTask({status: STATUS.NotStarted, title: 'Original'})
+        const duplicateTask = {...task1, title: 'Duplicate'}
+        const roadmap = createRoadmap({tasks: [task1, duplicateTask as Task]})
+
+        const updated = await updateTaskInRoadmap(roadmap, task1.id, {title: 'Updated'})
+
+        // First occurrence should be updated
+        expect(updated.tasks[0].title).to.equal('Updated')
+        // Second occurrence should remain unchanged
+        expect(updated.tasks[1].title).to.equal('Duplicate')
+      })
     })
   })
 })

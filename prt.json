@@ -367,9 +367,9 @@
       "details": "Create test/unit/util/update-task.test.ts Part 2 - error cases.\n\nTest cases:\n- Task not found in roadmap\n- Invalid task ID format\n- Empty roadmap\n- Duplicate task IDs (shouldn't happen but test defensive code)\n\nExtends existing test file: test/unit/util/update-task.test.ts\nTarget: src/util/update-task.ts",
       "id": "P-017",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-2",
         "unit-tests",
@@ -377,7 +377,7 @@
       ],
       "title": "Unit tests for update-task Part 2",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:01:04.000Z"
+      "updatedAt": "2026-01-17T04:04:16.238Z"
     },
     {
       "blocks": [],
