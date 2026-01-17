@@ -713,7 +713,7 @@
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-5",
         "service-layer",
@@ -721,7 +721,7 @@
       ],
       "title": "Design TaskQueryService interface",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:04:00.000Z"
+      "updatedAt": "2026-01-17T05:26:12.661Z"
     },
     {
       "blocks": [],
