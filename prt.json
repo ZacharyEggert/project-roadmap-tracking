@@ -324,9 +324,9 @@
       "details": "Create test/unit/util/validate-task.test.ts Part 2 - edge cases.\n\nTest cases:\n- Empty strings in required fields\n- Invalid date formats for timestamps\n- Invalid TaskID references in depends-on/blocks arrays\n- Malformed tags arrays\n- Missing optional fields\n\nExtends existing test file: test/unit/util/validate-task.test.ts\nTarget: src/util/validate-task.ts",
       "id": "P-015",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-2",
         "unit-tests",
@@ -334,7 +334,7 @@
       ],
       "title": "Unit tests for validate-task Part 2",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:01:02.000Z"
+      "updatedAt": "2026-01-17T03:45:48.645Z"
     },
     {
       "blocks": [],
