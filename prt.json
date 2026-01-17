@@ -457,9 +457,9 @@
       "details": "Design TaskService interface and create src/services/task.service.ts.\n\nInterface should include:\n- generateNextId(roadmap, taskType) - ID generation algorithm\n- createTask(data) - Create new task object\n- addTask(roadmap, task) - Add task to roadmap\n- findTask(roadmap, taskId) - Find task by ID\n- updateTask(roadmap, taskId, updates) - Update existing task\n\nDocument all methods with JSDoc. This will be the core service for task operations.\n\nFile: src/services/task.service.ts",
       "id": "P-021",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-3",
         "service-layer",
@@ -467,7 +467,7 @@
       ],
       "title": "Design TaskService interface",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:02:00.000Z"
+      "updatedAt": "2026-01-17T04:22:33.474Z"
     },
     {
       "blocks": [],
