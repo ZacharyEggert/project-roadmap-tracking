@@ -389,9 +389,9 @@
       "details": "Create test/unit/util/read-roadmap.test.ts for file reading operations.\n\nTest cases:\n- Read valid roadmap file\n- Parse JSON correctly\n- Handle missing file\n- Handle malformed JSON\n- Handle empty file\n- Read from different paths\n\nFile: test/unit/util/read-roadmap.test.ts\nTarget: src/util/read-roadmap.ts",
       "id": "P-018",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-2",
         "unit-tests",
@@ -399,7 +399,7 @@
       ],
       "title": "Unit tests for read-roadmap",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:01:05.000Z"
+      "updatedAt": "2026-01-17T04:10:50.190Z"
     },
     {
       "blocks": [],
