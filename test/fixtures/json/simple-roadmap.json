@@ -1,0 +1,71 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/roadmap/v1.json",
+  "metadata": {
+    "createdAt": "2026-01-16T00:00:00.000Z",
+    "createdBy": "test-fixture",
+    "description": "Simple test roadmap with a few tasks and no dependencies",
+    "name": "Simple Test Roadmap"
+  },
+  "tasks": [
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": [],
+      "details": "Add user authentication to the application",
+      "id": "F-001",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": ["auth", "security"],
+      "title": "User authentication",
+      "type": "feature",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": [],
+      "details": "Fix the bug where users can't log out properly",
+      "id": "B-001",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "in-progress",
+      "tags": ["auth", "bug"],
+      "title": "Fix logout issue",
+      "type": "bug",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": [],
+      "details": "Improve database query performance",
+      "id": "I-001",
+      "notes": "",
+      "passes-tests": true,
+      "priority": "medium",
+      "status": "completed",
+      "tags": ["performance"],
+      "title": "Optimize queries",
+      "type": "improvement",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": [],
+      "details": "Plan the Q2 roadmap and prioritize features",
+      "id": "P-001",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "low",
+      "status": "not-started",
+      "tags": ["planning"],
+      "title": "Q2 planning",
+      "type": "planning",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/roadmap/v1.json",
+  "metadata": {
+    "createdAt": "2026-01-16T00:00:00.000Z",
+    "createdBy": "test-fixture",
+    "description": "Empty test roadmap with no tasks",
+    "name": "Empty Test Roadmap"
+  },
+  "tasks": []
+}

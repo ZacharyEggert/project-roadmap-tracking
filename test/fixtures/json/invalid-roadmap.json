@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/roadmap/v1.json",
+  "metadata": {
+    "createdAt": "2026-01-16T00:00:00.000Z",
+    "createdBy": "test-fixture",
+    "description": "Invalid roadmap for error testing",
+    "name": "Invalid Test Roadmap"
+  },
+  "tasks": [
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": [],
+      "details": "This JSON is intentionally malformed"
+      "id": "F-001",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Invalid task",
+      "type": "feature",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    }
+  ]
+}

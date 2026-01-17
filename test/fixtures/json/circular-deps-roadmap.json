@@ -1,0 +1,101 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/roadmap/v1.json",
+  "metadata": {
+    "createdAt": "2026-01-16T00:00:00.000Z",
+    "createdBy": "test-fixture",
+    "description": "Test roadmap with circular dependencies for validation testing",
+    "name": "Circular Dependencies Test Roadmap"
+  },
+  "tasks": [
+    {
+      "blocks": ["F-002"],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": ["F-003"],
+      "details": "Task A depends on Task C, creating a circular dependency (A -> C -> B -> A)",
+      "id": "F-001",
+      "notes": "Part of circular dependency chain",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": ["circular"],
+      "title": "Task A",
+      "type": "feature",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    },
+    {
+      "blocks": ["F-003"],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": ["F-001"],
+      "details": "Task B depends on Task A, which blocks Task C",
+      "id": "F-002",
+      "notes": "Part of circular dependency chain",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": ["circular"],
+      "title": "Task B",
+      "type": "feature",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    },
+    {
+      "blocks": ["F-001"],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": ["F-002"],
+      "details": "Task C depends on Task B, which blocks Task A, creating the cycle",
+      "id": "F-003",
+      "notes": "Part of circular dependency chain",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": ["circular"],
+      "title": "Task C",
+      "type": "feature",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": ["B-001"],
+      "details": "Self-referencing task creates a simple circular dependency",
+      "id": "B-001",
+      "notes": "Self-dependency edge case",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "not-started",
+      "tags": ["self-ref"],
+      "title": "Self-dependent task",
+      "type": "bug",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    },
+    {
+      "blocks": ["I-002"],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": [],
+      "details": "Task D blocks Task E, which blocks Task D via depends-on",
+      "id": "I-001",
+      "notes": "Two-node circular dependency",
+      "passes-tests": false,
+      "priority": "low",
+      "status": "not-started",
+      "tags": ["circular"],
+      "title": "Task D",
+      "type": "improvement",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    },
+    {
+      "blocks": ["I-001"],
+      "createdAt": "2026-01-16T00:00:00.000Z",
+      "depends-on": ["I-001"],
+      "details": "Task E depends on Task D, which blocks Task E",
+      "id": "I-002",
+      "notes": "Two-node circular dependency",
+      "passes-tests": false,
+      "priority": "low",
+      "status": "not-started",
+      "tags": ["circular"],
+      "title": "Task E",
+      "type": "improvement",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    }
+  ]
+}
