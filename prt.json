@@ -137,7 +137,11 @@
       "passes-tests": false,
       "priority": "high",
       "status": "completed",
-      "tags": ["phase-1", "test-infrastructure", "critical"],
+      "tags": [
+        "phase-1",
+        "test-infrastructure",
+        "critical"
+      ],
       "title": "Create test directory structure",
       "type": "planning",
       "updatedAt": "2026-01-17T02:48:25.346Z"
@@ -145,29 +149,42 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:00:01.000Z",
-      "depends-on": ["P-006"],
+      "depends-on": [
+        "P-006"
+      ],
       "details": "Create test/fixtures/task-factory.ts to generate test Task objects with sensible defaults.\n\nFactory should provide:\n- createTask(overrides?) - Generate single task with optional field overrides\n- createTasks(count, overrides?) - Generate multiple tasks\n- Preset factories: createBugTask(), createFeatureTask(), createPlanningTask()\n- Realistic default values for all fields (id, title, details, status, priority, etc.)\n\nThis factory will be used by every test file that needs task data. Essential for avoiding test data duplication.",
       "id": "P-007",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
-      "status": "not-started",
-      "tags": ["phase-1", "test-infrastructure", "critical"],
+      "status": "completed",
+      "tags": [
+        "phase-1",
+        "test-infrastructure",
+        "critical"
+      ],
       "title": "Create task factory for test data",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:00:01.000Z"
+      "updatedAt": "2026-01-17T02:56:51.053Z"
     },
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:00:02.000Z",
-      "depends-on": ["P-006", "P-007"],
+      "depends-on": [
+        "P-006",
+        "P-007"
+      ],
       "details": "Create test/fixtures/roadmap-factory.ts to generate test Roadmap objects.\n\nFactory should provide:\n- createRoadmap(overrides?) - Generate roadmap with optional overrides\n- createEmptyRoadmap() - Roadmap with no tasks\n- createSimpleRoadmap() - Roadmap with 3-5 tasks\n- createComplexRoadmap() - Roadmap with dependencies, various statuses, etc.\n\nShould integrate with task-factory.ts to generate realistic task data. This enables testing roadmap-level operations without manual JSON construction.",
       "id": "P-008",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-1", "test-infrastructure", "critical"],
+      "tags": [
+        "phase-1",
+        "test-infrastructure",
+        "critical"
+      ],
       "title": "Create roadmap factory for test data",
       "type": "planning",
       "updatedAt": "2026-01-16T04:00:02.000Z"
@@ -175,14 +192,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:00:03.000Z",
-      "depends-on": ["P-006"],
+      "depends-on": [
+        "P-006"
+      ],
       "details": "Create test/fixtures/config-factory.ts to generate test Config objects (.prtrc.json).\n\nFactory should provide:\n- createConfig(overrides?) - Generate config with optional overrides\n- Default values for roadmapPath, version, etc.\n- Ability to generate configs pointing to temp test directories\n\nThis enables testing of config reading/writing without polluting real config files.",
       "id": "P-009",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-1", "test-infrastructure", "critical"],
+      "tags": [
+        "phase-1",
+        "test-infrastructure",
+        "critical"
+      ],
       "title": "Create config factory for test data",
       "type": "planning",
       "updatedAt": "2026-01-16T04:00:03.000Z"
@@ -190,14 +213,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:00:04.000Z",
-      "depends-on": ["P-006"],
+      "depends-on": [
+        "P-006"
+      ],
       "details": "Create static JSON fixture files in test/fixtures/json/:\n- empty-roadmap.json - Valid roadmap with no tasks\n- simple-roadmap.json - 3-5 tasks, no dependencies\n- complex-roadmap.json - 10+ tasks with dependencies, various statuses, multiple types\n- invalid-roadmap.json - Malformed JSON for error testing\n- circular-deps-roadmap.json - Tasks with circular dependencies\n\nThese fixtures enable testing of file parsing, validation, and edge cases without generating data programmatically.",
       "id": "P-010",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-1", "test-infrastructure", "critical"],
+      "tags": [
+        "phase-1",
+        "test-infrastructure",
+        "critical"
+      ],
       "title": "Create sample JSON fixtures",
       "type": "planning",
       "updatedAt": "2026-01-16T04:00:04.000Z"
@@ -205,14 +234,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:00:05.000Z",
-      "depends-on": ["P-006"],
+      "depends-on": [
+        "P-006"
+      ],
       "details": "Create test/helpers/fs-helpers.ts with utilities for file system testing:\n- createTempDir() - Create temporary test directory\n- cleanupTempDir(path) - Clean up after tests\n- createTempRoadmapFile(roadmap) - Write roadmap to temp file\n- createTempConfigFile(config) - Write config to temp file\n- readTempFile(path) - Read temp file contents\n\nShould integrate with Mocha's beforeEach/afterEach hooks. Essential for testing all file I/O operations without affecting real project files.",
       "id": "P-011",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-1", "test-infrastructure", "critical"],
+      "tags": [
+        "phase-1",
+        "test-infrastructure",
+        "critical"
+      ],
       "title": "Create file system test helpers",
       "type": "planning",
       "updatedAt": "2026-01-16T04:00:05.000Z"
@@ -220,14 +255,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:00:06.000Z",
-      "depends-on": ["P-006"],
+      "depends-on": [
+        "P-006"
+      ],
       "details": "Create test/helpers/assertions.ts with PRT-specific test assertions:\n- assertValidTaskId(id) - Verify TaskID format\n- assertValidTask(task) - Verify complete task structure\n- assertTaskEquals(actual, expected) - Deep comparison ignoring timestamps\n- assertRoadmapValid(roadmap) - Verify roadmap structure\n- assertHasTasks(roadmap, count) - Verify task count\n\nThese helpers make test assertions more readable and reduce boilerplate in test files.",
       "id": "P-012",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-1", "test-infrastructure", "critical"],
+      "tags": [
+        "phase-1",
+        "test-infrastructure",
+        "critical"
+      ],
       "title": "Create custom assertion helpers",
       "type": "planning",
       "updatedAt": "2026-01-16T04:00:06.000Z"
@@ -235,14 +276,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:01:00.000Z",
-      "depends-on": ["P-007"],
+      "depends-on": [
+        "P-007"
+      ],
       "details": "Create test/unit/util/validate-task-id.test.ts with comprehensive tests for TaskID format validation.\n\nTest cases:\n- Valid formats: B-001, F-042, I-999, P-003, R-001\n- Invalid formats: missing dash, wrong prefix, non-numeric, wrong padding\n- Edge cases: boundary numbers (000, 001, 999)\n\nFile: test/unit/util/validate-task-id.test.ts\nTarget: src/util/validate-task-id.ts",
       "id": "P-013",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-2", "unit-tests", "critical"],
+      "tags": [
+        "phase-2",
+        "unit-tests",
+        "critical"
+      ],
       "title": "Unit tests for validate-task-id",
       "type": "planning",
       "updatedAt": "2026-01-16T04:01:00.000Z"
@@ -250,14 +297,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:01:01.000Z",
-      "depends-on": ["P-007"],
+      "depends-on": [
+        "P-007"
+      ],
       "details": "Create test/unit/util/validate-task.test.ts Part 1 - basic field validation.\n\nTest cases:\n- Required fields present (id, title, type, status, priority)\n- Valid enum values (status, priority, type)\n- Field type validation (strings, arrays, booleans)\n- Basic structure validation\n\nFile: test/unit/util/validate-task.test.ts\nTarget: src/util/validate-task.ts",
       "id": "P-014",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-2", "unit-tests", "critical"],
+      "tags": [
+        "phase-2",
+        "unit-tests",
+        "critical"
+      ],
       "title": "Unit tests for validate-task Part 1",
       "type": "planning",
       "updatedAt": "2026-01-16T04:01:01.000Z"
@@ -265,14 +318,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:01:02.000Z",
-      "depends-on": ["P-014"],
+      "depends-on": [
+        "P-014"
+      ],
       "details": "Create test/unit/util/validate-task.test.ts Part 2 - edge cases.\n\nTest cases:\n- Empty strings in required fields\n- Invalid date formats for timestamps\n- Invalid TaskID references in depends-on/blocks arrays\n- Malformed tags arrays\n- Missing optional fields\n\nExtends existing test file: test/unit/util/validate-task.test.ts\nTarget: src/util/validate-task.ts",
       "id": "P-015",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-2", "unit-tests", "critical"],
+      "tags": [
+        "phase-2",
+        "unit-tests",
+        "critical"
+      ],
       "title": "Unit tests for validate-task Part 2",
       "type": "planning",
       "updatedAt": "2026-01-16T04:01:02.000Z"
@@ -280,14 +339,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:01:03.000Z",
-      "depends-on": ["P-007", "P-008"],
+      "depends-on": [
+        "P-007",
+        "P-008"
+      ],
       "details": "Create test/unit/util/update-task.test.ts Part 1 - immutable updates.\n\nTest cases:\n- Task updates don't mutate original\n- updatedAt timestamp is automatically set\n- Partial updates work correctly\n- All fields can be updated\n- Original roadmap unchanged\n\nFile: test/unit/util/update-task.test.ts\nTarget: src/util/update-task.ts",
       "id": "P-016",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-2", "unit-tests", "critical"],
+      "tags": [
+        "phase-2",
+        "unit-tests",
+        "critical"
+      ],
       "title": "Unit tests for update-task Part 1",
       "type": "planning",
       "updatedAt": "2026-01-16T04:01:03.000Z"
@@ -295,14 +361,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:01:04.000Z",
-      "depends-on": ["P-016"],
+      "depends-on": [
+        "P-016"
+      ],
       "details": "Create test/unit/util/update-task.test.ts Part 2 - error cases.\n\nTest cases:\n- Task not found in roadmap\n- Invalid task ID format\n- Empty roadmap\n- Duplicate task IDs (shouldn't happen but test defensive code)\n\nExtends existing test file: test/unit/util/update-task.test.ts\nTarget: src/util/update-task.ts",
       "id": "P-017",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-2", "unit-tests", "critical"],
+      "tags": [
+        "phase-2",
+        "unit-tests",
+        "critical"
+      ],
       "title": "Unit tests for update-task Part 2",
       "type": "planning",
       "updatedAt": "2026-01-16T04:01:04.000Z"
@@ -310,14 +382,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:01:05.000Z",
-      "depends-on": ["P-010", "P-011"],
+      "depends-on": [
+        "P-010",
+        "P-011"
+      ],
       "details": "Create test/unit/util/read-roadmap.test.ts for file reading operations.\n\nTest cases:\n- Read valid roadmap file\n- Parse JSON correctly\n- Handle missing file\n- Handle malformed JSON\n- Handle empty file\n- Read from different paths\n\nFile: test/unit/util/read-roadmap.test.ts\nTarget: src/util/read-roadmap.ts",
       "id": "P-018",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-2", "unit-tests", "critical"],
+      "tags": [
+        "phase-2",
+        "unit-tests",
+        "critical"
+      ],
       "title": "Unit tests for read-roadmap",
       "type": "planning",
       "updatedAt": "2026-01-16T04:01:05.000Z"
@@ -325,14 +404,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:01:06.000Z",
-      "depends-on": ["P-008", "P-011"],
+      "depends-on": [
+        "P-008",
+        "P-011"
+      ],
       "details": "Create test/unit/util/write-roadmap.test.ts for file writing operations.\n\nTest cases:\n- Write valid roadmap to file\n- Serialize to JSON correctly\n- Handle write errors (permissions, disk full simulation)\n- Overwrite existing file\n- Create parent directories if needed\n- Preserve JSON formatting\n\nFile: test/unit/util/write-roadmap.test.ts\nTarget: src/util/write-roadmap.ts",
       "id": "P-019",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-2", "unit-tests", "critical"],
+      "tags": [
+        "phase-2",
+        "unit-tests",
+        "critical"
+      ],
       "title": "Unit tests for write-roadmap",
       "type": "planning",
       "updatedAt": "2026-01-16T04:01:06.000Z"
@@ -340,14 +426,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:01:07.000Z",
-      "depends-on": ["P-009", "P-011"],
+      "depends-on": [
+        "P-009",
+        "P-011"
+      ],
       "details": "Create test/unit/util/read-config.test.ts for config reading operations.\n\nTest cases:\n- Read valid .prtrc.json file\n- Parse config correctly\n- Handle missing config file\n- Handle malformed config JSON\n- Default values when config incomplete\n- Search parent directories for config\n\nFile: test/unit/util/read-config.test.ts\nTarget: src/util/read-config.ts",
       "id": "P-020",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-2", "unit-tests", "critical"],
+      "tags": [
+        "phase-2",
+        "unit-tests",
+        "critical"
+      ],
       "title": "Unit tests for read-config",
       "type": "planning",
       "updatedAt": "2026-01-16T04:01:07.000Z"
@@ -355,14 +448,23 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:02:00.000Z",
-      "depends-on": ["P-007", "P-013", "P-014", "P-015"],
+      "depends-on": [
+        "P-007",
+        "P-013",
+        "P-014",
+        "P-015"
+      ],
       "details": "Design TaskService interface and create src/services/task.service.ts.\n\nInterface should include:\n- generateNextId(roadmap, taskType) - ID generation algorithm\n- createTask(data) - Create new task object\n- addTask(roadmap, task) - Add task to roadmap\n- findTask(roadmap, taskId) - Find task by ID\n- updateTask(roadmap, taskId, updates) - Update existing task\n\nDocument all methods with JSDoc. This will be the core service for task operations.\n\nFile: src/services/task.service.ts",
       "id": "P-021",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-3", "service-layer", "high-priority"],
+      "tags": [
+        "phase-3",
+        "service-layer",
+        "high-priority"
+      ],
       "title": "Design TaskService interface",
       "type": "planning",
       "updatedAt": "2026-01-16T04:02:00.000Z"
@@ -370,14 +472,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:02:01.000Z",
-      "depends-on": ["P-021"],
+      "depends-on": [
+        "P-021"
+      ],
       "details": "Extract ID generation algorithm from src/commands/add.ts:53-66 to TaskService.\n\nImplement generateNextId() method:\n- Takes roadmap and task type as inputs\n- Finds existing IDs for that type\n- Returns next available ID (fills gaps, e.g., if B-001, B-003 exist, returns B-002)\n- Handles edge cases: empty roadmap, all IDs taken up to 999\n\nMove logic from add.ts lines 53-66 to src/services/task.service.ts\nEnsure add.ts still works by calling the service method.",
       "id": "P-022",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-3", "service-layer", "high-priority"],
+      "tags": [
+        "phase-3",
+        "service-layer",
+        "high-priority"
+      ],
       "title": "Extract ID generation from add command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:02:01.000Z"
@@ -385,14 +493,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:02:02.000Z",
-      "depends-on": ["P-022"],
+      "depends-on": [
+        "P-022"
+      ],
       "details": "Create test/unit/services/task.service.test.ts Part 1 - basic ID generation.\n\nTest cases:\n- First ID is X-001 (where X is type prefix)\n- Sequential IDs: B-001, B-002, B-003\n- Different types don't interfere: B-001, F-001, P-001 can coexist\n- IDs are zero-padded correctly\n\nFile: test/unit/services/task.service.test.ts\nTarget: src/services/task.service.ts",
       "id": "P-023",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-3", "unit-tests", "high-priority"],
+      "tags": [
+        "phase-3",
+        "unit-tests",
+        "high-priority"
+      ],
       "title": "Unit tests for ID generation Part 1",
       "type": "planning",
       "updatedAt": "2026-01-16T04:02:02.000Z"
@@ -400,14 +514,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:02:03.000Z",
-      "depends-on": ["P-023"],
+      "depends-on": [
+        "P-023"
+      ],
       "details": "Extend test/unit/services/task.service.test.ts Part 2 - edge cases and gap filling.\n\nTest cases:\n- Gap filling: if B-001, B-003 exist, next ID is B-002\n- Handle deleted tasks (gaps in sequence)\n- Maximum ID boundary (999)\n- Empty roadmap edge case\n- Multiple gaps: B-001, B-005, B-010 -> next is B-002\n\nExtends existing test file: test/unit/services/task.service.test.ts\nTarget: src/services/task.service.ts",
       "id": "P-024",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-3", "unit-tests", "high-priority"],
+      "tags": [
+        "phase-3",
+        "unit-tests",
+        "high-priority"
+      ],
       "title": "Unit tests for ID generation Part 2",
       "type": "planning",
       "updatedAt": "2026-01-16T04:02:03.000Z"
@@ -415,14 +535,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:02:04.000Z",
-      "depends-on": ["P-022"],
+      "depends-on": [
+        "P-022"
+      ],
       "details": "Implement createTask() and addTask() methods in TaskService.\n\ncreateTask():\n- Takes task data (title, details, type, etc.)\n- Generates task ID using generateNextId()\n- Sets timestamps (createdAt, updatedAt)\n- Sets defaults for optional fields\n- Returns complete Task object\n\naddTask():\n- Takes roadmap and task object\n- Validates task\n- Adds to roadmap.tasks array\n- Returns updated roadmap\n\nFile: src/services/task.service.ts",
       "id": "P-025",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-3", "service-layer", "high-priority"],
+      "tags": [
+        "phase-3",
+        "service-layer",
+        "high-priority"
+      ],
       "title": "Implement createTask and addTask methods",
       "type": "planning",
       "updatedAt": "2026-01-16T04:02:04.000Z"
@@ -430,14 +556,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:02:05.000Z",
-      "depends-on": ["P-025"],
+      "depends-on": [
+        "P-025"
+      ],
       "details": "Create tests for createTask() and addTask() methods.\n\nTest cases:\n- createTask generates valid task object\n- All required fields populated\n- Timestamps set correctly\n- addTask adds task to roadmap\n- Roadmap immutability\n- Validation runs during creation\n\nExtends existing test file: test/unit/services/task.service.test.ts\nTarget: src/services/task.service.ts",
       "id": "P-026",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-3", "unit-tests", "high-priority"],
+      "tags": [
+        "phase-3",
+        "unit-tests",
+        "high-priority"
+      ],
       "title": "Unit tests for task creation methods",
       "type": "planning",
       "updatedAt": "2026-01-16T04:02:05.000Z"
@@ -445,14 +577,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:02:06.000Z",
-      "depends-on": ["P-025", "P-026"],
+      "depends-on": [
+        "P-025",
+        "P-026"
+      ],
       "details": "Refactor src/commands/add.ts to use TaskService instead of inline logic.\n\nChanges:\n- Import TaskService\n- Replace lines 53-82 with TaskService method calls\n- Call createTask() to build task object\n- Call addTask() to add to roadmap\n- Reduce add.ts from ~42 LOC to ~10 LOC\n- Ensure all existing functionality preserved\n\nFile: src/commands/add.ts\nRun integration tests after to verify no regressions.",
       "id": "P-027",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-3", "service-layer", "high-priority"],
+      "tags": [
+        "phase-3",
+        "service-layer",
+        "high-priority"
+      ],
       "title": "Refactor add command to use TaskService",
       "type": "planning",
       "updatedAt": "2026-01-16T04:02:06.000Z"
@@ -460,14 +599,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:03:00.000Z",
-      "depends-on": ["P-018", "P-019"],
+      "depends-on": [
+        "P-018",
+        "P-019"
+      ],
       "details": "Design RoadmapService interface and create src/services/roadmap.service.ts.\n\nInterface should include:\n- load(path) - Read roadmap from file\n- save(path, roadmap) - Write roadmap to file\n- validate(roadmap) - Validate roadmap structure\n- getStats(roadmap) - Get roadmap statistics (task counts by status, type, etc.)\n\nThis service abstracts all file I/O and roadmap-level operations.\n\nFile: src/services/roadmap.service.ts",
       "id": "P-028",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-4", "service-layer", "high-priority"],
+      "tags": [
+        "phase-4",
+        "service-layer",
+        "high-priority"
+      ],
       "title": "Design RoadmapService interface",
       "type": "planning",
       "updatedAt": "2026-01-16T04:03:00.000Z"
@@ -475,14 +621,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:03:01.000Z",
-      "depends-on": ["P-028"],
+      "depends-on": [
+        "P-028"
+      ],
       "details": "Implement load() and save() methods in RoadmapService.\n\nload():\n- Wraps readRoadmapFile() utility\n- Adds error handling\n- Returns validated Roadmap object\n\nsave():\n- Wraps writeRoadmapFile() utility\n- Validates before writing\n- Adds error handling\n\nFile: src/services/roadmap.service.ts",
       "id": "P-029",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-4", "service-layer", "high-priority"],
+      "tags": [
+        "phase-4",
+        "service-layer",
+        "high-priority"
+      ],
       "title": "Implement load and save methods",
       "type": "planning",
       "updatedAt": "2026-01-16T04:03:01.000Z"
@@ -490,14 +642,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:03:02.000Z",
-      "depends-on": ["P-029"],
+      "depends-on": [
+        "P-029"
+      ],
       "details": "Create test/unit/services/roadmap.service.test.ts for I/O methods.\n\nTest cases:\n- load() reads file correctly\n- save() writes file correctly\n- Error handling for missing files\n- Error handling for malformed JSON\n- Validation runs before save\n- File permissions errors handled\n\nFile: test/unit/services/roadmap.service.test.ts\nTarget: src/services/roadmap.service.ts",
       "id": "P-030",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-4", "unit-tests", "high-priority"],
+      "tags": [
+        "phase-4",
+        "unit-tests",
+        "high-priority"
+      ],
       "title": "Unit tests for I/O methods",
       "type": "planning",
       "updatedAt": "2026-01-16T04:03:02.000Z"
@@ -505,14 +663,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:03:03.000Z",
-      "depends-on": ["P-029"],
+      "depends-on": [
+        "P-029"
+      ],
       "details": "Implement validate() orchestration method in RoadmapService.\n\nvalidate():\n- Check roadmap structure (metadata, tasks array)\n- Validate each task using validateTask utility\n- Check for duplicate task IDs\n- Validate TaskID references in depends-on/blocks\n- Return validation errors array or success\n\nFile: src/services/roadmap.service.ts",
       "id": "P-031",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-4", "service-layer", "high-priority"],
+      "tags": [
+        "phase-4",
+        "service-layer",
+        "high-priority"
+      ],
       "title": "Implement validate orchestration",
       "type": "planning",
       "updatedAt": "2026-01-16T04:03:03.000Z"
@@ -520,14 +684,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:03:04.000Z",
-      "depends-on": ["P-031"],
+      "depends-on": [
+        "P-031"
+      ],
       "details": "Create tests for roadmap validation method.\n\nTest cases:\n- Valid roadmap passes validation\n- Invalid task structure caught\n- Duplicate task IDs detected\n- Invalid TaskID references in dependencies caught\n- Missing metadata fields caught\n- Returns detailed error messages\n\nExtends existing test file: test/unit/services/roadmap.service.test.ts\nTarget: src/services/roadmap.service.ts",
       "id": "P-032",
       "notes": "",
       "passes-tests": false,
       "priority": "high",
       "status": "not-started",
-      "tags": ["phase-4", "unit-tests", "high-priority"],
+      "tags": [
+        "phase-4",
+        "unit-tests",
+        "high-priority"
+      ],
       "title": "Unit tests for roadmap validation",
       "type": "planning",
       "updatedAt": "2026-01-16T04:03:04.000Z"
@@ -535,14 +705,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:04:00.000Z",
-      "depends-on": ["P-008"],
+      "depends-on": [
+        "P-008"
+      ],
       "details": "Design TaskQueryService interface and create src/services/task-query.service.ts.\n\nInterface should include:\n- filter(tasks, criteria) - Filter tasks by status, type, priority, tags, etc.\n- sort(tasks, field, order) - Sort by dueDate, priority, createdAt, etc.\n- search(tasks, query) - Search in title/details\n- getByStatus(tasks, status) - Get tasks by status\n- getByType(tasks, type) - Get tasks by type\n\nFile: src/services/task-query.service.ts",
       "id": "P-033",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-5", "service-layer", "medium-priority"],
+      "tags": [
+        "phase-5",
+        "service-layer",
+        "medium-priority"
+      ],
       "title": "Design TaskQueryService interface",
       "type": "planning",
       "updatedAt": "2026-01-16T04:04:00.000Z"
@@ -550,14 +726,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:04:01.000Z",
-      "depends-on": ["P-033"],
+      "depends-on": [
+        "P-033"
+      ],
       "details": "Implement filter() method in TaskQueryService.\n\nfilter():\n- Accept FilterCriteria object (status, type, priority, tags, etc.)\n- Support multiple simultaneous filters\n- AND logic for multiple criteria\n- Support tag filtering (has any of, has all of)\n- Return filtered task array\n\nExtract filtering logic from src/commands/list.ts (if any exists).\n\nFile: src/services/task-query.service.ts",
       "id": "P-034",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-5", "service-layer", "medium-priority"],
+      "tags": [
+        "phase-5",
+        "service-layer",
+        "medium-priority"
+      ],
       "title": "Implement filter method",
       "type": "planning",
       "updatedAt": "2026-01-16T04:04:01.000Z"
@@ -565,14 +747,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:04:02.000Z",
-      "depends-on": ["P-034"],
+      "depends-on": [
+        "P-034"
+      ],
       "details": "Create test/unit/services/task-query.service.test.ts for filtering.\n\nTest cases:\n- Filter by status (not-started, in-progress, completed)\n- Filter by type (bug, feature, improvement, planning, research)\n- Filter by priority (high, medium, low)\n- Filter by tags (single tag, multiple tags)\n- Multiple filters simultaneously\n- Empty results when no matches\n- All tasks returned when no filters\n\nFile: test/unit/services/task-query.service.test.ts\nTarget: src/services/task-query.service.ts",
       "id": "P-035",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-5", "unit-tests", "medium-priority"],
+      "tags": [
+        "phase-5",
+        "unit-tests",
+        "medium-priority"
+      ],
       "title": "Unit tests for filtering",
       "type": "planning",
       "updatedAt": "2026-01-16T04:04:02.000Z"
@@ -580,14 +768,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:04:03.000Z",
-      "depends-on": ["P-034"],
+      "depends-on": [
+        "P-034"
+      ],
       "details": "Implement sort() method in TaskQueryService.\n\nsort():\n- Support sort by: dueDate, priority, createdAt, updatedAt, id\n- Support ascending/descending order\n- Priority sort order: high > medium > low\n- Handle missing/null values\n- Stable sort\n\nFile: src/services/task-query.service.ts",
       "id": "P-036",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-5", "service-layer", "medium-priority"],
+      "tags": [
+        "phase-5",
+        "service-layer",
+        "medium-priority"
+      ],
       "title": "Implement sort method",
       "type": "planning",
       "updatedAt": "2026-01-16T04:04:03.000Z"
@@ -595,14 +789,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:04:04.000Z",
-      "depends-on": ["P-036"],
+      "depends-on": [
+        "P-036"
+      ],
       "details": "Create tests for sorting functionality.\n\nTest cases:\n- Sort by priority (high > medium > low)\n- Sort by createdAt (ascending, descending)\n- Sort by updatedAt (ascending, descending)\n- Sort by id (lexicographic)\n- Handle missing fields gracefully\n- Stable sort behavior\n\nExtends existing test file: test/unit/services/task-query.service.test.ts\nTarget: src/services/task-query.service.ts",
       "id": "P-037",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-5", "unit-tests", "medium-priority"],
+      "tags": [
+        "phase-5",
+        "unit-tests",
+        "medium-priority"
+      ],
       "title": "Unit tests for sorting",
       "type": "planning",
       "updatedAt": "2026-01-16T04:04:04.000Z"
@@ -610,14 +810,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:04:05.000Z",
-      "depends-on": ["P-034", "P-036"],
+      "depends-on": [
+        "P-034",
+        "P-036"
+      ],
       "details": "Refactor src/commands/list.ts to use TaskQueryService.\n\nChanges:\n- Import TaskQueryService\n- Replace inline filtering logic with service.filter()\n- Replace inline sorting logic with service.sort()\n- Reduce list.ts complexity significantly\n- Ensure all existing flags still work\n- Maintain current output format\n\nFile: src/commands/list.ts\nTest manually after refactoring.",
       "id": "P-038",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-5", "service-layer", "medium-priority"],
+      "tags": [
+        "phase-5",
+        "service-layer",
+        "medium-priority"
+      ],
       "title": "Refactor list command to use TaskQueryService",
       "type": "planning",
       "updatedAt": "2026-01-16T04:04:05.000Z"
@@ -625,14 +832,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:05:00.000Z",
-      "depends-on": ["P-008"],
+      "depends-on": [
+        "P-008"
+      ],
       "details": "Design TaskDependencyService interface and create src/services/task-dependency.service.ts.\n\nInterface should include:\n- buildGraph(tasks) - Build dependency graph\n- detectCircular(tasks) - Detect circular dependencies\n- validateDependencies(roadmap) - Full dependency validation\n- getBlockedTasks(task) - Get tasks blocked by this task\n- getDependsOnTasks(task) - Get tasks this task depends on\n- topologicalSort(tasks) - Sort tasks by dependency order (Phase 10)\n\nFile: src/services/task-dependency.service.ts",
       "id": "P-039",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-6", "service-layer", "medium-priority"],
+      "tags": [
+        "phase-6",
+        "service-layer",
+        "medium-priority"
+      ],
       "title": "Design TaskDependencyService interface",
       "type": "planning",
       "updatedAt": "2026-01-16T04:05:00.000Z"
@@ -640,14 +853,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:05:01.000Z",
-      "depends-on": ["P-039"],
+      "depends-on": [
+        "P-039"
+      ],
       "details": "Implement buildGraph() method for dependency graph construction.\n\nbuildGraph():\n- Create adjacency list representation\n- Map each task ID to its dependencies\n- Include both depends-on and blocks relationships\n- Return graph structure for analysis\n\nFile: src/services/task-dependency.service.ts",
       "id": "P-040",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-6", "service-layer", "medium-priority"],
+      "tags": [
+        "phase-6",
+        "service-layer",
+        "medium-priority"
+      ],
       "title": "Implement buildGraph method",
       "type": "planning",
       "updatedAt": "2026-01-16T04:05:01.000Z"
@@ -655,14 +874,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:05:02.000Z",
-      "depends-on": ["P-040"],
+      "depends-on": [
+        "P-040"
+      ],
       "details": "Create test/unit/services/task-dependency.service.test.ts for graph building.\n\nTest cases:\n- Build graph from simple dependencies\n- Handle tasks with no dependencies\n- Build graph with blocks relationships\n- Build graph with both depends-on and blocks\n- Handle empty task list\n- Graph structure is correct (adjacency list)\n\nFile: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-041",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-6", "unit-tests", "medium-priority"],
+      "tags": [
+        "phase-6",
+        "unit-tests",
+        "medium-priority"
+      ],
       "title": "Unit tests for graph building",
       "type": "planning",
       "updatedAt": "2026-01-16T04:05:02.000Z"
@@ -670,14 +895,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:05:03.000Z",
-      "depends-on": ["P-040"],
+      "depends-on": [
+        "P-040"
+      ],
       "details": "Implement detectCircular() method using DFS algorithm.\n\ndetectCircular():\n- Use depth-first search with visited/visiting states\n- Detect back edges (cycles)\n- Return cycle path if found\n- Support both depends-on and blocks relationships\n- Implement as described in ARCHITECTURE.md\n\nAlgorithm: Three-color DFS (white/gray/black nodes).\n\nFile: src/services/task-dependency.service.ts",
       "id": "P-042",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-6", "service-layer", "medium-priority"],
+      "tags": [
+        "phase-6",
+        "service-layer",
+        "medium-priority"
+      ],
       "title": "Implement detectCircular method",
       "type": "planning",
       "updatedAt": "2026-01-16T04:05:03.000Z"
@@ -685,14 +916,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:05:04.000Z",
-      "depends-on": ["P-042"],
+      "depends-on": [
+        "P-042"
+      ],
       "details": "Create tests for circular dependency detection - basic cases.\n\nTest cases:\n- No circular dependencies (valid graph)\n- Simple cycle: A -> B -> A\n- Three-node cycle: A -> B -> C -> A\n- Self-dependency: A -> A\n- Multiple independent cycles\n\nExtends existing test file: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-043",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-6", "unit-tests", "medium-priority"],
+      "tags": [
+        "phase-6",
+        "unit-tests",
+        "medium-priority"
+      ],
       "title": "Unit tests for circular detection - basic",
       "type": "planning",
       "updatedAt": "2026-01-16T04:05:04.000Z"
@@ -700,14 +937,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:05:05.000Z",
-      "depends-on": ["P-043"],
+      "depends-on": [
+        "P-043"
+      ],
       "details": "Create tests for circular dependency detection - advanced edge cases.\n\nTest cases:\n- Cycle with long path: A -> B -> C -> D -> E -> C\n- Cycle in one branch of complex graph\n- Blocks relationship creates cycle\n- Mixed depends-on and blocks create cycle\n- No cycle but diamond dependency (A -> B,C -> D)\n\nExtends existing test file: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-044",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-6", "unit-tests", "medium-priority"],
+      "tags": [
+        "phase-6",
+        "unit-tests",
+        "medium-priority"
+      ],
       "title": "Unit tests for circular detection - advanced",
       "type": "planning",
       "updatedAt": "2026-01-16T04:05:05.000Z"
@@ -715,14 +958,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:05:06.000Z",
-      "depends-on": ["P-042"],
+      "depends-on": [
+        "P-042"
+      ],
       "details": "Implement validateDependencies() for full dependency validation.\n\nvalidateDependencies():\n- Check all TaskID references exist in roadmap\n- Check for circular dependencies using detectCircular()\n- Check blocks/depends-on are bidirectional if expected\n- Return detailed validation errors\n- Integrate with RoadmapService.validate()\n\nFile: src/services/task-dependency.service.ts",
       "id": "P-045",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-6", "service-layer", "medium-priority"],
+      "tags": [
+        "phase-6",
+        "service-layer",
+        "medium-priority"
+      ],
       "title": "Implement validateDependencies method",
       "type": "planning",
       "updatedAt": "2026-01-16T04:05:06.000Z"
@@ -730,14 +979,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:05:07.000Z",
-      "depends-on": ["P-045"],
+      "depends-on": [
+        "P-045"
+      ],
       "details": "Create tests for full dependency validation.\n\nTest cases:\n- All dependency references valid\n- Invalid TaskID reference caught\n- Circular dependency caught\n- Missing task in depends-on array\n- Missing task in blocks array\n- Validation returns all errors at once\n\nExtends existing test file: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-046",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-6", "unit-tests", "medium-priority"],
+      "tags": [
+        "phase-6",
+        "unit-tests",
+        "medium-priority"
+      ],
       "title": "Unit tests for full dependency validation",
       "type": "planning",
       "updatedAt": "2026-01-16T04:05:07.000Z"
@@ -745,14 +1000,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:05:08.000Z",
-      "depends-on": ["P-045", "P-031"],
+      "depends-on": [
+        "P-045",
+        "P-031"
+      ],
       "details": "Enhance src/commands/validate.ts with circular dependency checking.\n\nChanges:\n- Import TaskDependencyService\n- Call validateDependencies() during validation\n- Display circular dependency errors clearly\n- Show cycle path if found (e.g., \"A -> B -> C -> A\")\n- Integrate with existing validation output\n\nFile: src/commands/validate.ts\nTest with circular-deps-roadmap.json fixture.",
       "id": "P-047",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-6", "service-layer", "medium-priority"],
+      "tags": [
+        "phase-6",
+        "service-layer",
+        "medium-priority"
+      ],
       "title": "Enhance validate command with circular detection",
       "type": "planning",
       "updatedAt": "2026-01-16T04:05:08.000Z"
@@ -767,7 +1029,11 @@
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-7", "service-layer", "low-priority"],
+      "tags": [
+        "phase-7",
+        "service-layer",
+        "low-priority"
+      ],
       "title": "Create DisplayService",
       "type": "planning",
       "updatedAt": "2026-01-16T04:06:00.000Z"
@@ -775,14 +1041,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:06:01.000Z",
-      "depends-on": ["P-048"],
+      "depends-on": [
+        "P-048"
+      ],
       "details": "Extract display logic from src/commands/list.ts to DisplayService.\n\nChanges:\n- Move formatting code to DisplayService.formatTaskList()\n- Update list.ts to call DisplayService methods\n- Support existing output formats (table, json, compact)\n- Ensure output looks identical to current format\n\nFiles: src/commands/list.ts, src/services/display.service.ts",
       "id": "P-049",
       "notes": "",
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-7", "service-layer", "low-priority"],
+      "tags": [
+        "phase-7",
+        "service-layer",
+        "low-priority"
+      ],
       "title": "Extract display logic from list command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:06:01.000Z"
@@ -790,14 +1062,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:06:02.000Z",
-      "depends-on": ["P-048"],
+      "depends-on": [
+        "P-048"
+      ],
       "details": "Create test/unit/services/display.service.test.ts.\n\nTest cases:\n- formatTask produces expected output\n- formatTaskList handles different display modes\n- JSON output is valid JSON\n- Table output has correct columns\n- Compact output is concise\n- Handle empty task lists\n\nFile: test/unit/services/display.service.test.ts\nTarget: src/services/display.service.ts",
       "id": "P-050",
       "notes": "",
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-7", "unit-tests", "low-priority"],
+      "tags": [
+        "phase-7",
+        "unit-tests",
+        "low-priority"
+      ],
       "title": "Unit tests for display formatting",
       "type": "planning",
       "updatedAt": "2026-01-16T04:06:02.000Z"
@@ -805,14 +1083,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:07:00.000Z",
-      "depends-on": ["P-010", "P-011"],
+      "depends-on": [
+        "P-010",
+        "P-011"
+      ],
       "details": "Create test/helpers/command-runner.ts for command testing.\n\nHelper should provide:\n- runCommand(commandClass, args, flags) - Execute command\n- captureOutput() - Capture stdout/stderr\n- withTempRoadmap(roadmap, callback) - Run test with temp roadmap\n- assertCommandSuccess() - Assert command succeeded\n- assertCommandError() - Assert command failed with expected error\n\nFile: test/helpers/command-runner.ts\nThis enables integration testing of commands.",
       "id": "P-051",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-8", "integration-tests", "medium-priority"],
+      "tags": [
+        "phase-8",
+        "integration-tests",
+        "medium-priority"
+      ],
       "title": "Create command runner helper",
       "type": "planning",
       "updatedAt": "2026-01-16T04:07:00.000Z"
@@ -820,14 +1105,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:07:01.000Z",
-      "depends-on": ["P-051"],
+      "depends-on": [
+        "P-051"
+      ],
       "details": "Create test/commands/init.test.ts for init command integration tests.\n\nReplace stub tests with:\n- Init creates .prtrc.json\n- Init creates prt.json\n- Init fails if files already exist\n- Init with custom path works\n- Files have correct structure\n\nFile: test/commands/init.test.ts\nTarget: src/commands/init.ts",
       "id": "P-052",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-8", "integration-tests", "medium-priority"],
+      "tags": [
+        "phase-8",
+        "integration-tests",
+        "medium-priority"
+      ],
       "title": "Integration tests for init command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:07:01.000Z"
@@ -835,14 +1126,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:07:02.000Z",
-      "depends-on": ["P-051", "P-027"],
+      "depends-on": [
+        "P-051",
+        "P-027"
+      ],
       "details": "Create test/commands/add.test.ts for add command integration tests.\n\nReplace stub tests with:\n- Add creates task with correct ID\n- Add generates sequential IDs\n- Add fills gaps in ID sequence\n- Add with all flags works correctly\n- Add validates input\n- Task appears in roadmap file\n\nFile: test/commands/add.test.ts\nTarget: src/commands/add.ts",
       "id": "P-053",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-8", "integration-tests", "medium-priority"],
+      "tags": [
+        "phase-8",
+        "integration-tests",
+        "medium-priority"
+      ],
       "title": "Integration tests for add command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:07:02.000Z"
@@ -850,14 +1148,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:07:03.000Z",
-      "depends-on": ["P-051", "P-038"],
+      "depends-on": [
+        "P-051",
+        "P-038"
+      ],
       "details": "Create test/commands/list.test.ts for list command integration tests.\n\nReplace stub tests with:\n- List displays all tasks\n- Filter by status works\n- Filter by type works\n- Filter by priority works\n- Filter by tags works\n- Sort options work\n- Empty roadmap handled gracefully\n\nFile: test/commands/list.test.ts\nTarget: src/commands/list.ts",
       "id": "P-054",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-8", "integration-tests", "medium-priority"],
+      "tags": [
+        "phase-8",
+        "integration-tests",
+        "medium-priority"
+      ],
       "title": "Integration tests for list command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:07:03.000Z"
@@ -865,14 +1170,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:07:04.000Z",
-      "depends-on": ["P-051"],
+      "depends-on": [
+        "P-051"
+      ],
       "details": "Create test/commands/update.test.ts for update command integration tests.\n\nReplace stub tests with:\n- Update changes task fields\n- Update sets updatedAt timestamp\n- Update validates changes\n- Update with invalid task ID fails\n- Multiple fields can be updated at once\n- Original task immutability\n\nFile: test/commands/update.test.ts\nTarget: src/commands/update.ts",
       "id": "P-055",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-8", "integration-tests", "medium-priority"],
+      "tags": [
+        "phase-8",
+        "integration-tests",
+        "medium-priority"
+      ],
       "title": "Integration tests for update command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:07:04.000Z"
@@ -880,14 +1191,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:07:05.000Z",
-      "depends-on": ["P-051"],
+      "depends-on": [
+        "P-051"
+      ],
       "details": "Create test/commands/complete.test.ts for complete command integration tests.\n\nReplace stub tests with:\n- Complete sets status to completed\n- Complete sets passes-tests to true\n- Complete updates timestamp\n- Complete with invalid task ID fails\n- Complete already-completed task is idempotent\n\nFile: test/commands/complete.test.ts\nTarget: src/commands/complete.ts",
       "id": "P-056",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-8", "integration-tests", "medium-priority"],
+      "tags": [
+        "phase-8",
+        "integration-tests",
+        "medium-priority"
+      ],
       "title": "Integration tests for complete command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:07:05.000Z"
@@ -895,14 +1212,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:07:06.000Z",
-      "depends-on": ["P-051"],
+      "depends-on": [
+        "P-051"
+      ],
       "details": "Create test/commands/pass-test.test.ts for pass-test command integration tests.\n\nReplace stub tests with:\n- Pass-test sets passes-tests to true\n- Pass-test updates timestamp\n- Pass-test with invalid task ID fails\n- Pass-test already-passing task is idempotent\n\nFile: test/commands/pass-test.test.ts\nTarget: src/commands/pass-test.ts",
       "id": "P-057",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-8", "integration-tests", "medium-priority"],
+      "tags": [
+        "phase-8",
+        "integration-tests",
+        "medium-priority"
+      ],
       "title": "Integration tests for pass-test command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:07:06.000Z"
@@ -910,14 +1233,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:07:07.000Z",
-      "depends-on": ["P-051"],
+      "depends-on": [
+        "P-051"
+      ],
       "details": "Create test/commands/show.test.ts for show command integration tests.\n\nReplace stub tests with:\n- Show displays single task\n- Show with invalid task ID fails\n- Show displays all task fields\n- Show formatting is correct\n\nFile: test/commands/show.test.ts\nTarget: src/commands/show.ts",
       "id": "P-058",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-8", "integration-tests", "medium-priority"],
+      "tags": [
+        "phase-8",
+        "integration-tests",
+        "medium-priority"
+      ],
       "title": "Integration tests for show command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:07:07.000Z"
@@ -925,14 +1254,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:07:08.000Z",
-      "depends-on": ["P-051", "P-047"],
+      "depends-on": [
+        "P-051",
+        "P-047"
+      ],
       "details": "Create test/commands/validate.test.ts for validate command integration tests.\n\nReplace stub tests with:\n- Validate passes for valid roadmap\n- Validate catches invalid tasks\n- Validate catches circular dependencies\n- Validate catches duplicate task IDs\n- Validate catches invalid TaskID references\n- Validate displays all errors\n\nFile: test/commands/validate.test.ts\nTarget: src/commands/validate.ts",
       "id": "P-059",
       "notes": "",
       "passes-tests": false,
       "priority": "medium",
       "status": "not-started",
-      "tags": ["phase-8", "integration-tests", "medium-priority"],
+      "tags": [
+        "phase-8",
+        "integration-tests",
+        "medium-priority"
+      ],
       "title": "Integration tests for validate command",
       "type": "planning",
       "updatedAt": "2026-01-16T04:07:08.000Z"
@@ -947,7 +1283,11 @@
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-9", "error-handling", "low-priority"],
+      "tags": [
+        "phase-9",
+        "error-handling",
+        "low-priority"
+      ],
       "title": "Create custom error classes",
       "type": "planning",
       "updatedAt": "2026-01-16T04:08:00.000Z"
@@ -955,14 +1295,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:08:01.000Z",
-      "depends-on": ["P-060"],
+      "depends-on": [
+        "P-060"
+      ],
       "details": "Create error utilities and exit codes in src/errors/error-handler.ts.\n\nUtilities:\n- handleError(error) - Central error handler\n- Exit codes enum (SUCCESS=0, INVALID_INPUT=1, NOT_FOUND=2, etc.)\n- formatErrorMessage(error) - Format for display\n- isRecoverableError(error) - Check if error is recoverable\n\nFile: src/errors/error-handler.ts",
       "id": "P-061",
       "notes": "",
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-9", "error-handling", "low-priority"],
+      "tags": [
+        "phase-9",
+        "error-handling",
+        "low-priority"
+      ],
       "title": "Create error utilities and exit codes",
       "type": "planning",
       "updatedAt": "2026-01-16T04:08:01.000Z"
@@ -970,14 +1316,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:08:02.000Z",
-      "depends-on": ["P-060"],
+      "depends-on": [
+        "P-060"
+      ],
       "details": "Update all service methods to throw custom errors instead of generic Error.\n\nChanges:\n- TaskService throws TaskNotFoundError, InvalidTaskError\n- RoadmapService throws RoadmapNotFoundError\n- TaskDependencyService throws CircularDependencyError\n- All services throw ValidationError for validation failures\n\nFiles: All files in src/services/",
       "id": "P-062",
       "notes": "",
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-9", "error-handling", "low-priority"],
+      "tags": [
+        "phase-9",
+        "error-handling",
+        "low-priority"
+      ],
       "title": "Update services to use custom errors",
       "type": "planning",
       "updatedAt": "2026-01-16T04:08:02.000Z"
@@ -985,14 +1337,21 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:08:03.000Z",
-      "depends-on": ["P-061", "P-062"],
+      "depends-on": [
+        "P-061",
+        "P-062"
+      ],
       "details": "Update all commands to use centralized error handler.\n\nChanges:\n- Wrap command logic in try-catch\n- Call handleError() for all errors\n- Use appropriate exit codes\n- Format error messages consistently\n- Add --verbose flag for stack traces (optional)\n\nFiles: All files in src/commands/",
       "id": "P-063",
       "notes": "",
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-9", "error-handling", "low-priority"],
+      "tags": [
+        "phase-9",
+        "error-handling",
+        "low-priority"
+      ],
       "title": "Update commands to use error handler",
       "type": "planning",
       "updatedAt": "2026-01-16T04:08:03.000Z"
@@ -1000,14 +1359,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:09:00.000Z",
-      "depends-on": ["P-042"],
+      "depends-on": [
+        "P-042"
+      ],
       "details": "Add topological sort to TaskDependencyService.\n\ntopologicalSort():\n- Use Kahn's algorithm or DFS-based topological sort\n- Returns tasks in dependency order (dependencies first)\n- Throws error if circular dependency exists\n- Useful for executing tasks in correct order\n\nFile: src/services/task-dependency.service.ts\nThis is a future enhancement for task execution ordering.",
       "id": "P-064",
       "notes": "",
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-10", "advanced-features", "future"],
+      "tags": [
+        "phase-10",
+        "advanced-features",
+        "future"
+      ],
       "title": "Add topological sort to TaskDependencyService",
       "type": "planning",
       "updatedAt": "2026-01-16T04:09:00.000Z"
@@ -1015,14 +1380,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:09:01.000Z",
-      "depends-on": ["P-064"],
+      "depends-on": [
+        "P-064"
+      ],
       "details": "Create tests for topological sort functionality.\n\nTest cases:\n- Simple linear dependency chain sorted correctly\n- Parallel tasks (no dependencies) can be in any order\n- Diamond dependency handled correctly\n- Complex graph sorted correctly\n- Circular dependency throws error\n\nExtends existing test file: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-065",
       "notes": "",
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-10", "unit-tests", "future"],
+      "tags": [
+        "phase-10",
+        "unit-tests",
+        "future"
+      ],
       "title": "Unit tests for topological sort",
       "type": "planning",
       "updatedAt": "2026-01-16T04:09:01.000Z"
@@ -1030,14 +1401,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:09:02.000Z",
-      "depends-on": ["P-029"],
+      "depends-on": [
+        "P-029"
+      ],
       "details": "Create RoadmapRepository with caching layer.\n\nFeatures:\n- Cache loaded roadmaps in memory\n- Invalidate cache on write\n- LRU cache with configurable size\n- Option to disable caching\n- Watch file system for changes\n\nThis is a performance optimization for future consideration.\n\nFile: src/repositories/roadmap.repository.ts",
       "id": "P-066",
       "notes": "",
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-10", "advanced-features", "future"],
+      "tags": [
+        "phase-10",
+        "advanced-features",
+        "future"
+      ],
       "title": "Add RoadmapRepository with caching",
       "type": "planning",
       "updatedAt": "2026-01-16T04:09:02.000Z"
@@ -1045,14 +1422,20 @@
     {
       "blocks": [],
       "createdAt": "2026-01-16T04:09:03.000Z",
-      "depends-on": ["P-020"],
+      "depends-on": [
+        "P-020"
+      ],
       "details": "Create ConfigRepository with caching and validation.\n\nFeatures:\n- Cache config in memory\n- Validate config structure\n- Support config inheritance (project, user, global)\n- Config schema validation\n\nThis is a future enhancement for configuration management.\n\nFile: src/repositories/config.repository.ts",
       "id": "P-067",
       "notes": "",
       "passes-tests": false,
       "priority": "low",
       "status": "not-started",
-      "tags": ["phase-10", "advanced-features", "future"],
+      "tags": [
+        "phase-10",
+        "advanced-features",
+        "future"
+      ],
       "title": "Add ConfigRepository",
       "type": "planning",
       "updatedAt": "2026-01-16T04:09:03.000Z"
