@@ -282,9 +282,9 @@
       "details": "Create test/unit/util/validate-task-id.test.ts with comprehensive tests for TaskID format validation.\n\nTest cases:\n- Valid formats: B-001, F-042, I-999, P-003, R-001\n- Invalid formats: missing dash, wrong prefix, non-numeric, wrong padding\n- Edge cases: boundary numbers (000, 001, 999)\n\nFile: test/unit/util/validate-task-id.test.ts\nTarget: src/util/validate-task-id.ts",
       "id": "P-013",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-2",
         "unit-tests",
@@ -292,7 +292,7 @@
       ],
       "title": "Unit tests for validate-task-id",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:01:00.000Z"
+      "updatedAt": "2026-01-17T03:25:20.695Z"
     },
     {
       "blocks": [],
