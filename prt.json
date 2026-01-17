@@ -346,9 +346,9 @@
       "details": "Create test/unit/util/update-task.test.ts Part 1 - immutable updates.\n\nTest cases:\n- Task updates don't mutate original\n- updatedAt timestamp is automatically set\n- Partial updates work correctly\n- All fields can be updated\n- Original roadmap unchanged\n\nFile: test/unit/util/update-task.test.ts\nTarget: src/util/update-task.ts",
       "id": "P-016",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-2",
         "unit-tests",
@@ -356,7 +356,7 @@
       ],
       "title": "Unit tests for update-task Part 1",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:01:03.000Z"
+      "updatedAt": "2026-01-17T03:57:20.660Z"
     },
     {
       "blocks": [],
