@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 import {PRIORITY, Roadmap, STATUS, Task, TASK_TYPE, TASK_TYPE_MAP, TaskID} from '../util/types.js'
+import {validateTask} from '../util/validate-task.js'
 
 /**
  * TaskService provides core operations for managing tasks in a roadmap.
@@ -9,10 +10,12 @@ export class TaskService {
   /**
    * Adds a task to the roadmap and returns a new roadmap object.
    * This method does not mutate the original roadmap.
+   * Validates the task before adding to ensure data integrity.
    *
    * @param roadmap - The roadmap to add the task to
    * @param task - The task to add
    * @returns A new Roadmap object with the task added
+   * @throws Error if the task is invalid
    *
    * @example
    * ```typescript
@@ -21,6 +24,7 @@ export class TaskService {
    * ```
    */
   addTask(roadmap: Roadmap, task: Task): Roadmap {
+    validateTask(task)
     return {
       ...roadmap,
       tasks: [...roadmap.tasks, task],
