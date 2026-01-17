@@ -499,9 +499,9 @@
       "details": "Create test/unit/services/task.service.test.ts Part 1 - basic ID generation.\n\nTest cases:\n- First ID is X-001 (where X is type prefix)\n- Sequential IDs: B-001, B-002, B-003\n- Different types don't interfere: B-001, F-001, P-001 can coexist\n- IDs are zero-padded correctly\n\nFile: test/unit/services/task.service.test.ts\nTarget: src/services/task.service.ts",
       "id": "P-023",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-3",
         "unit-tests",
@@ -509,7 +509,7 @@
       ],
       "title": "Unit tests for ID generation Part 1",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:02:02.000Z"
+      "updatedAt": "2026-01-17T04:41:17.502Z"
     },
     {
       "blocks": [],
