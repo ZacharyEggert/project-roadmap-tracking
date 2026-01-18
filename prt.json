@@ -774,9 +774,9 @@
       "details": "Implement sort() method in TaskQueryService.\n\nsort():\n- Support sort by: dueDate, priority, createdAt, updatedAt, id\n- Support ascending/descending order\n- Priority sort order: high > medium > low\n- Handle missing/null values\n- Stable sort\n\nFile: src/services/task-query.service.ts",
       "id": "P-036",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-5",
         "service-layer",
@@ -784,7 +784,7 @@
       ],
       "title": "Implement sort method",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:04:03.000Z"
+      "updatedAt": "2026-01-18T02:09:47.421Z"
     },
     {
       "blocks": [],
@@ -795,9 +795,9 @@
       "details": "Create tests for sorting functionality.\n\nTest cases:\n- Sort by priority (high > medium > low)\n- Sort by createdAt (ascending, descending)\n- Sort by updatedAt (ascending, descending)\n- Sort by id (lexicographic)\n- Handle missing fields gracefully\n- Stable sort behavior\n\nExtends existing test file: test/unit/services/task-query.service.test.ts\nTarget: src/services/task-query.service.ts",
       "id": "P-037",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-5",
         "unit-tests",
@@ -805,7 +805,7 @@
       ],
       "title": "Unit tests for sorting",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:04:04.000Z"
+      "updatedAt": "2026-01-18T02:09:52.655Z"
     },
     {
       "blocks": [],
