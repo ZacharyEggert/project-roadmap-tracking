@@ -97,7 +97,7 @@ export class TaskDependencyService {
    * - Gray (visiting): currently in the DFS path (back edge = cycle)
    * - Black (visited): completely explored
    *
-   * @param _tasks - The tasks to check for circular dependencies
+   * @param tasks - The tasks to check for circular dependencies
    * @returns A CircularDependency object if a cycle is found, null otherwise
    *
    * @example
@@ -109,9 +109,19 @@ export class TaskDependencyService {
    * }
    * ```
    */
-  detectCircular(_tasks: Task[]): CircularDependency | null {
-    // TODO: Implement in P-042 using three-color DFS
-    // For now, return null (no circular dependencies detected)
+  detectCircular(tasks: Task[]): CircularDependency | null {
+    const graph = this.buildUnifiedGraph(tasks)
+    const visited = new Set<TaskID>()
+
+    for (const task of tasks) {
+      const path: TaskID[] = []
+      if (this.hasCycle(task.id, graph, visited, path)) {
+        const cycle = this.extractCycle(path)
+        const message = `Circular dependency detected: ${cycle.join(' -> ')}`
+        return {cycle, message}
+      }
+    }
+
     return null
   }
 
@@ -205,6 +215,96 @@ export class TaskDependencyService {
     // TODO: Implement in P-045
     // For now, return empty array (no errors)
     return []
+  }
+
+  /**
+   * Builds a unified dependency graph combining both depends-on and blocks relationships.
+   * For depends-on: adds direct edges (task → dependency)
+   * For blocks: adds reverse edges (if A blocks B, then B → A)
+   *
+   * @param tasks - The tasks to build the unified graph from
+   * @returns Adjacency list representation of the unified graph
+   */
+  private buildUnifiedGraph(tasks: Task[]): Map<TaskID, TaskID[]> {
+    const graph = new Map<TaskID, TaskID[]>()
+
+    // Initialize empty adjacency lists for all tasks
+    for (const task of tasks) {
+      graph.set(task.id, [])
+    }
+
+    // Add edges from both depends-on and blocks relationships
+    for (const task of tasks) {
+      const edges = graph.get(task.id) || []
+
+      // Add depends-on edges (task → dependency)
+      for (const dependency of task['depends-on'] || []) {
+        edges.push(dependency)
+      }
+
+      // Add blocks edges in reverse (if A blocks B, then B → A)
+      for (const blockedTask of task.blocks || []) {
+        const blockedEdges = graph.get(blockedTask) || []
+        blockedEdges.push(task.id)
+        graph.set(blockedTask, blockedEdges)
+      }
+
+      graph.set(task.id, edges)
+    }
+
+    return graph
+  }
+
+  /**
+   * Extracts the cycle from a DFS path when a back edge is detected.
+   * The path contains all nodes from root to the repeated node.
+   *
+   * @param path - The DFS path containing a cycle
+   * @returns The cycle as an array of task IDs
+   */
+  private extractCycle(path: TaskID[]): TaskID[] {
+    const repeatedNode = path.at(-1)!
+    const firstOccurrence = path.indexOf(repeatedNode)
+    return path.slice(firstOccurrence)
+  }
+
+  /**
+   * Recursive DFS helper to detect cycles in the dependency graph.
+   * Uses visited set (black nodes) and path array (gray nodes).
+   *
+   * @param taskId - Current task ID being explored
+   * @param graph - The unified dependency graph
+   * @param visited - Set of fully explored nodes (black)
+   * @param path - Current DFS path (gray nodes)
+   * @returns true if cycle detected, false otherwise
+   */
+  private hasCycle(taskId: TaskID, graph: Map<TaskID, TaskID[]>, visited: Set<TaskID>, path: TaskID[]): boolean {
+    // Back edge detected - node already in current path
+    if (path.includes(taskId)) {
+      path.push(taskId) // Add repeated node to complete the cycle
+      return true
+    }
+
+    // Already fully explored this node
+    if (visited.has(taskId)) {
+      return false
+    }
+
+    // Mark as visiting (gray node)
+    visited.add(taskId)
+    path.push(taskId)
+
+    // Explore all neighbors
+    const neighbors = graph.get(taskId) || []
+    for (const neighbor of neighbors) {
+      if (this.hasCycle(neighbor, graph, visited, path)) {
+        return true
+      }
+    }
+
+    // Backtrack - remove from path (node becomes black)
+    path.pop()
+    return false
   }
 }
 

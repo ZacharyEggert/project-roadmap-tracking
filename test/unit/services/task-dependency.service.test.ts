@@ -420,4 +420,314 @@ describe('TaskDependencyService', () => {
       })
     })
   })
+
+  describe('detectCircular', () => {
+    describe('basic circular dependency detection', () => {
+      it('should return null for valid graph with no circular dependencies', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-002'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-003'] as TaskID[],
+            id: 'F-002',
+          }),
+          createFeatureTask({
+            'depends-on': [],
+            id: 'F-003',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.be.null
+      })
+
+      it('should detect self-dependency', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-001'] as TaskID[],
+            id: 'F-001',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.not.be.null
+        expect(circular!.cycle).to.deep.equal(['F-001', 'F-001'])
+        expect(circular!.message).to.equal('Circular dependency detected: F-001 -> F-001')
+      })
+
+      it('should detect simple two-node cycle', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-002'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-001'] as TaskID[],
+            id: 'F-002',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.not.be.null
+        expect(circular!.cycle).to.have.lengthOf(3)
+        expect(circular!.cycle[0]).to.equal(circular!.cycle[2])
+        expect(circular!.cycle).to.include('F-001')
+        expect(circular!.cycle).to.include('F-002')
+      })
+
+      it('should detect three-node cycle', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-002'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-003'] as TaskID[],
+            id: 'F-002',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-001'] as TaskID[],
+            id: 'F-003',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.not.be.null
+        expect(circular!.cycle).to.have.lengthOf(4)
+        expect(circular!.cycle[0]).to.equal(circular!.cycle[3])
+        expect(circular!.cycle).to.include('F-001')
+        expect(circular!.cycle).to.include('F-002')
+        expect(circular!.cycle).to.include('F-003')
+      })
+
+      it('should return first cycle found when multiple independent cycles exist', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-002'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-001'] as TaskID[],
+            id: 'F-002',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-004'] as TaskID[],
+            id: 'F-003',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-003'] as TaskID[],
+            id: 'F-004',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.not.be.null
+        // Should find one of the cycles (implementation returns first found)
+        expect(circular!.cycle).to.have.lengthOf(3)
+        expect(circular!.cycle[0]).to.equal(circular!.cycle[2])
+      })
+
+      it('should return null for valid graph with multiple dependencies (diamond)', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-002', 'F-003'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            'depends-on': [],
+            id: 'F-002',
+          }),
+          createFeatureTask({
+            'depends-on': [],
+            id: 'F-003',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.be.null
+      })
+    })
+
+    describe('advanced circular dependency detection', () => {
+      it('should detect long cycle path where cycle starts mid-path', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-002'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-003'] as TaskID[],
+            id: 'F-002',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-004'] as TaskID[],
+            id: 'F-003',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-005'] as TaskID[],
+            id: 'F-004',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-003'] as TaskID[],
+            id: 'F-005',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.not.be.null
+        expect(circular!.cycle).to.include('F-003')
+        expect(circular!.cycle).to.include('F-004')
+        expect(circular!.cycle).to.include('F-005')
+        expect(circular!.cycle[0]).to.equal(circular!.cycle[circular!.cycle.length - 1])
+      })
+
+      it('should detect cycle in one branch of complex graph', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-002', 'F-003'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-004'] as TaskID[],
+            id: 'F-002',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-005'] as TaskID[],
+            id: 'F-003',
+          }),
+          createFeatureTask({
+            'depends-on': [],
+            id: 'F-004',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-003'] as TaskID[],
+            id: 'F-005',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.not.be.null
+        expect(circular!.cycle).to.include('F-003')
+        expect(circular!.cycle).to.include('F-005')
+      })
+
+      it('should detect cycle created by blocks relationship', () => {
+        const tasks = [
+          createFeatureTask({
+            blocks: ['F-002'] as TaskID[],
+            'depends-on': [],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            blocks: ['F-001'] as TaskID[],
+            'depends-on': [],
+            id: 'F-002',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.not.be.null
+        expect(circular!.cycle).to.have.lengthOf(3)
+        expect(circular!.cycle).to.include('F-001')
+        expect(circular!.cycle).to.include('F-002')
+        expect(circular!.cycle[0]).to.equal(circular!.cycle[2])
+      })
+
+      it('should detect cycle created by mixed depends-on and blocks relationships', () => {
+        const tasks = [
+          createFeatureTask({
+            blocks: [],
+            'depends-on': ['F-002'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            blocks: [],
+            'depends-on': ['F-003'] as TaskID[],
+            id: 'F-002',
+          }),
+          createFeatureTask({
+            blocks: ['F-002'] as TaskID[],
+            'depends-on': ['F-001'] as TaskID[],
+            id: 'F-003',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.not.be.null
+        expect(circular!.cycle).to.include('F-001')
+        expect(circular!.cycle).to.include('F-002')
+        expect(circular!.cycle).to.include('F-003')
+      })
+
+      it('should return null for diamond dependency pattern (valid convergence)', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-002', 'F-003'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-004'] as TaskID[],
+            id: 'F-002',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-004'] as TaskID[],
+            id: 'F-003',
+          }),
+          createFeatureTask({
+            'depends-on': [],
+            id: 'F-004',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.be.null
+      })
+
+      it('should return null for complex graph with branching and merging but no cycles', () => {
+        const tasks = [
+          createFeatureTask({
+            'depends-on': ['F-002', 'F-003'] as TaskID[],
+            id: 'F-001',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-004', 'F-005'] as TaskID[],
+            id: 'F-002',
+          }),
+          createFeatureTask({
+            'depends-on': ['F-005', 'F-006'] as TaskID[],
+            id: 'F-003',
+          }),
+          createFeatureTask({
+            'depends-on': [],
+            id: 'F-004',
+          }),
+          createFeatureTask({
+            'depends-on': [],
+            id: 'F-005',
+          }),
+          createFeatureTask({
+            'depends-on': [],
+            id: 'F-006',
+          }),
+        ]
+
+        const circular = taskDependencyService.detectCircular(tasks)
+
+        expect(circular).to.be.null
+      })
+    })
+  })
 })

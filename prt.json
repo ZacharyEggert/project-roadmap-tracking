@@ -869,7 +869,7 @@
       ],
       "title": "Implement buildGraph method",
       "type": "planning",
-      "updatedAt": "2026-01-18T02:25:59.552Z"
+      "updatedAt": "2026-01-18T02:42:03.531Z"
     },
     {
       "blocks": [],
@@ -901,9 +901,9 @@
       "details": "Implement detectCircular() method using DFS algorithm.\n\ndetectCircular():\n- Use depth-first search with visited/visiting states\n- Detect back edges (cycles)\n- Return cycle path if found\n- Support both depends-on and blocks relationships\n- Implement as described in ARCHITECTURE.md\n\nAlgorithm: Three-color DFS (white/gray/black nodes).\n\nFile: src/services/task-dependency.service.ts",
       "id": "P-042",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-6",
         "service-layer",
@@ -911,7 +911,7 @@
       ],
       "title": "Implement detectCircular method",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:05:03.000Z"
+      "updatedAt": "2026-01-18T02:41:44.891Z"
     },
     {
       "blocks": [],
@@ -922,9 +922,9 @@
       "details": "Create tests for circular dependency detection - basic cases.\n\nTest cases:\n- No circular dependencies (valid graph)\n- Simple cycle: A -> B -> A\n- Three-node cycle: A -> B -> C -> A\n- Self-dependency: A -> A\n- Multiple independent cycles\n\nExtends existing test file: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-043",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-6",
         "unit-tests",
@@ -932,7 +932,7 @@
       ],
       "title": "Unit tests for circular detection - basic",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:05:04.000Z"
+      "updatedAt": "2026-01-18T02:41:48.542Z"
     },
     {
       "blocks": [],
@@ -943,9 +943,9 @@
       "details": "Create tests for circular dependency detection - advanced edge cases.\n\nTest cases:\n- Cycle with long path: A -> B -> C -> D -> E -> C\n- Cycle in one branch of complex graph\n- Blocks relationship creates cycle\n- Mixed depends-on and blocks create cycle\n- No cycle but diamond dependency (A -> B,C -> D)\n\nExtends existing test file: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-044",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-6",
         "unit-tests",
@@ -953,7 +953,7 @@
       ],
       "title": "Unit tests for circular detection - advanced",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:05:05.000Z"
+      "updatedAt": "2026-01-18T02:42:48.390Z"
     },
     {
       "blocks": [],
