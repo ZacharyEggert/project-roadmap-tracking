@@ -859,9 +859,9 @@
       "details": "Implement buildGraph() method for dependency graph construction.\n\nbuildGraph():\n- Create adjacency list representation\n- Map each task ID to its dependencies\n- Include both depends-on and blocks relationships\n- Return graph structure for analysis\n\nFile: src/services/task-dependency.service.ts",
       "id": "P-040",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-6",
         "service-layer",
@@ -869,7 +869,7 @@
       ],
       "title": "Implement buildGraph method",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:05:01.000Z"
+      "updatedAt": "2026-01-18T02:25:59.552Z"
     },
     {
       "blocks": [],
@@ -880,9 +880,9 @@
       "details": "Create test/unit/services/task-dependency.service.test.ts for graph building.\n\nTest cases:\n- Build graph from simple dependencies\n- Handle tasks with no dependencies\n- Build graph with blocks relationships\n- Build graph with both depends-on and blocks\n- Handle empty task list\n- Graph structure is correct (adjacency list)\n\nFile: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-041",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-6",
         "unit-tests",
@@ -890,7 +890,7 @@
       ],
       "title": "Unit tests for graph building",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:05:02.000Z"
+      "updatedAt": "2026-01-18T02:26:00.219Z"
     },
     {
       "blocks": [],
