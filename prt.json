@@ -817,9 +817,9 @@
       "details": "Refactor src/commands/list.ts to use TaskQueryService.\n\nChanges:\n- Import TaskQueryService\n- Replace inline filtering logic with service.filter()\n- Replace inline sorting logic with service.sort()\n- Reduce list.ts complexity significantly\n- Ensure all existing flags still work\n- Maintain current output format\n\nFile: src/commands/list.ts\nTest manually after refactoring.",
       "id": "P-038",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-5",
         "service-layer",
@@ -827,7 +827,7 @@
       ],
       "title": "Refactor list command to use TaskQueryService",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:04:05.000Z"
+      "updatedAt": "2026-01-18T02:12:48.288Z"
     },
     {
       "blocks": [],
@@ -838,9 +838,9 @@
       "details": "Design TaskDependencyService interface and create src/services/task-dependency.service.ts.\n\nInterface should include:\n- buildGraph(tasks) - Build dependency graph\n- detectCircular(tasks) - Detect circular dependencies\n- validateDependencies(roadmap) - Full dependency validation\n- getBlockedTasks(task) - Get tasks blocked by this task\n- getDependsOnTasks(task) - Get tasks this task depends on\n- topologicalSort(tasks) - Sort tasks by dependency order (Phase 10)\n\nFile: src/services/task-dependency.service.ts",
       "id": "P-039",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-6",
         "service-layer",
@@ -848,7 +848,7 @@
       ],
       "title": "Design TaskDependencyService interface",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:05:00.000Z"
+      "updatedAt": "2026-01-18T02:15:52.375Z"
     },
     {
       "blocks": [],
