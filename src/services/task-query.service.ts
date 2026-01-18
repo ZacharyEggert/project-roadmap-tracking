@@ -25,8 +25,8 @@ export interface FilterCriteria {
   hasDependencies?: boolean
   /** Filter by priority level */
   priority?: PRIORITY
-  /** Filter by status */
-  status?: STATUS
+  /** Filter by status (single status or array of statuses) */
+  status?: STATUS | STATUS[]
   /** Filter by tags (tasks must have all specified tags) */
   tags?: Array<string>
   /** Filter by type */
@@ -56,9 +56,14 @@ export class TaskQueryService {
    */
   filter(tasks: Array<Task>, criteria: FilterCriteria): Array<Task> {
     const filtered = tasks.filter((task) => {
-      // Check status filter
-      if (criteria.status !== undefined && task.status !== criteria.status) {
-        return false
+      // Check status filter - support both single status and array of statuses
+      if (criteria.status !== undefined) {
+        const statusMatch = Array.isArray(criteria.status)
+          ? criteria.status.includes(task.status)
+          : task.status === criteria.status
+        if (!statusMatch) {
+          return false
+        }
       }
 
       // Check type filter

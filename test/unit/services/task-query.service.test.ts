@@ -29,6 +29,37 @@ describe('TaskQueryService', () => {
         expect(result[0].status).to.equal(STATUS.InProgress)
       })
 
+      it('should filter tasks by multiple statuses (array)', () => {
+        const tasks = [
+          createTask({status: STATUS.NotStarted}),
+          createTask({status: STATUS.InProgress}),
+          createTask({status: STATUS.Completed}),
+        ]
+
+        const result = taskQueryService.filter(tasks, {
+          status: [STATUS.NotStarted, STATUS.InProgress],
+        })
+
+        expect(result).to.have.lengthOf(2)
+        expect(result[0].status).to.be.oneOf([STATUS.NotStarted, STATUS.InProgress])
+        expect(result[1].status).to.be.oneOf([STATUS.NotStarted, STATUS.InProgress])
+      })
+
+      it('should filter tasks by single status in array form', () => {
+        const tasks = [
+          createTask({status: STATUS.NotStarted}),
+          createTask({status: STATUS.InProgress}),
+          createTask({status: STATUS.Completed}),
+        ]
+
+        const result = taskQueryService.filter(tasks, {
+          status: [STATUS.InProgress],
+        })
+
+        expect(result).to.have.lengthOf(1)
+        expect(result[0].status).to.equal(STATUS.InProgress)
+      })
+
       it('should filter tasks by type', () => {
         const tasks = [createFeatureTask(), createBugTask(), createFeatureTask()]
 
@@ -194,6 +225,24 @@ describe('TaskQueryService', () => {
         expect(result[0].priority).to.equal(PRIORITY.High)
         expect(result[0].status).to.equal(STATUS.InProgress)
         expect(result[0].type).to.equal(TASK_TYPE.Feature)
+      })
+
+      it('should filter by multiple statuses AND priority', () => {
+        const tasks = [
+          createTask({priority: PRIORITY.High, status: STATUS.NotStarted}),
+          createTask({priority: PRIORITY.High, status: STATUS.InProgress}),
+          createTask({priority: PRIORITY.High, status: STATUS.Completed}),
+          createTask({priority: PRIORITY.Low, status: STATUS.InProgress}),
+        ]
+
+        const result = taskQueryService.filter(tasks, {
+          priority: PRIORITY.High,
+          status: [STATUS.NotStarted, STATUS.InProgress],
+        })
+
+        expect(result).to.have.lengthOf(2)
+        expect(result.every((t) => t.priority === PRIORITY.High)).to.be.true
+        expect(result.every((t) => [STATUS.InProgress, STATUS.NotStarted].includes(t.status))).to.be.true
       })
 
       it('should filter by tags AND status', () => {

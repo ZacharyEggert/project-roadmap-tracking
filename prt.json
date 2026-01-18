@@ -732,9 +732,9 @@
       "details": "Implement filter() method in TaskQueryService.\n\nfilter():\n- Accept FilterCriteria object (status, type, priority, tags, etc.)\n- Support multiple simultaneous filters\n- AND logic for multiple criteria\n- Support tag filtering (has any of, has all of)\n- Return filtered task array\n\nExtract filtering logic from src/commands/list.ts (if any exists).\n\nFile: src/services/task-query.service.ts",
       "id": "P-034",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-5",
         "service-layer",
@@ -742,7 +742,7 @@
       ],
       "title": "Implement filter method",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:04:01.000Z"
+      "updatedAt": "2026-01-18T01:23:29.457Z"
     },
     {
       "blocks": [],
@@ -753,9 +753,9 @@
       "details": "Create test/unit/services/task-query.service.test.ts for filtering.\n\nTest cases:\n- Filter by status (not-started, in-progress, completed)\n- Filter by type (bug, feature, improvement, planning, research)\n- Filter by priority (high, medium, low)\n- Filter by tags (single tag, multiple tags)\n- Multiple filters simultaneously\n- Empty results when no matches\n- All tasks returned when no filters\n\nFile: test/unit/services/task-query.service.test.ts\nTarget: src/services/task-query.service.ts",
       "id": "P-035",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-5",
         "unit-tests",
@@ -763,7 +763,7 @@
       ],
       "title": "Unit tests for filtering",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:04:02.000Z"
+      "updatedAt": "2026-01-18T01:23:30.472Z"
     },
     {
       "blocks": [],

@@ -1,5 +1,6 @@
 import {/* Args, */ Command, Flags} from '@oclif/core'
 
+import taskQueryService, {FilterCriteria, SortOrder} from '../services/task-query.service.js'
 import {readConfigFile} from '../util/read-config.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
 import {PRIORITY, STATUS} from '../util/types.js'
@@ -32,6 +33,14 @@ export default class List extends Command {
       options: ['completed', 'in-progress', 'not-started'],
     }),
   }
+  private static readonly priorityMap: Record<string, PRIORITY> = {
+    h: PRIORITY.High,
+    high: PRIORITY.High,
+    l: PRIORITY.Low,
+    low: PRIORITY.Low,
+    m: PRIORITY.Medium,
+    medium: PRIORITY.Medium,
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(List)
@@ -41,17 +50,7 @@ export default class List extends Command {
     const sortBy = (flags.sort ?? null) as 'createdAt' | 'dueDate' | 'priority' | null
     const statusFilter = (flags.status ?? null) as null | STATUS
 
-    const priorityFilter = (
-      priority
-        ? priority === 'high' || priority === 'h'
-          ? 'high'
-          : priority === 'medium' || priority === 'm'
-            ? 'medium'
-            : priority === 'low' || priority === 'l'
-              ? 'low'
-              : null
-        : null
-    ) as null | PRIORITY
+    const priorityFilter = (priority ? List.priorityMap[priority] : null) as null | PRIORITY
 
     // if statusFilter is set, it overrides incompleteOnly
     const effectiveStatusFilter: STATUS[] = statusFilter
@@ -68,33 +67,28 @@ export default class List extends Command {
 
     const roadmap = await readRoadmapFile(roadmapPath)
 
-    const tasks = roadmap.tasks
-      .filter((task) => effectiveStatusFilter.includes(task.status))
-      .filter((task) => priorityFilter === null || task.priority === priorityFilter)
-      .sort((a, b) => {
-        if (sortBy === 'dueDate') {
-          const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity
-          const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity
-          return dateA - dateB
-        }
+    // Build filter criteria
+    const filterCriteria: Partial<FilterCriteria> = {}
 
-        if (sortBy === 'priority') {
-          const priorityOrder = {
-            high: 1,
-            low: 3,
-            medium: 2,
-          }
-          return priorityOrder[a.priority] - priorityOrder[b.priority]
-        }
+    if (effectiveStatusFilter.length > 0) {
+      filterCriteria.status =
+        effectiveStatusFilter.length === 3
+          ? undefined // All statuses, no filter needed
+          : effectiveStatusFilter
+    }
 
-        if (sortBy === 'createdAt') {
-          const createdA = a.createdAt ? new Date(a.createdAt).getTime() : Infinity
-          const createdB = b.createdAt ? new Date(b.createdAt).getTime() : Infinity
-          return createdA - createdB
-        }
+    if (priorityFilter) {
+      filterCriteria.priority = priorityFilter
+    }
 
-        return 0
-      })
+    // Apply filtering and sorting using TaskQueryService
+    const hasFilters = Object.keys(filterCriteria).length > 0
+    const filtered = hasFilters
+      ? // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
+        taskQueryService.filter(roadmap.tasks, filterCriteria)
+      : roadmap.tasks
+
+    const tasks = sortBy ? taskQueryService.sort(filtered, sortBy, SortOrder.Ascending) : filtered
 
     // Display
     console.log(`\nTasks (${tasks.length} total):\n`)
