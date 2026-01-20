@@ -1,0 +1,5 @@
+{
+  "name": "Test Project",
+  "description": "Test project for circular dependencies",
+  "path": "circular-deps-roadmap.json"
+}

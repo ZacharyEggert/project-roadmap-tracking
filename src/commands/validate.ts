@@ -1,6 +1,7 @@
 import {Command} from '@oclif/core'
 import {readFile} from 'node:fs/promises'
 
+import taskDependencyService from '../services/task-dependency.service.js'
 import {readConfigFile} from '../util/read-config.js'
 import {Roadmap} from '../util/types.js'
 import {validateTask} from '../util/validate-task.js'
@@ -9,7 +10,7 @@ export default class Validate extends Command {
   static override args = {
     // file: Args.string({description: 'file to read'}),
   }
-  static override description = 'describe the command here'
+  static override description = 'Validate roadmap structure, task data, and check for circular dependencies'
   static override examples = ['<%= config.bin %> <%= command.id %>']
   static override flags = {
     // flag with no value (-f, --force)
@@ -54,7 +55,46 @@ export default class Validate extends Command {
       }
     }
 
-    this.log(roadmap.tasks.length > 1 ? `all ${roadmap.tasks.length} tasks are valid` : `1 task is valid`)
+    // this.log(roadmap.tasks.length > 1 ? `all ${roadmap.tasks.length} tasks are valid` : `1 task is valid`)
+
+    // Validate dependencies (including circular dependency check)
+    this.log(`validating task dependencies...`)
+    const dependencyErrors = taskDependencyService.validateDependencies(roadmap)
+
+    if (dependencyErrors.length > 0) {
+      this.log(`\nFound ${dependencyErrors.length} dependency ${dependencyErrors.length === 1 ? 'error' : 'errors'}:\n`)
+
+      for (const error of dependencyErrors) {
+        switch (error.type) {
+          case 'circular': {
+            // Display circular dependency with cycle path
+            this.log(`❌ CIRCULAR DEPENDENCY DETECTED`)
+            this.log(`   ${error.message}`)
+            if (error.relatedTaskIds && error.relatedTaskIds.length > 0) {
+              this.log(`   Cycle path: ${error.relatedTaskIds.join(' -> ')}`)
+            }
+
+            this.log('')
+            break
+          }
+
+          case 'invalid-reference': {
+            this.log(`⚠️  ${error.message}`)
+            break
+          }
+
+          case 'missing-task': {
+            this.log(`❌ ${error.message}`)
+            break
+          }
+        }
+      }
+
+      // Exit with error if any dependency errors found
+      this.error('Dependency validation failed')
+    }
+
+    this.log(`all task dependencies are valid`)
     this.log(`roadmap validation complete`)
   }
 }

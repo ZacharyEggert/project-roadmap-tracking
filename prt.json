@@ -985,9 +985,9 @@
       "details": "Create tests for full dependency validation.\n\nTest cases:\n- All dependency references valid\n- Invalid TaskID reference caught\n- Circular dependency caught\n- Missing task in depends-on array\n- Missing task in blocks array\n- Validation returns all errors at once\n\nExtends existing test file: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-046",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-6",
         "unit-tests",
@@ -995,7 +995,7 @@
       ],
       "title": "Unit tests for full dependency validation",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:05:07.000Z"
+      "updatedAt": "2026-01-20T04:46:13.000Z"
     },
     {
       "blocks": [],
@@ -1007,9 +1007,9 @@
       "details": "Enhance src/commands/validate.ts with circular dependency checking.\n\nChanges:\n- Import TaskDependencyService\n- Call validateDependencies() during validation\n- Display circular dependency errors clearly\n- Show cycle path if found (e.g., \"A -> B -> C -> A\")\n- Integrate with existing validation output\n\nFile: src/commands/validate.ts\nTest with circular-deps-roadmap.json fixture.",
       "id": "P-047",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-6",
         "service-layer",
@@ -1017,7 +1017,7 @@
       ],
       "title": "Enhance validate command with circular detection",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:05:08.000Z"
+      "updatedAt": "2026-01-20T04:56:54.455Z"
     },
     {
       "blocks": [],
