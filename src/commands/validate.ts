@@ -1,6 +1,7 @@
 import {Command} from '@oclif/core'
 import {readFile} from 'node:fs/promises'
 
+import displayService from '../services/display.service.js'
 import taskDependencyService from '../services/task-dependency.service.js'
 import {readConfigFile} from '../util/read-config.js'
 import {Roadmap} from '../util/types.js'
@@ -62,32 +63,9 @@ export default class Validate extends Command {
     const dependencyErrors = taskDependencyService.validateDependencies(roadmap)
 
     if (dependencyErrors.length > 0) {
-      this.log(`\nFound ${dependencyErrors.length} dependency ${dependencyErrors.length === 1 ? 'error' : 'errors'}:\n`)
-
-      for (const error of dependencyErrors) {
-        switch (error.type) {
-          case 'circular': {
-            // Display circular dependency with cycle path
-            this.log(`❌ CIRCULAR DEPENDENCY DETECTED`)
-            this.log(`   ${error.message}`)
-            if (error.relatedTaskIds && error.relatedTaskIds.length > 0) {
-              this.log(`   Cycle path: ${error.relatedTaskIds.join(' -> ')}`)
-            }
-
-            this.log('')
-            break
-          }
-
-          case 'invalid-reference': {
-            this.log(`⚠️  ${error.message}`)
-            break
-          }
-
-          case 'missing-task': {
-            this.log(`❌ ${error.message}`)
-            break
-          }
-        }
+      const errorLines = displayService.formatValidationErrors(dependencyErrors)
+      for (const line of errorLines) {
+        this.log(line)
       }
 
       // Exit with error if any dependency errors found

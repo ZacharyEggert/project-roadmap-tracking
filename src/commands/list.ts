@@ -1,5 +1,6 @@
 import {/* Args, */ Command, Flags} from '@oclif/core'
 
+import displayService from '../services/display.service.js'
 import taskQueryService, {FilterCriteria, SortOrder} from '../services/task-query.service.js'
 import {readConfigFile} from '../util/read-config.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
@@ -93,21 +94,10 @@ export default class List extends Command {
     // Display
     console.log(`\nTasks (${tasks.length} total):\n`)
     for (const task of tasks) {
-      const status = task.status === STATUS.Completed ? '✓' : task.status === STATUS.InProgress ? '~' : '○'
-      const tests = task['passes-tests'] ? '✓' : '✗'
-      const prioritySymbol = {
-        high: 'H',
-        low: 'L',
-        medium: 'M',
-      }[task.priority]
-
-      console.log(`${status} [${prioritySymbol}] [${task.id}] ${task.title}`)
-      console.log(`   Type: ${task.type} | Tests: ${tests} | Deps: ${task['depends-on'].length}`)
-      if (task['depends-on'].length > 0) {
-        console.log(`   Depends on: ${task['depends-on'].join(', ')}`)
+      const lines = displayService.formatTaskSummary(task)
+      for (const line of lines) {
+        console.log(line)
       }
-
-      console.log()
     }
   }
 }
