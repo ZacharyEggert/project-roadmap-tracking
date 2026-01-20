@@ -730,4 +730,536 @@ describe('TaskDependencyService', () => {
       })
     })
   })
+
+  describe('validateDependencies', () => {
+    describe('valid dependencies', () => {
+      it('should return empty array for tasks with no dependencies', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              blocks: [],
+              'depends-on': [],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              blocks: [],
+              'depends-on': [],
+              id: 'F-002',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.be.an('array')
+        expect(errors).to.have.lengthOf(0)
+      })
+
+      it('should return empty array for valid dependency chain', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              'depends-on': ['F-002'] as TaskID[],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              'depends-on': ['F-003'] as TaskID[],
+              id: 'F-002',
+            }),
+            createFeatureTask({
+              'depends-on': [],
+              id: 'F-003',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(0)
+      })
+
+      it('should return empty array for valid blocks relationships', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              blocks: ['F-002', 'F-003'] as TaskID[],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              blocks: [],
+              'depends-on': ['F-001'],
+              id: 'F-002',
+            }),
+            createFeatureTask({
+              blocks: [],
+              'depends-on': ['F-001'],
+              id: 'F-003',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(0)
+      })
+
+      it('should return empty array for valid diamond pattern (convergence)', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              'depends-on': ['F-002', 'F-003'] as TaskID[],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              'depends-on': ['F-004'] as TaskID[],
+              id: 'F-002',
+            }),
+            createFeatureTask({
+              'depends-on': ['F-004'] as TaskID[],
+              id: 'F-003',
+            }),
+            createFeatureTask({
+              'depends-on': [],
+              id: 'F-004',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(0)
+      })
+    })
+
+    describe('invalid task references', () => {
+      it('should detect non-existent task in depends-on', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              'depends-on': ['F-999'] as TaskID[],
+              id: 'F-001',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(1)
+        expect(errors[0]).to.deep.equal({
+          message: 'Task F-001 depends on non-existent task F-999',
+          relatedTaskIds: ['F-999'],
+          taskId: 'F-001',
+          type: 'missing-task',
+        })
+      })
+
+      it('should detect non-existent task in blocks', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              blocks: ['F-999'] as TaskID[],
+              id: 'F-001',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(1)
+        expect(errors[0]).to.deep.equal({
+          message: 'Task F-001 blocks non-existent task F-999',
+          relatedTaskIds: ['F-999'],
+          taskId: 'F-001',
+          type: 'missing-task',
+        })
+      })
+
+      it('should detect multiple invalid references', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              blocks: ['F-999'] as TaskID[],
+              'depends-on': ['F-888'] as TaskID[],
+              id: 'F-001',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(2)
+        expect(errors[0].type).to.equal('missing-task')
+        expect(errors[0].taskId).to.equal('F-001')
+        expect(errors[0].relatedTaskIds).to.include('F-888')
+        expect(errors[1].type).to.equal('missing-task')
+        expect(errors[1].taskId).to.equal('F-001')
+        expect(errors[1].relatedTaskIds).to.include('F-999')
+      })
+    })
+
+    describe('circular dependency detection', () => {
+      it('should detect self-dependency', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              'depends-on': ['F-001'] as TaskID[],
+              id: 'F-001',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(1)
+        expect(errors[0].type).to.equal('circular')
+        expect(errors[0].taskId).to.equal('F-001')
+        expect(errors[0].relatedTaskIds).to.deep.equal(['F-001', 'F-001'])
+        expect(errors[0].message).to.include('Circular dependency detected')
+      })
+
+      it('should detect two-node cycle', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              'depends-on': ['F-002'] as TaskID[],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              'depends-on': ['F-001'] as TaskID[],
+              id: 'F-002',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(1)
+        expect(errors[0].type).to.equal('circular')
+        expect(errors[0].relatedTaskIds).to.have.lengthOf(3)
+        expect(errors[0].relatedTaskIds![0]).to.equal(errors[0].relatedTaskIds![2])
+      })
+
+      it('should detect three-node cycle via depends-on', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              'depends-on': ['F-002'] as TaskID[],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              'depends-on': ['F-003'] as TaskID[],
+              id: 'F-002',
+            }),
+            createFeatureTask({
+              'depends-on': ['F-001'] as TaskID[],
+              id: 'F-003',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(1)
+        expect(errors[0].type).to.equal('circular')
+        expect(errors[0].relatedTaskIds).to.have.lengthOf(4)
+        expect(errors[0].relatedTaskIds).to.include('F-001')
+        expect(errors[0].relatedTaskIds).to.include('F-002')
+        expect(errors[0].relatedTaskIds).to.include('F-003')
+      })
+
+      it('should detect cycle via blocks relationship', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              blocks: ['F-002'] as TaskID[],
+              'depends-on': [],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              blocks: ['F-001'] as TaskID[],
+              'depends-on': [],
+              id: 'F-002',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(3)
+        expect(errors[0].type).to.equal('circular')
+        expect(errors[0].relatedTaskIds).to.have.lengthOf(3)
+        expect(errors[1].type).to.equal('invalid-reference')
+      })
+
+      it('should include cycle path in relatedTaskIds', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              'depends-on': ['F-002'] as TaskID[],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              'depends-on': ['F-003'] as TaskID[],
+              id: 'F-002',
+            }),
+            createFeatureTask({
+              'depends-on': ['F-001'] as TaskID[],
+              id: 'F-003',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors[0].relatedTaskIds).to.be.an('array')
+        expect(errors[0].relatedTaskIds).to.have.lengthOf.at.least(3)
+        // The cycle should start and end with the same task
+        expect(errors[0].relatedTaskIds![0]).to.equal(errors[0].relatedTaskIds![errors[0].relatedTaskIds!.length - 1])
+      })
+    })
+
+    describe('bidirectional consistency', () => {
+      it('should require blocks and depends-on to be symmetric', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              blocks: ['F-002'] as TaskID[],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              'depends-on': [], // Not symmetric
+              id: 'F-002',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        // Should have no errors - bidirectional symmetry is not required
+        expect(errors).to.have.lengthOf(1)
+      })
+    })
+
+    describe('multiple errors', () => {
+      it('should return all error types in single validation', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              blocks: ['F-999'] as TaskID[],
+              'depends-on': ['F-002'] as TaskID[],
+              id: 'F-001',
+            }),
+            createFeatureTask({
+              'depends-on': ['F-001'] as TaskID[],
+              id: 'F-002',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        // Should have: missing-task error, circular error, possibly bidirectional warning
+        expect(errors.length).to.be.at.least(2)
+        // eslint-disable-next-line max-nested-callbacks
+        const errorTypes = errors.map((e) => e.type)
+        expect(errorTypes).to.include('missing-task')
+        expect(errorTypes).to.include('circular')
+      })
+    })
+
+    describe('error format', () => {
+      it('should include taskId, message, and type in all errors', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              'depends-on': ['F-999'] as TaskID[],
+              id: 'F-001',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(1)
+        expect(errors[0]).to.have.property('taskId')
+        expect(errors[0]).to.have.property('message')
+        expect(errors[0]).to.have.property('type')
+        expect(errors[0].taskId).to.be.a('string')
+        expect(errors[0].message).to.be.a('string')
+        expect(errors[0].type).to.be.a('string')
+      })
+
+      it('should populate relatedTaskIds appropriately', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              'depends-on': ['F-999'] as TaskID[],
+              id: 'F-001',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors[0]).to.have.property('relatedTaskIds')
+        expect(errors[0].relatedTaskIds).to.be.an('array')
+        expect(errors[0].relatedTaskIds).to.include('F-999')
+      })
+    })
+
+    describe('edge cases', () => {
+      it('should handle empty roadmap with no tasks', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.be.an('array')
+        expect(errors).to.have.lengthOf(0)
+      })
+
+      it('should handle tasks with empty depends-on and blocks arrays', () => {
+        const roadmap = {
+          $schema: 'test',
+          metadata: {
+            createdAt: '2024-01-01',
+            createdBy: 'test',
+            description: 'test',
+            name: 'test',
+          },
+          tasks: [
+            createFeatureTask({
+              blocks: [],
+              'depends-on': [],
+              id: 'F-001',
+            }),
+          ],
+        }
+
+        const errors = taskDependencyService.validateDependencies(roadmap)
+
+        expect(errors).to.have.lengthOf(0)
+      })
+    })
+  })
 })

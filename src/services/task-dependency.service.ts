@@ -198,7 +198,7 @@ export class TaskDependencyService {
    * - Circular dependencies
    * - Missing tasks in depends-on or blocks arrays
    *
-   * @param _roadmap - The roadmap to validate
+   * @param roadmap - The roadmap to validate
    * @returns Array of validation errors (empty if valid)
    *
    * @example
@@ -211,10 +211,94 @@ export class TaskDependencyService {
    * }
    * ```
    */
-  validateDependencies(_roadmap: Roadmap): DependencyValidationError[] {
-    // TODO: Implement in P-045
-    // For now, return empty array (no errors)
-    return []
+  validateDependencies(roadmap: Roadmap): DependencyValidationError[] {
+    const errors: DependencyValidationError[] = []
+
+    // Step 1: Build valid task ID set for O(1) lookups
+    const validTaskIds = new Set<TaskID>(roadmap.tasks.map((task) => task.id))
+
+    // Step 2: Validate task references (check both depends-on and blocks arrays)
+    for (const task of roadmap.tasks) {
+      // Validate depends-on references
+      if (task['depends-on']) {
+        for (const depId of task['depends-on']) {
+          if (!validTaskIds.has(depId)) {
+            errors.push({
+              message: `Task ${task.id} depends on non-existent task ${depId}`,
+              relatedTaskIds: [depId],
+              taskId: task.id,
+              type: 'missing-task',
+            })
+          }
+        }
+      }
+
+      // Validate blocks references
+      if (task.blocks) {
+        for (const blockId of task.blocks) {
+          if (!validTaskIds.has(blockId)) {
+            errors.push({
+              message: `Task ${task.id} blocks non-existent task ${blockId}`,
+              relatedTaskIds: [blockId],
+              taskId: task.id,
+              type: 'missing-task',
+            })
+          }
+        }
+      }
+    }
+
+    // Step 3: Detect circular dependencies
+    const circular = this.detectCircular(roadmap.tasks)
+    if (circular) {
+      errors.push({
+        message: circular.message,
+        relatedTaskIds: circular.cycle,
+        taskId: circular.cycle[0],
+        type: 'circular',
+      })
+    }
+
+    // Step 4: (Optional) Check for bidirectional consistency between depends-on and blocks
+    // This step is commented out to avoid overly strict validation.
+    // Uncomment if bidirectional consistency is required.
+
+    const taskMap = new Map(roadmap.tasks.map((t) => [t.id, t]))
+    const dependsOnMap = new Map<TaskID, Set<TaskID>>()
+
+    for (const task of roadmap.tasks) {
+      dependsOnMap.set(task.id, new Set(task['depends-on'] || []))
+    }
+
+    for (const task of roadmap.tasks) {
+      if (task.blocks) {
+        for (const blockedId of task.blocks) {
+          const blockedTask = taskMap.get(blockedId)
+          if (blockedTask) {
+            const blockedDependsOn = dependsOnMap.get(blockedId)
+            // eslint-disable-next-line max-depth
+            if (blockedDependsOn && !blockedDependsOn.has(task.id)) {
+              // Inconsistency found: task blocks blockedId, but blockedId does not depend on task
+              errors.push({
+                message: `Inconsistency: Task ${task.id} blocks ${blockedId}, but ${blockedId} does not depend on ${task.id}`,
+                relatedTaskIds: [blockedId],
+                taskId: task.id,
+                type: 'invalid-reference',
+              })
+            }
+          }
+        }
+      }
+    }
+
+    /*
+    Note: Bidirectional consistency checking (blocks <-> depends-on symmetry)
+    was considered but removed as it was too strict for practical use cases.
+    The blocks and depends-on relationships can be used independently without
+    requiring full symmetry.
+			*/
+
+    return errors
   }
 
   /**

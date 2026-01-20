@@ -964,9 +964,9 @@
       "details": "Implement validateDependencies() for full dependency validation.\n\nvalidateDependencies():\n- Check all TaskID references exist in roadmap\n- Check for circular dependencies using detectCircular()\n- Check blocks/depends-on are bidirectional if expected\n- Return detailed validation errors\n- Integrate with RoadmapService.validate()\n\nFile: src/services/task-dependency.service.ts",
       "id": "P-045",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-6",
         "service-layer",
@@ -974,7 +974,7 @@
       ],
       "title": "Implement validateDependencies method",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:05:06.000Z"
+      "updatedAt": "2026-01-20T04:01:24.390Z"
     },
     {
       "blocks": [],

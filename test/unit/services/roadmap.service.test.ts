@@ -173,7 +173,7 @@ describe('RoadmapService', () => {
           expect.fail('Should have thrown an error')
         } catch (error) {
           expect(error).to.be.instanceOf(Error)
-          const {message} = (error as Error)
+          const {message} = error as Error
           expect(message).to.include('Failed to load roadmap from')
           expect(message).to.include(nonExistentPath)
         }
@@ -392,7 +392,7 @@ describe('RoadmapService', () => {
           expect.fail('Should have thrown validation error')
         } catch (error) {
           expect(error).to.be.instanceOf(Error)
-          const {message} = (error as Error)
+          const {message} = error as Error
           expect(message).to.include('Cannot save invalid roadmap')
           expect(message).to.include('Duplicate')
         }
@@ -765,10 +765,10 @@ describe('RoadmapService', () => {
       it('should not error for valid task references', () => {
         const task1 = createFeatureTask({title: 'Foundation'})
         const task2 = createFeatureTask({
-          blocks: [task1.id],
           'depends-on': [task1.id],
           title: 'Dependent',
         })
+        task1.blocks = [task2.id] // Valid: task1 blocks task2, and task2 depends on task1
         const roadmap = createRoadmap({tasks: [task1, task2]})
 
         const errors = roadmapService.validate(roadmap)
@@ -790,6 +790,138 @@ describe('RoadmapService', () => {
 
         const refErrors = errors.filter((e) => e.type === 'invalid-reference')
         expect(refErrors).to.have.lengthOf(0)
+      })
+    })
+
+    describe('circular dependency detection', () => {
+      it('should detect circular dependency through RoadmapService', () => {
+        const task1 = createFeatureTask({
+          'depends-on': ['F-002' as never],
+          id: 'F-001',
+          title: 'Task 1',
+        })
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001' as never],
+          id: 'F-002',
+          title: 'Task 2',
+        })
+        const roadmap = createRoadmap({tasks: [task1, task2]})
+
+        const errors = roadmapService.validate(roadmap)
+
+        const circularError = errors.find((e) => e.type === 'circular-dependency')
+        expect(circularError).to.exist
+        expect(circularError?.message).to.include('Circular dependency')
+      })
+
+      it('should detect self-dependency', () => {
+        const task = createFeatureTask({
+          'depends-on': ['F-001' as never],
+          id: 'F-001',
+          title: 'Self-dependent task',
+        })
+        const roadmap = createRoadmap({tasks: [task]})
+
+        const errors = roadmapService.validate(roadmap)
+
+        const circularError = errors.find((e) => e.type === 'circular-dependency')
+        expect(circularError).to.exist
+      })
+
+      it('should detect circular dependency via blocks', () => {
+        const task1 = createFeatureTask({
+          blocks: ['F-002' as never],
+          id: 'F-001',
+          title: 'Task 1',
+        })
+        const task2 = createFeatureTask({
+          blocks: ['F-001' as never],
+          id: 'F-002',
+          title: 'Task 2',
+        })
+        const roadmap = createRoadmap({tasks: [task1, task2]})
+
+        const errors = roadmapService.validate(roadmap)
+
+        const circularError = errors.find((e) => e.type === 'circular-dependency')
+        expect(circularError).to.exist
+      })
+
+      it('should not error for diamond dependency pattern', () => {
+        const task1 = createFeatureTask({
+          'depends-on': [],
+          id: 'F-001',
+          title: 'Base task',
+        })
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001' as never],
+          id: 'F-002',
+          title: 'Middle task 1',
+        })
+        const task3 = createFeatureTask({
+          'depends-on': ['F-001' as never],
+          id: 'F-003',
+          title: 'Middle task 2',
+        })
+        const task4 = createFeatureTask({
+          'depends-on': ['F-002' as never, 'F-003' as never],
+          id: 'F-004',
+          title: 'Top task',
+        })
+        const roadmap = createRoadmap({tasks: [task1, task2, task3, task4]})
+
+        const errors = roadmapService.validate(roadmap)
+
+        const circularErrors = errors.filter((e) => e.type === 'circular-dependency')
+        expect(circularErrors).to.have.lengthOf(0)
+      })
+    })
+
+    describe('integration tests', () => {
+      it('should combine dependency errors with other validation errors', () => {
+        const task1 = createFeatureTask({
+          'depends-on': ['F-002' as never, 'F-999' as never], // F-002 creates circular, F-999 is missing
+          id: 'F-001',
+          title: 'Task 1',
+        })
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001' as never],
+          id: 'F-002',
+          title: 'Task 2',
+        })
+        ;(task1 as {type: string}).type = 'invalid' // Also invalid type
+        const roadmap = createRoadmap({tasks: [task1, task2]})
+
+        const errors = roadmapService.validate(roadmap)
+
+        // Should have multiple error types
+        expect(errors.length).to.be.greaterThan(1)
+        const errorTypes = new Set(errors.map((e) => e.type))
+        expect(errorTypes.size).to.be.greaterThan(1) // Multiple error types
+      })
+
+      it('should detect both missing references and circular dependencies', () => {
+        const task1 = createFeatureTask({
+          blocks: ['F-999' as never], // Missing task
+          'depends-on': ['F-002' as never], // Creates circular
+          id: 'F-001',
+          title: 'Task 1',
+        })
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001' as never],
+          id: 'F-002',
+          title: 'Task 2',
+        })
+        const roadmap = createRoadmap({tasks: [task1, task2]})
+
+        const errors = roadmapService.validate(roadmap)
+
+        // Should have both missing-task and circular errors
+        const missingTaskErrors = errors.filter((e) => e.type === 'missing-task')
+        const circularErrors = errors.filter((e) => e.type === 'circular-dependency')
+
+        expect(missingTaskErrors.length).to.be.greaterThan(0)
+        expect(circularErrors.length).to.be.greaterThan(0)
       })
     })
 

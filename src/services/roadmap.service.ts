@@ -2,6 +2,7 @@ import {readRoadmapFile} from '../util/read-roadmap.js'
 import {PRIORITY, Roadmap, STATUS, TASK_TYPE} from '../util/types.js'
 import {validateTask} from '../util/validate-task.js'
 import {writeRoadmapFile} from '../util/write-roadmap.js'
+import taskDependencyService from './task-dependency.service.js'
 
 /**
  * Statistics about a roadmap's tasks
@@ -40,7 +41,7 @@ export interface ValidationError {
   /** Associated task ID if applicable */
   taskId?: string
   /** Type of validation error */
-  type: 'duplicate-id' | 'invalid-reference' | 'structure' | 'task'
+  type: 'circular-dependency' | 'duplicate-id' | 'invalid-reference' | 'missing-task' | 'structure' | 'task'
 }
 
 /**
@@ -188,7 +189,27 @@ export class RoadmapService {
     // Validate task references
     this.validateReferences(roadmap.tasks, taskIds, errors)
 
+    // Validate dependency integrity (circular dependencies, etc.)
+    this.validateDependencyIntegrity(roadmap, errors)
+
     return errors
+  }
+
+  /**
+   * Validates dependency integrity including circular dependencies
+   * @param roadmap - The roadmap to validate
+   * @param errors - Array to collect errors
+   */
+  private validateDependencyIntegrity(roadmap: Roadmap, errors: ValidationError[]): void {
+    const depErrors = taskDependencyService.validateDependencies(roadmap)
+
+    for (const depError of depErrors) {
+      errors.push({
+        message: depError.message,
+        taskId: depError.taskId,
+        type: depError.type === 'circular' ? 'circular-dependency' : depError.type,
+      })
+    }
   }
 
   /**
