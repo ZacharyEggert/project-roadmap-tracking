@@ -41,6 +41,7 @@ The project uses two core JSON files managed in user projects:
 ### Task ID System
 
 Task IDs follow the format `{TYPE}-{NUMBER}` where:
+
 - TYPE: Single letter prefix (B=Bug, F=Feature, I=Improvement, P=Planning, R=Research)
 - NUMBER: Zero-padded 3-digit number (001-999)
 - Examples: `F-001`, `B-042`, `P-003`
@@ -52,6 +53,7 @@ IDs are auto-generated sequentially per task type by the `add` command (see `src
 All commands extend `@oclif/core`'s `Command` class. Commands are located in `src/commands/` and automatically discovered by oclif.
 
 **Legacy pattern** (direct utility calls):
+
 1. **Parse flags/args** using `this.parse()`
 2. **Read config** via `readConfigFile()` from `src/util/read-config.ts`
 3. **Read roadmap** via `readRoadmapFile()` from `src/util/read-roadmap.ts`
@@ -59,6 +61,7 @@ All commands extend `@oclif/core`'s `Command` class. Commands are located in `sr
 5. **Write roadmap** via `writeRoadmapFile()` from `src/util/write-roadmap.ts`
 
 **Modern pattern** (service-based, recommended):
+
 1. **Parse flags/args** using `this.parse()`
 2. **Read config** via `readConfigFile()`
 3. **Use services** for business logic (taskService, roadmapService, taskQueryService)
@@ -102,32 +105,32 @@ Located at `src/services/task-query.service.ts`, this service provides query and
 **Example usage:**
 
 ```typescript
-import roadmapService from './services/roadmap.service.js';
-import taskService from './services/task.service.js';
-import taskQueryService from './services/task-query.service.js';
+import roadmapService from './services/roadmap.service.js'
+import taskService from './services/task.service.js'
+import taskQueryService from './services/task-query.service.js'
 
 // Load roadmap
-const roadmap = await roadmapService.load('./prt.json');
+const roadmap = await roadmapService.load('./prt.json')
 
 // Create and add a task
-const taskId = taskService.generateNextId(roadmap, TASK_TYPE.Feature);
+const taskId = taskService.generateNextId(roadmap, TASK_TYPE.Feature)
 const task = taskService.createTask({
   id: taskId,
   title: 'New feature',
   details: 'Feature description',
   type: TASK_TYPE.Feature,
   priority: PRIORITY.High,
-});
-const updatedRoadmap = taskService.addTask(roadmap, task);
+})
+const updatedRoadmap = taskService.addTask(roadmap, task)
 
 // Query tasks
 const highPriorityTasks = taskQueryService.filter(roadmap.tasks, {
   priority: PRIORITY.High,
   status: STATUS.InProgress,
-});
+})
 
 // Save roadmap
-await roadmapService.save('./prt.json', updatedRoadmap);
+await roadmapService.save('./prt.json', updatedRoadmap)
 ```
 
 ### Core Utilities
@@ -142,6 +145,7 @@ await roadmapService.save('./prt.json', updatedRoadmap);
 ### Task Dependencies
 
 Tasks support two dependency relationships stored as arrays of TaskIDs:
+
 - **`depends-on`** - Tasks this task requires to be completed first
 - **`blocks`** - Tasks that cannot start until this task completes
 
@@ -161,47 +165,57 @@ PRT provides eight commands for managing project roadmaps. Claude can use these 
 ### Command Reference
 
 #### 1. `prt init [FOLDER]`
+
 Initialize a new project roadmap in the specified folder (defaults to current directory).
 
 **Flags:**
+
 - `-n, --name <name>` - Project name
 - `-d, --description <desc>` - Project description
 - `-f, --force` - Overwrite existing files
 - `--withSampleTasks` - Include sample tasks in the roadmap
 
 **Example:**
+
 ```bash
 prt init ./my-project --name "My Project" --description "Project tracking"
 ```
 
 #### 2. `prt add TITLE`
+
 Add a new task to the roadmap with auto-generated ID.
 
 **Required flags:**
+
 - `-t, --type <type>` - Task type: `bug`, `feature`, `improvement`, `planning`, or `research`
 - `-d, --details <details>` - Detailed description of the task
 
 **Optional flags:**
+
 - `-p, --priority <priority>` - Priority: `high`, `medium`, or `low` (default: `medium`)
 - `-s, --status <status>` - Status: `not-started`, `in-progress`, or `completed` (default: `not-started`)
 - `-g, --tags <tags>` - Comma-separated list of tags
 
 **Example:**
+
 ```bash
 prt add "User authentication" -t feature -d "Implement JWT authentication" -p high
 prt add "Fix login bug" -t bug -d "Users can't log in with spaces in email" -p high -g "auth,critical"
 ```
 
 #### 3. `prt list`
+
 List tasks with optional filtering and sorting.
 
 **Flags:**
+
 - `-i, --incomplete` - Show only incomplete tasks (not-started or in-progress)
 - `-p, --priority <priority>` - Filter by priority: `high`, `medium`, or `low`
 - `-s, --status <status>` - Filter by status: `not-started`, `in-progress`, or `completed`
 - `-o, --sort <field>` - Sort by field: `createdAt`, `updatedAt`, `priority`, `status`, `title`, `type`
 
 **Examples:**
+
 ```bash
 prt list
 prt list -p high --incomplete
@@ -209,20 +223,25 @@ prt list --status=in-progress --sort=createdAt
 ```
 
 #### 4. `prt show TASK`
+
 Display detailed information about a specific task.
 
 **Arguments:**
+
 - `TASK` - Task ID (e.g., `F-001`, `B-042`)
 
 **Example:**
+
 ```bash
 prt show F-001
 ```
 
 #### 5. `prt update TASKID`
+
 Update properties of an existing task.
 
 **Flags:**
+
 - `-s, --status <status>` - Update status: `not-started`, `in-progress`, or `completed`
 - `-n, --notes <notes>` - Add or update notes
 - `-d, --deps <deps>` - Update dependencies (comma-separated task IDs)
@@ -230,6 +249,7 @@ Update properties of an existing task.
 - `--clear-notes` - Clear all notes from the task
 
 **Examples:**
+
 ```bash
 prt update F-001 --status=in-progress --notes="Started implementation"
 prt update F-001 --deps="F-002,F-003"
@@ -237,29 +257,36 @@ prt update B-001 --clear-notes
 ```
 
 #### 6. `prt complete TASKID`
+
 Mark a task as completed.
 
 **Flags:**
+
 - `-t, --tests` - Also mark the task as passing tests
 
 **Examples:**
+
 ```bash
 prt complete F-001
 prt complete F-001 --tests
 ```
 
 #### 7. `prt pass-test TASKID`
+
 Mark a task as passing tests without changing its status.
 
 **Example:**
+
 ```bash
 prt pass-test F-001
 ```
 
 #### 8. `prt validate`
+
 Validate the roadmap structure and check for issues.
 
 Checks for:
+
 - Valid JSON structure
 - Required fields on all tasks
 - Circular dependencies
@@ -267,9 +294,33 @@ Checks for:
 - Duplicate task IDs
 
 **Example:**
+
 ```bash
 prt validate
 ```
+
+### Completing Tasks
+
+- When the user requests to complete a task:
+  - Review the requirements of the specific task.
+    - `prt show TASKID` can be used to display task details.
+  - Ensure all dependencies are completed.
+    - Use `prt show TASKID` to check dependencies.
+    - If dependencies are not completed, inform the user, and offer to complete one of the dependencies instead.
+  - Complete all actions required by the task.
+    - This may involve writing code, updating documentation, or other project-related work.
+    - Do not mark the task as complete until all work is done.
+    - Do not attempt to complete tasks that are outside of the scope of the given task.
+  - Run the test suite to verify functionality.
+    - `yarn test` should be used for this step.
+  - Run the typescript compiler to ensure no type errors.
+    - `yarn build` should be used for this step.
+  - Run the linter to ensure code quality.
+    - `yarn lint` should be used for this step.
+    - If there are linting errors, run `yarn lint --fix` to automatically fix issues.
+    - If there are still linting errors after auto-fixing, manually fix them.
+  - Use the `prt complete TASKID --tests` command to mark the task as completed only after all checks pass and the task is fully implemented.
+  - Check that the task is marked as completed and passing tests by using `prt show TASKID`.
 
 ## Adding New Commands
 
