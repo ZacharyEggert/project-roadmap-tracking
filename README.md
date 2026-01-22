@@ -166,7 +166,7 @@ $ npm install -g project-roadmap-tracking
 $ prt COMMAND
 running command...
 $ prt (--version)
-project-roadmap-tracking/0.1.0 darwin-arm64 node-v24.12.0
+project-roadmap-tracking/0.2.0 darwin-arm64 node-v24.12.0
 $ prt --help [COMMAND]
 USAGE
   $ prt COMMAND
@@ -228,7 +228,7 @@ EXAMPLES
   $ prt add
 ```
 
-_See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/add.ts)_
+_See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/add.ts)_
 
 ## `prt complete TASKID`
 
@@ -253,7 +253,7 @@ EXAMPLES
   $ prt complete F-001 --tests
 ```
 
-_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/complete.ts)_
+_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/complete.ts)_
 
 ## `prt help [COMMAND]`
 
@@ -300,7 +300,7 @@ EXAMPLES
   $ prt init [path/to/directory]
 ```
 
-_See code: [src/commands/init.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/init.ts)_
 
 ## `prt list`
 
@@ -329,7 +329,7 @@ EXAMPLES
   $ prt list -p=h --incomplete --sort=createdAt
 ```
 
-_See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/list.ts)_
+_See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/list.ts)_
 
 ## `prt pass-test TASKID`
 
@@ -353,7 +353,7 @@ EXAMPLES
   $ prt pass-test F-001
 ```
 
-_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/pass-test.ts)_
+_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/pass-test.ts)_
 
 ## `prt plugins`
 
@@ -667,7 +667,7 @@ EXAMPLES
   $ prt show F-001
 ```
 
-_See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/show.ts)_
+_See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/show.ts)_
 
 ## `prt update TASKID`
 
@@ -701,7 +701,7 @@ EXAMPLES
   $ prt update F-002 --deps="F-001" --clear-notes
 ```
 
-_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/update.ts)_
+_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/update.ts)_
 
 ## `prt validate`
 
@@ -722,7 +722,7 @@ EXAMPLES
   $ prt validate
 ```
 
-_See code: [src/commands/validate.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.1.0/src/commands/validate.ts)_
+_See code: [src/commands/validate.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/validate.ts)_
 <!-- commandsstop -->
 
 ## Development
