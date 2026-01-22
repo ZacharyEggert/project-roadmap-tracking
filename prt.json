@@ -1068,9 +1068,9 @@
       "details": "Create test/unit/services/display.service.test.ts.\n\nTest cases:\n- formatTask produces expected output\n- formatTaskList handles different display modes\n- JSON output is valid JSON\n- Table output has correct columns\n- Compact output is concise\n- Handle empty task lists\n\nFile: test/unit/services/display.service.test.ts\nTarget: src/services/display.service.ts",
       "id": "P-050",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "low",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-7",
         "unit-tests",
@@ -1078,7 +1078,7 @@
       ],
       "title": "Unit tests for display formatting",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:06:02.000Z"
+      "updatedAt": "2026-01-22T05:25:17.389Z"
     },
     {
       "blocks": [],
