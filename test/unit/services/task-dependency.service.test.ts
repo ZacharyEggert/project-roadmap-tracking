@@ -1482,80 +1482,278 @@ describe('TaskDependencyService', () => {
   })
 
   describe('topologicalSort', () => {
-    it('should return tasks in same order (current TODO implementation)', () => {
-      const task1 = createFeatureTask({id: 'F-001'})
-      const task2 = createFeatureTask({
-        'depends-on': ['F-001'] as TaskID[],
-        id: 'F-002',
+    describe('simple linear dependency chain', () => {
+      it('should sort tasks in correct dependency order', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-002',
+        })
+        const task3 = createFeatureTask({
+          'depends-on': ['F-002'] as TaskID[],
+          id: 'F-003',
+        })
+        const tasks = [task3, task1, task2] // Intentionally out of order
+
+        const sorted = taskDependencyService.topologicalSort(tasks)
+
+        expect(sorted).to.have.lengthOf(3)
+        expect(sorted.map((t) => t.id)).to.deep.equal(['F-001', 'F-002', 'F-003'])
       })
-      const task3 = createFeatureTask({
-        'depends-on': ['F-002'] as TaskID[],
-        id: 'F-003',
+
+      it('should handle reversed input order', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-002',
+        })
+        const task3 = createFeatureTask({
+          'depends-on': ['F-002'] as TaskID[],
+          id: 'F-003',
+        })
+        const tasks = [task3, task2, task1]
+
+        const sorted = taskDependencyService.topologicalSort(tasks)
+
+        expect(sorted.map((t) => t.id)).to.deep.equal(['F-001', 'F-002', 'F-003'])
       })
-      const tasks = [task1, task2, task3]
-
-      const sorted = taskDependencyService.topologicalSort(tasks)
-
-      // Current implementation returns tasks in same order
-      expect(sorted).to.have.lengthOf(3)
-      expect(sorted[0].id).to.equal('F-001')
-      expect(sorted[1].id).to.equal('F-002')
-      expect(sorted[2].id).to.equal('F-003')
     })
 
-    it('should not mutate the original tasks array', () => {
-      const task1 = createFeatureTask({id: 'F-001'})
-      const task2 = createFeatureTask({id: 'F-002'})
-      const tasks = [task1, task2]
-      const originalLength = tasks.length
-      const originalIds = tasks.map((t) => t.id)
+    describe('parallel tasks with no dependencies', () => {
+      it('should handle tasks with no dependencies', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const task2 = createFeatureTask({id: 'F-002'})
+        const task3 = createFeatureTask({id: 'F-003'})
+        const tasks = [task1, task2, task3]
 
-      taskDependencyService.topologicalSort(tasks)
+        const sorted = taskDependencyService.topologicalSort(tasks)
 
-      expect(tasks).to.have.lengthOf(originalLength)
-      expect(tasks.map((t) => t.id)).to.deep.equal(originalIds)
+        expect(sorted).to.have.lengthOf(3)
+        expect(sorted.map((t) => t.id)).to.include.members(['F-001', 'F-002', 'F-003'])
+      })
+
+      it('should preserve all tasks when no dependencies exist', () => {
+        const task1 = createBugTask({id: 'B-001'})
+        const task2 = createFeatureTask({id: 'F-001'})
+        const task3 = createPlanningTask({id: 'P-001'})
+        const tasks = [task1, task2, task3]
+
+        const sorted = taskDependencyService.topologicalSort(tasks)
+
+        expect(sorted).to.have.lengthOf(3)
+        expect(sorted.map((t) => t.id)).to.have.members(['F-001', 'B-001', 'P-001'])
+      })
     })
 
-    it('should return new array instance', () => {
-      const task1 = createFeatureTask({id: 'F-001'})
-      const task2 = createFeatureTask({id: 'F-002'})
-      const tasks = [task1, task2]
+    describe('diamond dependency pattern', () => {
+      it('should handle diamond dependency correctly', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-002',
+        })
+        const task3 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-003',
+        })
+        const task4 = createFeatureTask({
+          'depends-on': ['F-002', 'F-003'] as TaskID[],
+          id: 'F-004',
+        })
+        const tasks = [task4, task3, task2, task1]
 
-      const sorted = taskDependencyService.topologicalSort(tasks)
+        const sorted = taskDependencyService.topologicalSort(tasks)
+        const ids = sorted.map((t) => t.id)
 
-      expect(sorted).to.not.equal(tasks)
-      expect(sorted).to.be.an('array')
+        // F-001 must come first
+        expect(ids[0]).to.equal('F-001')
+        // F-004 must come last
+        expect(ids[3]).to.equal('F-004')
+        // F-002 and F-003 must come after F-001 and before F-004
+        expect(ids.indexOf('F-002')).to.be.greaterThan(ids.indexOf('F-001'))
+        expect(ids.indexOf('F-003')).to.be.greaterThan(ids.indexOf('F-001'))
+        expect(ids.indexOf('F-004')).to.be.greaterThan(ids.indexOf('F-002'))
+        expect(ids.indexOf('F-004')).to.be.greaterThan(ids.indexOf('F-003'))
+      })
+
+      it('should handle double diamond pattern', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-002',
+        })
+        const task3 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-003',
+        })
+        const task4 = createFeatureTask({
+          'depends-on': ['F-002', 'F-003'] as TaskID[],
+          id: 'F-004',
+        })
+        const task5 = createFeatureTask({
+          'depends-on': ['F-002', 'F-003'] as TaskID[],
+          id: 'F-005',
+        })
+        const task6 = createFeatureTask({
+          'depends-on': ['F-004', 'F-005'] as TaskID[],
+          id: 'F-006',
+        })
+        const tasks = [task6, task5, task4, task3, task2, task1]
+
+        const sorted = taskDependencyService.topologicalSort(tasks)
+        const ids = sorted.map((t) => t.id)
+
+        expect(ids[0]).to.equal('F-001')
+        expect(ids[5]).to.equal('F-006')
+        // Verify all dependencies come before their dependents
+        expect(ids.indexOf('F-001')).to.be.lessThan(ids.indexOf('F-002'))
+        expect(ids.indexOf('F-001')).to.be.lessThan(ids.indexOf('F-003'))
+        expect(ids.indexOf('F-002')).to.be.lessThan(ids.indexOf('F-004'))
+        expect(ids.indexOf('F-003')).to.be.lessThan(ids.indexOf('F-004'))
+        expect(ids.indexOf('F-004')).to.be.lessThan(ids.indexOf('F-006'))
+        expect(ids.indexOf('F-005')).to.be.lessThan(ids.indexOf('F-006'))
+      })
     })
 
-    it('should handle empty task list', () => {
-      const tasks: Task[] = []
+    describe('complex graphs', () => {
+      it('should handle complex graph correctly', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const task2 = createFeatureTask({id: 'F-002'})
+        const task3 = createFeatureTask({
+          'depends-on': ['F-001', 'F-002'] as TaskID[],
+          id: 'F-003',
+        })
+        const task4 = createFeatureTask({
+          'depends-on': ['F-002'] as TaskID[],
+          id: 'F-004',
+        })
+        const task5 = createFeatureTask({
+          'depends-on': ['F-003', 'F-004'] as TaskID[],
+          id: 'F-005',
+        })
+        const tasks = [task5, task4, task3, task2, task1]
 
-      const sorted = taskDependencyService.topologicalSort(tasks)
+        const sorted = taskDependencyService.topologicalSort(tasks)
+        const ids = sorted.map((t) => t.id)
 
-      expect(sorted).to.be.an('array')
-      expect(sorted).to.have.lengthOf(0)
+        // Verify all dependencies come before dependents
+        expect(ids.indexOf('F-001')).to.be.lessThan(ids.indexOf('F-003'))
+        expect(ids.indexOf('F-002')).to.be.lessThan(ids.indexOf('F-003'))
+        expect(ids.indexOf('F-002')).to.be.lessThan(ids.indexOf('F-004'))
+        expect(ids.indexOf('F-003')).to.be.lessThan(ids.indexOf('F-005'))
+        expect(ids.indexOf('F-004')).to.be.lessThan(ids.indexOf('F-005'))
+      })
+
+      it('should handle multiple independent chains', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-002',
+        })
+        const task3 = createBugTask({id: 'B-001'})
+        const task4 = createBugTask({
+          'depends-on': ['B-001'] as TaskID[],
+          id: 'B-002',
+        })
+        const tasks = [task4, task2, task3, task1]
+
+        const sorted = taskDependencyService.topologicalSort(tasks)
+        const ids = sorted.map((t) => t.id)
+
+        // Feature chain
+        expect(ids.indexOf('F-001')).to.be.lessThan(ids.indexOf('F-002'))
+        // Bug chain
+        expect(ids.indexOf('B-001')).to.be.lessThan(ids.indexOf('B-002'))
+      })
     })
 
-    it('should preserve all tasks in result', () => {
-      const task1 = createFeatureTask({id: 'F-001'})
-      const task2 = createBugTask({id: 'B-001'})
-      const task3 = createPlanningTask({id: 'P-001'})
-      const tasks = [task1, task2, task3]
+    describe('circular dependencies', () => {
+      it('should throw error on circular dependency', () => {
+        const task1 = createFeatureTask({
+          'depends-on': ['F-003'] as TaskID[],
+          id: 'F-001',
+        })
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-002',
+        })
+        const task3 = createFeatureTask({
+          'depends-on': ['F-002'] as TaskID[],
+          id: 'F-003',
+        })
+        const tasks = [task1, task2, task3]
 
-      const sorted = taskDependencyService.topologicalSort(tasks)
+        expect(() => taskDependencyService.topologicalSort(tasks)).to.throw(/Circular dependency detected/)
+      })
 
-      expect(sorted).to.have.lengthOf(3)
-      expect(sorted.map((t) => t.id)).to.have.members(['F-001', 'B-001', 'P-001'])
+      it('should throw error on self-referencing task', () => {
+        const task1 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-001',
+        })
+        const tasks = [task1]
+
+        expect(() => taskDependencyService.topologicalSort(tasks)).to.throw(/Circular dependency detected/)
+      })
+
+      it('should throw error on two-task cycle', () => {
+        const task1 = createFeatureTask({
+          'depends-on': ['F-002'] as TaskID[],
+          id: 'F-001',
+        })
+        const task2 = createFeatureTask({
+          'depends-on': ['F-001'] as TaskID[],
+          id: 'F-002',
+        })
+        const tasks = [task1, task2]
+
+        expect(() => taskDependencyService.topologicalSort(tasks)).to.throw(/Circular dependency detected/)
+      })
     })
 
-    it('should handle single task', () => {
-      const task1 = createFeatureTask({id: 'F-001'})
-      const tasks = [task1]
+    describe('edge cases', () => {
+      it('should handle empty task list', () => {
+        const tasks: Task[] = []
 
-      const sorted = taskDependencyService.topologicalSort(tasks)
+        const sorted = taskDependencyService.topologicalSort(tasks)
 
-      expect(sorted).to.have.lengthOf(1)
-      expect(sorted[0].id).to.equal('F-001')
+        expect(sorted).to.be.an('array')
+        expect(sorted).to.have.lengthOf(0)
+      })
+
+      it('should handle single task', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const tasks = [task1]
+
+        const sorted = taskDependencyService.topologicalSort(tasks)
+
+        expect(sorted).to.have.lengthOf(1)
+        expect(sorted[0].id).to.equal('F-001')
+      })
+
+      it('should not mutate the original tasks array', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const task2 = createFeatureTask({id: 'F-002'})
+        const tasks = [task1, task2]
+        const originalLength = tasks.length
+        const originalIds = tasks.map((t) => t.id)
+
+        taskDependencyService.topologicalSort(tasks)
+
+        expect(tasks).to.have.lengthOf(originalLength)
+        expect(tasks.map((t) => t.id)).to.deep.equal(originalIds)
+      })
+
+      it('should return new array instance', () => {
+        const task1 = createFeatureTask({id: 'F-001'})
+        const task2 = createFeatureTask({id: 'F-002'})
+        const tasks = [task1, task2]
+
+        const sorted = taskDependencyService.topologicalSort(tasks)
+
+        expect(sorted).to.not.equal(tasks)
+        expect(sorted).to.be.an('array')
+      })
     })
   })
 })

@@ -1365,9 +1365,9 @@
       "details": "Add topological sort to TaskDependencyService.\n\ntopologicalSort():\n- Use Kahn's algorithm or DFS-based topological sort\n- Returns tasks in dependency order (dependencies first)\n- Throws error if circular dependency exists\n- Useful for executing tasks in correct order\n\nFile: src/services/task-dependency.service.ts\nThis is a future enhancement for task execution ordering.",
       "id": "P-064",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "low",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-10",
         "advanced-features",
@@ -1375,7 +1375,7 @@
       ],
       "title": "Add topological sort to TaskDependencyService",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:09:00.000Z"
+      "updatedAt": "2026-01-22T18:49:34.915Z"
     },
     {
       "blocks": [],
@@ -1386,9 +1386,9 @@
       "details": "Create tests for topological sort functionality.\n\nTest cases:\n- Simple linear dependency chain sorted correctly\n- Parallel tasks (no dependencies) can be in any order\n- Diamond dependency handled correctly\n- Complex graph sorted correctly\n- Circular dependency throws error\n\nExtends existing test file: test/unit/services/task-dependency.service.test.ts\nTarget: src/services/task-dependency.service.ts",
       "id": "P-065",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "low",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-10",
         "unit-tests",
@@ -1396,7 +1396,7 @@
       ],
       "title": "Unit tests for topological sort",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:09:01.000Z"
+      "updatedAt": "2026-01-22T18:49:45.326Z"
     },
     {
       "blocks": [],

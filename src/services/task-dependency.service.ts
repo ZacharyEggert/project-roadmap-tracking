@@ -1,4 +1,3 @@
-/* eslint-disable no-warning-comments */
 import {Roadmap, Task, TaskID} from '../util/types.js'
 
 /**
@@ -186,9 +185,50 @@ export class TaskDependencyService {
    * ```
    */
   topologicalSort(tasks: Task[]): Task[] {
-    // TODO: Implement in P-064 using Kahn's algorithm or DFS-based approach
-    // For now, return tasks as-is
-    return [...tasks]
+    // First check for circular dependencies
+    const circular = this.detectCircular(tasks)
+    if (circular) {
+      throw new Error(circular.message)
+    }
+
+    // Build task map for quick lookups
+    const taskMap = new Map(tasks.map((t) => [t.id, t]))
+
+    // Calculate in-degree for each task (number of dependencies this task has)
+    const inDegree = new Map<TaskID, number>()
+    for (const task of tasks) {
+      inDegree.set(task.id, task['depends-on'].length)
+    }
+
+    // Queue tasks with no dependencies (in-degree = 0)
+    // These tasks can be executed first since they don't depend on anything
+    const queue: TaskID[] = []
+    for (const task of tasks) {
+      if (inDegree.get(task.id) === 0) {
+        queue.push(task.id)
+      }
+    }
+
+    // Process queue using Kahn's algorithm
+    const sorted: Task[] = []
+    while (queue.length > 0) {
+      const taskId = queue.shift()!
+      const task = taskMap.get(taskId)!
+      sorted.push(task)
+
+      // For each task that depends on this completed task, reduce its in-degree
+      for (const otherTask of tasks) {
+        if (otherTask['depends-on'].includes(taskId)) {
+          const newInDegree = (inDegree.get(otherTask.id) || 0) - 1
+          inDegree.set(otherTask.id, newInDegree)
+          if (newInDegree === 0) {
+            queue.push(otherTask.id)
+          }
+        }
+      }
+    }
+
+    return sorted
   }
 
   /**
