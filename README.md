@@ -20,7 +20,7 @@ $ npm install -g project-roadmap-tracking
 $ prt COMMAND
 running command...
 $ prt (--version)
-project-roadmap-tracking/0.1.0 darwin-arm64 node-v25.2.1
+project-roadmap-tracking/0.1.0 darwin-arm64 node-v24.12.0
 $ prt --help [COMMAND]
 USAGE
   $ prt COMMAND
@@ -57,8 +57,8 @@ add a new task to the roadmap
 
 ```
 USAGE
-  $ prt add TITLE -d <value> -t bug|feature|improvement|planning|research [-p high|medium|low] [-s
-    not-started|in-progress|completed] [-g <value>]
+  $ prt add TITLE -d <value> -t bug|feature|improvement|planning|research [--no-repo] [-p
+    high|medium|low] [-s not-started|in-progress|completed] [-g <value>] [-v]
 
 ARGUMENTS
   TITLE  title of the task to add
@@ -72,6 +72,8 @@ FLAGS
                            <options: not-started|in-progress|completed>
   -t, --type=<option>      (required) type of the task to add
                            <options: bug|feature|improvement|planning|research>
+  -v, --verbose            show detailed error information including stack traces
+      --no-repo            use legacy direct file I/O instead of repository pattern
 
 DESCRIPTION
   add a new task to the roadmap
@@ -88,13 +90,15 @@ Mark a task as completed
 
 ```
 USAGE
-  $ prt complete TASKID [-t]
+  $ prt complete TASKID [--no-repo] [-t] [-v]
 
 ARGUMENTS
   TASKID  ID of the task to complete
 
 FLAGS
-  -t, --tests  mark task as passes-tests
+  -t, --tests    mark task as passes-tests
+  -v, --verbose  show detailed error information including stack traces
+      --no-repo  use legacy direct file I/O instead of repository pattern
 
 DESCRIPTION
   Mark a task as completed
@@ -131,7 +135,7 @@ initialize a new project roadmap (prt.json and prt.config.json)
 
 ```
 USAGE
-  $ prt init [FOLDER] [-d <value>] [-f] [-n <value>] [--withSampleTasks]
+  $ prt init [FOLDER] [-d <value>] [-f] [-n <value>] [-v] [--withSampleTasks]
 
 ARGUMENTS
   [FOLDER]  folder to initialize the project roadmap in
@@ -140,6 +144,7 @@ FLAGS
   -d, --description=<value>  description to print
   -f, --force                force initialization even if files already exist
   -n, --name=<value>         name to print
+  -v, --verbose              show detailed error information including stack traces
       --withSampleTasks      include sample tasks in the initialized roadmap
 
 DESCRIPTION
@@ -157,8 +162,8 @@ list tasks in the project roadmap
 
 ```
 USAGE
-  $ prt list [-i] [-p high|medium|low|h|m|l] [-o dueDate|priority|createdAt] [-s
-    completed|in-progress|not-started]
+  $ prt list [-i] [--no-repo] [-p high|medium|low|h|m|l] [-o dueDate|priority|createdAt] [-s
+    completed|in-progress|not-started] [-v]
 
 FLAGS
   -i, --incomplete         filter tasks to show in-progress and not-started only
@@ -168,6 +173,8 @@ FLAGS
                            <options: high|medium|low|h|m|l>
   -s, --status=<option>    filter tasks by status (completed, in-progress, not-started)
                            <options: completed|in-progress|not-started>
+  -v, --verbose            show detailed error information including stack traces
+      --no-repo            use legacy direct file I/O instead of repository pattern
 
 DESCRIPTION
   list tasks in the project roadmap
@@ -184,10 +191,14 @@ Mark a task as passes-tests
 
 ```
 USAGE
-  $ prt pass-test TASKID
+  $ prt pass-test TASKID [--no-repo] [-v]
 
 ARGUMENTS
   TASKID  ID of the task to mark as passing tests
+
+FLAGS
+  -v, --verbose  show detailed error information including stack traces
+      --no-repo  use legacy direct file I/O instead of repository pattern
 
 DESCRIPTION
   Mark a task as passes-tests
@@ -494,10 +505,14 @@ show details of a specific task in the project roadmap
 
 ```
 USAGE
-  $ prt show TASK
+  $ prt show TASK [--no-repo] [-v]
 
 ARGUMENTS
   TASK  task ID to show
+
+FLAGS
+  -v, --verbose  show detailed error information including stack traces
+      --no-repo  use legacy direct file I/O instead of repository pattern
 
 DESCRIPTION
   show details of a specific task in the project roadmap
@@ -514,8 +529,8 @@ Update a task in place
 
 ```
 USAGE
-  $ prt update TASKID [--clear-notes] [-d <value>] [-n <value>] [-s completed|in-progress|not-started] [-t
-    true|false]
+  $ prt update TASKID [--clear-notes] [-d <value>] [--no-repo] [-n <value>] [-s
+    completed|in-progress|not-started] [-t true|false] [-v]
 
 ARGUMENTS
   TASKID  ID of the task to update
@@ -527,7 +542,9 @@ FLAGS
                          <options: completed|in-progress|not-started>
   -t, --tested=<option>  update whether the task passes tests
                          <options: true|false>
+  -v, --verbose          show detailed error information including stack traces
       --clear-notes      clear all notes from the task
+      --no-repo          use legacy direct file I/O instead of repository pattern
 
 DESCRIPTION
   Update a task in place
@@ -542,14 +559,18 @@ _See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roa
 
 ## `prt validate`
 
-describe the command here
+Validate roadmap structure, task data, and check for circular dependencies
 
 ```
 USAGE
-  $ prt validate
+  $ prt validate [--no-repo] [-v]
+
+FLAGS
+  -v, --verbose  show detailed error information including stack traces
+      --no-repo  use legacy direct file I/O instead of repository pattern
 
 DESCRIPTION
-  describe the command here
+  Validate roadmap structure, task data, and check for circular dependencies
 
 EXAMPLES
   $ prt validate
