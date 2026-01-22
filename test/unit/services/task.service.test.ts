@@ -1027,7 +1027,7 @@ describe('TaskService', () => {
           taskService.updateTask(roadmap, 'F-999', {
             status: STATUS.InProgress,
           }),
-        ).to.throw('Task with ID F-999 not found')
+        ).to.throw('Task not found: F-999')
       })
 
       it('should throw error for empty roadmap', () => {
@@ -1037,7 +1037,7 @@ describe('TaskService', () => {
           taskService.updateTask(roadmap, 'F-001', {
             status: STATUS.InProgress,
           }),
-        ).to.throw('Task with ID F-001 not found')
+        ).to.throw('Task not found: F-001')
       })
 
       it('should include task ID in error message', () => {

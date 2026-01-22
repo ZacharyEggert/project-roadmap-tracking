@@ -1,4 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
+import {TaskNotFoundError} from '../errors/index.js'
 import {PRIORITY, Roadmap, STATUS, Task, TASK_TYPE, TASK_TYPE_MAP, TaskID} from '../util/types.js'
 import {validateTask} from '../util/validate-task.js'
 
@@ -167,7 +168,7 @@ export class TaskService {
   updateTask(roadmap: Roadmap, taskId: string, updates: Partial<Task>): Roadmap {
     const taskIndex = roadmap.tasks.findIndex((task) => task.id === taskId)
     if (taskIndex === -1) {
-      throw new Error(`Task with ID ${taskId} not found`)
+      throw new TaskNotFoundError(taskId)
     }
 
     const updatedTask = {

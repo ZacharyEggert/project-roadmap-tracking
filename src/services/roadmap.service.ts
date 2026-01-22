@@ -1,3 +1,4 @@
+import {ValidationErrorDetail} from '../errors/index.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
 import {PRIORITY, Roadmap, STATUS, TASK_TYPE} from '../util/types.js'
 import {validateTask} from '../util/validate-task.js'
@@ -30,18 +31,6 @@ export interface RoadmapStats {
   }
   /** Total number of tasks in the roadmap */
   totalTasks: number
-}
-
-/**
- * Validation error information
- */
-export interface ValidationError {
-  /** Error message */
-  message: string
-  /** Associated task ID if applicable */
-  taskId?: string
-  /** Type of validation error */
-  type: 'circular-dependency' | 'duplicate-id' | 'invalid-reference' | 'missing-task' | 'structure' | 'task'
 }
 
 /**
@@ -111,7 +100,8 @@ export class RoadmapService {
    *
    * @param path - The file path to read the roadmap from
    * @returns A Promise resolving to the Roadmap object
-   * @throws Error if the file cannot be read or parsed
+   * @throws RoadmapNotFoundError if the file cannot be read
+   * @throws SyntaxError if the file contains invalid JSON
    *
    * @example
    * ```typescript
@@ -119,11 +109,7 @@ export class RoadmapService {
    * ```
    */
   async load(path: string): Promise<Roadmap> {
-    try {
-      return await readRoadmapFile(path)
-    } catch (error) {
-      throw new Error(`Failed to load roadmap from ${path}: ${error instanceof Error ? error.message : String(error)}`)
-    }
+    return readRoadmapFile(path)
   }
 
   /**
@@ -168,8 +154,8 @@ export class RoadmapService {
    * }
    * ```
    */
-  validate(roadmap: Roadmap): ValidationError[] {
-    const errors: ValidationError[] = []
+  validate(roadmap: Roadmap): ValidationErrorDetail[] {
+    const errors: ValidationErrorDetail[] = []
 
     // Validate roadmap structure
     this.validateStructure(roadmap, errors)
@@ -200,7 +186,7 @@ export class RoadmapService {
    * @param roadmap - The roadmap to validate
    * @param errors - Array to collect errors
    */
-  private validateDependencyIntegrity(roadmap: Roadmap, errors: ValidationError[]): void {
+  private validateDependencyIntegrity(roadmap: Roadmap, errors: ValidationErrorDetail[]): void {
     const depErrors = taskDependencyService.validateDependencies(roadmap)
 
     for (const depError of depErrors) {
@@ -217,7 +203,7 @@ export class RoadmapService {
    * @param metadata - The metadata to validate
    * @param errors - Array to collect errors
    */
-  private validateMetadata(metadata: Roadmap['metadata'], errors: ValidationError[]): void {
+  private validateMetadata(metadata: Roadmap['metadata'], errors: ValidationErrorDetail[]): void {
     if (!metadata.name || typeof metadata.name !== 'string') {
       errors.push({message: 'Roadmap metadata must have a name', type: 'structure'})
     }
@@ -241,7 +227,7 @@ export class RoadmapService {
    * @param taskIds - Set of valid task IDs
    * @param errors - Array to collect errors
    */
-  private validateReferences(tasks: Roadmap['tasks'], taskIds: Set<string>, errors: ValidationError[]): void {
+  private validateReferences(tasks: Roadmap['tasks'], taskIds: Set<string>, errors: ValidationErrorDetail[]): void {
     for (const task of tasks) {
       if (task['depends-on']) {
         for (const depId of task['depends-on']) {
@@ -274,7 +260,7 @@ export class RoadmapService {
    * @param roadmap - The roadmap to validate
    * @param errors - Array to collect errors
    */
-  private validateStructure(roadmap: Roadmap, errors: ValidationError[]): void {
+  private validateStructure(roadmap: Roadmap, errors: ValidationErrorDetail[]): void {
     if (!roadmap || typeof roadmap !== 'object') {
       errors.push({message: 'Roadmap must be an object', type: 'structure'})
       return
@@ -301,7 +287,7 @@ export class RoadmapService {
    * @param errors - Array to collect errors
    * @returns Set of valid task IDs
    */
-  private validateTasks(tasks: Roadmap['tasks'], errors: ValidationError[]): Set<string> {
+  private validateTasks(tasks: Roadmap['tasks'], errors: ValidationErrorDetail[]): Set<string> {
     const taskIds = new Set<string>()
 
     for (const task of tasks) {
@@ -342,3 +328,8 @@ export class RoadmapService {
  * ```
  */
 export default new RoadmapService()
+
+// Re-export ValidationErrorDetail for backward compatibility
+
+
+export {type ValidationErrorDetail} from '../errors/index.js'

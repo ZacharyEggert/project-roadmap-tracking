@@ -2,6 +2,7 @@ import {expect} from 'chai'
 import {mkdir, writeFile} from 'node:fs/promises'
 import {join} from 'node:path'
 
+import {ConfigNotFoundError, PrtErrorCode} from '../../../src/errors/index.js'
 import {readConfigFile} from '../../../src/util/read-config.js'
 import {createConfig} from '../../fixtures/config-factory.js'
 import {cleanupTempDir, createTempConfigFile, createTempDir} from '../../helpers/fs-helpers.js'
@@ -115,8 +116,8 @@ describe('readConfigFile', () => {
         await readConfigFile()
         expect.fail('Expected readConfigFile to throw an error')
       } catch (error) {
-        expect(error).to.be.an('error')
-        expect((error as NodeJS.ErrnoException).code).to.equal('ENOENT')
+        expect(error).to.be.instanceOf(ConfigNotFoundError)
+        expect((error as ConfigNotFoundError).code).to.equal(PrtErrorCode.PRT_FILE_CONFIG_NOT_FOUND)
       }
     })
 

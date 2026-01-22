@@ -1,5 +1,6 @@
 import {expect} from 'chai'
 
+import {InvalidTaskError} from '../../../src/errors/index.js'
 import {PRIORITY, STATUS, Task, TASK_TYPE} from '../../../src/util/types.js'
 import {validateTask} from '../../../src/util/validate-task.js'
 import {
@@ -659,6 +660,40 @@ describe('validateTask', () => {
       // Title is required by TypeScript type but not validated at runtime by this utility
       const task = createTask({title: '🚀 Fix: café !@#$%^&*() 你好世界'})
       expect(() => validateTask(task)).to.not.throw()
+    })
+  })
+
+  describe('error type', () => {
+    it('should throw InvalidTaskError for validation failures', () => {
+      const task = createTask({priority: 'invalid' as any})
+      expect(() => validateTask(task)).to.throw(InvalidTaskError)
+    })
+
+    it('should include task ID in InvalidTaskError context', () => {
+      const task = createTask({id: 'F-001' as any, type: 'invalid' as any})
+      try {
+        validateTask(task)
+        expect.fail('Should have thrown InvalidTaskError')
+      } catch (error) {
+        expect(error).to.be.instanceOf(InvalidTaskError)
+        if (error instanceof InvalidTaskError) {
+          expect(error.context?.taskId).to.equal('F-001')
+          expect(error.context?.validationField).to.equal('type')
+        }
+      }
+    })
+
+    it('should include validation field in InvalidTaskError context', () => {
+      const task = createTask({priority: 'invalid' as any})
+      try {
+        validateTask(task)
+        expect.fail('Should have thrown InvalidTaskError')
+      } catch (error) {
+        expect(error).to.be.instanceOf(InvalidTaskError)
+        if (error instanceof InvalidTaskError) {
+          expect(error.context?.validationField).to.equal('priority')
+        }
+      }
     })
   })
 })

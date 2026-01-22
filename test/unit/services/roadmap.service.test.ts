@@ -123,7 +123,7 @@ describe('RoadmapService', () => {
           expect.fail('Should have thrown an error')
         } catch (error) {
           expect(error).to.be.instanceOf(Error)
-          expect((error as Error).message).to.include('Failed to load roadmap from')
+          expect((error as Error).message).to.include('Roadmap file not found')
           expect((error as Error).message).to.include(nonExistentPath)
         }
       })
@@ -136,8 +136,7 @@ describe('RoadmapService', () => {
           await roadmapService.load(filePath)
           expect.fail('Should have thrown an error')
         } catch (error) {
-          expect(error).to.be.instanceOf(Error)
-          expect((error as Error).message).to.include('Failed to load roadmap from')
+          expect(error).to.be.instanceOf(SyntaxError)
         }
       })
 
@@ -149,8 +148,7 @@ describe('RoadmapService', () => {
           await roadmapService.load(filePath)
           expect.fail('Should have thrown an error')
         } catch (error) {
-          expect(error).to.be.instanceOf(Error)
-          expect((error as Error).message).to.include('Failed to load roadmap from')
+          expect(error).to.be.instanceOf(SyntaxError)
         }
       })
 
@@ -173,7 +171,7 @@ describe('RoadmapService', () => {
         } catch (error) {
           expect(error).to.be.instanceOf(Error)
           const {message} = error as Error
-          expect(message).to.include('Failed to load roadmap from')
+          expect(message).to.include('Roadmap file not found')
           expect(message).to.include(nonExistentPath)
         }
       })

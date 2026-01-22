@@ -412,7 +412,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'F-999', {status: STATUS.Completed})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID F-999 not found')
+          expect((error as Error).message).to.equal('Task not found: F-999')
         }
       })
 
@@ -423,7 +423,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'B-100', {status: STATUS.Completed})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID B-100 not found')
+          expect((error as Error).message).to.equal('Task not found: B-100')
         }
       })
 
@@ -436,7 +436,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'F-003', {status: STATUS.Completed})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID F-003 not found')
+          expect((error as Error).message).to.equal('Task not found: F-003')
         }
       })
     })
@@ -449,7 +449,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'invalid', {status: STATUS.Completed})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID invalid not found')
+          expect((error as Error).message).to.equal('Task not found: invalid')
         }
       })
 
@@ -460,7 +460,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'X-001', {status: STATUS.Completed})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID X-001 not found')
+          expect((error as Error).message).to.equal('Task not found: X-001')
         }
       })
 
@@ -471,7 +471,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'f-001', {status: STATUS.Completed})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID f-001 not found')
+          expect((error as Error).message).to.equal('Task not found: f-001')
         }
       })
 
@@ -482,7 +482,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'F-1', {status: STATUS.Completed})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID F-1 not found')
+          expect((error as Error).message).to.equal('Task not found: F-1')
         }
       })
 
@@ -493,7 +493,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'F-0001', {status: STATUS.Completed})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID F-0001 not found')
+          expect((error as Error).message).to.equal('Task not found: F-0001')
         }
       })
     })
@@ -506,7 +506,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'F-001', {status: STATUS.Completed})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID F-001 not found')
+          expect((error as Error).message).to.equal('Task not found: F-001')
         }
       })
 
@@ -517,7 +517,7 @@ describe('updateTaskInRoadmap', () => {
           await updateTaskInRoadmap(roadmap, 'B-002', {title: 'Updated title'})
           throw new Error('Expected updateTaskInRoadmap to throw')
         } catch (error: unknown) {
-          expect((error as Error).message).to.equal('Task with ID B-002 not found')
+          expect((error as Error).message).to.equal('Task not found: B-002')
         }
       })
     })

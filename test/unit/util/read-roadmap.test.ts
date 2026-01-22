@@ -2,6 +2,7 @@ import {expect} from 'chai'
 import {mkdir, writeFile} from 'node:fs/promises'
 import {join} from 'node:path'
 
+import {PrtErrorCode, RoadmapNotFoundError} from '../../../src/errors/index.js'
 import {readRoadmapFile} from '../../../src/util/read-roadmap.js'
 import {createComplexRoadmap, createEmptyRoadmap, createSimpleRoadmap} from '../../fixtures/roadmap-factory.js'
 import {assertRoadmapValid} from '../../helpers/assertions.js'
@@ -127,8 +128,8 @@ describe('readRoadmapFile', () => {
         await readRoadmapFile(nonExistentPath)
         expect.fail('Expected readRoadmapFile to throw an error')
       } catch (error) {
-        expect(error).to.be.an('error')
-        expect((error as NodeJS.ErrnoException).code).to.equal('ENOENT')
+        expect(error).to.be.instanceOf(RoadmapNotFoundError)
+        expect((error as RoadmapNotFoundError).code).to.equal(PrtErrorCode.PRT_FILE_ROADMAP_NOT_FOUND)
       }
     })
 
@@ -190,8 +191,8 @@ describe('readRoadmapFile', () => {
         await readRoadmapFile(nonExistentDir)
         expect.fail('Expected readRoadmapFile to throw an error')
       } catch (error) {
-        expect(error).to.be.an('error')
-        expect((error as NodeJS.ErrnoException).code).to.equal('ENOENT')
+        expect(error).to.be.instanceOf(RoadmapNotFoundError)
+        expect((error as RoadmapNotFoundError).code).to.equal(PrtErrorCode.PRT_FILE_ROADMAP_NOT_FOUND)
       }
     })
 

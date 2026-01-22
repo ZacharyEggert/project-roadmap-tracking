@@ -1,3 +1,4 @@
+import {TaskNotFoundError} from '../errors/index.js'
 import {Roadmap} from './types.js'
 
 export async function updateTaskInRoadmap(
@@ -7,7 +8,7 @@ export async function updateTaskInRoadmap(
 ): Promise<Roadmap> {
   const taskIndex = roadmap.tasks.findIndex((task) => task.id === taskId)
   if (taskIndex === -1) {
-    throw new Error(`Task with ID ${taskId} not found`)
+    throw new TaskNotFoundError(taskId)
   }
 
   const updatedTask = {

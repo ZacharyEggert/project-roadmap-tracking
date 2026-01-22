@@ -1280,9 +1280,9 @@
       "details": "Create custom error hierarchy in src/errors/.\n\nError classes:\n- PrtError (base class)\n- RoadmapNotFoundError\n- ConfigNotFoundError\n- InvalidTaskError\n- TaskNotFoundError\n- CircularDependencyError\n- ValidationError\n\nEach with proper message, stack trace, and error code.\n\nFile: src/errors/index.ts",
       "id": "P-060",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "low",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-9",
         "error-handling",
@@ -1290,7 +1290,7 @@
       ],
       "title": "Create custom error classes",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:08:00.000Z"
+      "updatedAt": "2026-01-22T06:43:15.209Z"
     },
     {
       "blocks": [],
