@@ -1,5 +1,10 @@
 export type Config = {
   $schema: string
+  cache?: {
+    enabled?: boolean
+    maxSize?: number
+    watchFiles?: boolean
+  }
   metadata: {
     description: string
     name: string

@@ -257,7 +257,7 @@ describe('init', () => {
 
       expect(config).to.have.property('$schema')
       expect(config.$schema).to.equal(
-        'https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/config/v1.json',
+        'https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/config/v1.1.json',
       )
       expect(config).to.have.property('metadata')
       expect(config.metadata).to.have.property('name')
@@ -266,6 +266,12 @@ describe('init', () => {
       expect(config.metadata.description).to.equal(customDesc)
       expect(config).to.have.property('path')
       expect(config.path).to.equal('./prt.json')
+      expect(config).to.have.property('cache')
+      expect(config.cache).to.deep.equal({
+        enabled: true,
+        maxSize: 10,
+        watchFiles: true,
+      })
     })
 
     it('should create prt.json with correct structure', async () => {

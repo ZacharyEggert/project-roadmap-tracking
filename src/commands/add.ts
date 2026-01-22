@@ -1,5 +1,6 @@
 import {Args, Command, Flags} from '@oclif/core'
 
+import {RoadmapRepository} from '../repositories/roadmap.repository.js'
 import errorHandlerService from '../services/error-handler.service.js'
 import taskService from '../services/task.service.js'
 import {readConfigFile} from '../util/read-config.js'
@@ -17,6 +18,10 @@ export default class Add extends Command {
     // force: Flags.boolean({char: 'f'}),
     // name: Flags.string({char: 'n', description: 'name to print'}),
     details: Flags.string({char: 'd', description: 'description of the task to add', required: true}),
+    'no-repo': Flags.boolean({
+      default: false,
+      description: 'use legacy direct file I/O instead of repository pattern',
+    }),
     priority: Flags.string({
       char: 'p',
       default: PRIORITY.Medium,
@@ -55,7 +60,10 @@ export default class Add extends Command {
     try {
       const config = await readConfigFile()
 
-      const roadmap = await readRoadmapFile(config.path)
+      // Use repository pattern by default, unless --no-repo flag is set
+      const roadmap = flags['no-repo']
+        ? await readRoadmapFile(config.path)
+        : await RoadmapRepository.fromConfig(config).load(config.path)
       const taskType = flags.type as TASK_TYPE
 
       const newTaskID = taskService.generateNextId(roadmap, taskType)
@@ -72,7 +80,7 @@ export default class Add extends Command {
 
       const updatedRoadmap = taskService.addTask(roadmap, newTask)
 
-      await writeRoadmapFile(config.path, updatedRoadmap)
+      await (flags['no-repo'] ? writeRoadmapFile(config.path, updatedRoadmap) : RoadmapRepository.fromConfig(config).save(config.path, updatedRoadmap));
     } catch (error) {
       const exitCode = errorHandlerService.handleError(error)
       this.error(errorHandlerService.formatErrorMessage(error, flags.verbose), {exit: exitCode})

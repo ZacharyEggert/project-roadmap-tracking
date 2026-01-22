@@ -1,5 +1,6 @@
 import {Args, Command, Flags} from '@oclif/core'
 
+import {RoadmapRepository} from '../repositories/roadmap.repository.js'
 import errorHandlerService from '../services/error-handler.service.js'
 import {readConfigFile} from '../util/read-config.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
@@ -14,6 +15,10 @@ export default class Complete extends Command {
   static override description = 'Mark a task as completed'
   static override examples = ['<%= config.bin %> <%= command.id %> F-001 --tests']
   static override flags = {
+    'no-repo': Flags.boolean({
+      default: false,
+      description: 'use legacy direct file I/O instead of repository pattern',
+    }),
     // flag with no value (-f, --force)
     // force: Flags.boolean({char: 'f'}),
     // flag with a value (-n, --name=VALUE)
@@ -31,7 +36,10 @@ export default class Complete extends Command {
 
     try {
       const config = await readConfigFile()
-      const roadmap = await readRoadmapFile(config.path)
+      // Use repository pattern by default, unless --no-repo flag is set
+      const roadmap = flags['no-repo']
+        ? await readRoadmapFile(config.path)
+        : await RoadmapRepository.fromConfig(config).load(config.path)
 
       const updatedRoadmap = await updateTaskInRoadmap(
         roadmap,
@@ -46,7 +54,7 @@ export default class Complete extends Command {
             },
       )
 
-      await writeRoadmapFile(config.path, updatedRoadmap)
+      await (flags['no-repo'] ? writeRoadmapFile(config.path, updatedRoadmap) : RoadmapRepository.fromConfig(config).save(config.path, updatedRoadmap));
 
       this.log(`Task ${args.taskID} marked as completed.`)
     } catch (error) {

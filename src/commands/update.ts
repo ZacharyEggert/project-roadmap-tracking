@@ -1,5 +1,6 @@
 import {Args, Command, Flags} from '@oclif/core'
 
+import {RoadmapRepository} from '../repositories/roadmap.repository.js'
 import errorHandlerService from '../services/error-handler.service.js'
 import {readConfigFile} from '../util/read-config.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
@@ -22,6 +23,10 @@ export default class Update extends Command {
     deps: Flags.string({
       char: 'd',
       description: 'update the dependencies of the task (comma-separated list of task IDs)',
+    }),
+    'no-repo': Flags.boolean({
+      default: false,
+      description: 'use legacy direct file I/O instead of repository pattern',
     }),
     notes: Flags.string({char: 'n', description: 'append notes to the task'}),
     status: Flags.string({
@@ -51,7 +56,10 @@ export default class Update extends Command {
 
     try {
       const config = await readConfigFile()
-      const roadmap = await readRoadmapFile(config.path)
+      // Use repository pattern by default, unless --no-repo flag is set
+      const roadmap = flags['no-repo']
+        ? await readRoadmapFile(config.path)
+        : await RoadmapRepository.fromConfig(config).load(config.path)
 
       const updateObject: Partial<Task> = {}
 
@@ -95,7 +103,7 @@ export default class Update extends Command {
 
       const updatedRoadmap = await updateTaskInRoadmap(roadmap, args.taskID, updateObject)
 
-      await writeRoadmapFile(config.path, updatedRoadmap)
+      await (flags['no-repo'] ? writeRoadmapFile(config.path, updatedRoadmap) : RoadmapRepository.fromConfig(config).save(config.path, updatedRoadmap));
 
       this.log(`Task ${args.taskID} has been updated.`)
     } catch (error) {

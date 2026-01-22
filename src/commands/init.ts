@@ -68,7 +68,12 @@ export default class Init extends Command {
   buildConfig({description, name, path}: {description: string; name: string; path: string}): Config {
     return {
       $schema:
-        'https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/config/v1.json',
+        'https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/config/v1.1.json',
+      cache: {
+        enabled: true,
+        maxSize: 10,
+        watchFiles: true,
+      },
       metadata: {
         description: `${description}`,
         name: `${name}`,

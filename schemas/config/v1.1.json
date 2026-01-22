@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://project-roadmap-tracking.com/schemas/config/v1.1.json",
+  "title": "Project Roadmap Tracking Configuration",
+  "description": "Configuration file schema for Project Roadmap Tracking (.prtrc.json)",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to the JSON schema for validation"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Metadata about the project roadmap",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the project roadmap"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the project roadmap"
+        }
+      },
+      "additionalProperties": false
+    },
+    "path": {
+      "type": "string",
+      "description": "Path to the prt.json roadmap file",
+      "default": "./prt.json"
+    },
+    "cache": {
+      "type": "object",
+      "description": "Caching configuration for the roadmap repository",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable in-memory caching of roadmap data",
+          "default": true
+        },
+        "maxSize": {
+          "type": "number",
+          "description": "Maximum number of roadmaps to cache (LRU eviction)",
+          "default": 10,
+          "minimum": 1
+        },
+        "watchFiles": {
+          "type": "boolean",
+          "description": "Watch roadmap files for external changes and auto-invalidate cache",
+          "default": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["path"],
+  "additionalProperties": false
+}

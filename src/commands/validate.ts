@@ -1,6 +1,7 @@
 import {Command, Flags} from '@oclif/core'
 import {readFile} from 'node:fs/promises'
 
+import {RoadmapRepository} from '../repositories/roadmap.repository.js'
 import displayService from '../services/display.service.js'
 import errorHandlerService from '../services/error-handler.service.js'
 import taskDependencyService from '../services/task-dependency.service.js'
@@ -15,6 +16,10 @@ export default class Validate extends Command {
   static override description = 'Validate roadmap structure, task data, and check for circular dependencies'
   static override examples = ['<%= config.bin %> <%= command.id %>']
   static override flags = {
+    'no-repo': Flags.boolean({
+      default: false,
+      description: 'use legacy direct file I/O instead of repository pattern',
+    }),
     // flag with no value (-f, --force)
     // force: Flags.boolean({char: 'f'}),
     // flag with a value (-n, --name=VALUE)
@@ -36,15 +41,24 @@ export default class Validate extends Command {
 
       const roadmapPath = config.path
 
-      const roadmapData = await readFile(roadmapPath, 'utf8')
-
       let roadmap: Roadmap
 
-      try {
-        roadmap = JSON.parse(roadmapData) as Roadmap
-        this.log(`roadmap at ${roadmapPath} is valid JSON`)
-      } catch (error: unknown) {
-        this.error(`roadmap at ${roadmapPath} is not valid JSON: ${error ? (error as Error).message : String(error)}`)
+      // Use repository pattern by default, unless --no-repo flag is set
+      if (flags['no-repo']) {
+        const roadmapData = await readFile(roadmapPath, 'utf8')
+        try {
+          roadmap = JSON.parse(roadmapData) as Roadmap
+          this.log(`roadmap at ${roadmapPath} is valid JSON`)
+        } catch (error: unknown) {
+          this.error(`roadmap at ${roadmapPath} is not valid JSON: ${error ? (error as Error).message : String(error)}`)
+        }
+      } else {
+        try {
+          roadmap = await RoadmapRepository.fromConfig(config).load(roadmapPath)
+          this.log(`roadmap at ${roadmapPath} is valid JSON`)
+        } catch (error: unknown) {
+          this.error(`roadmap at ${roadmapPath} is not valid JSON: ${error ? (error as Error).message : String(error)}`)
+        }
       }
 
       if (roadmap.tasks.length === 0) {

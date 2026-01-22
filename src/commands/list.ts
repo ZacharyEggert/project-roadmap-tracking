@@ -1,5 +1,6 @@
 import {/* Args, */ Command, Flags} from '@oclif/core'
 
+import {RoadmapRepository} from '../repositories/roadmap.repository.js'
 import displayService from '../services/display.service.js'
 import errorHandlerService from '../services/error-handler.service.js'
 import taskQueryService, {FilterCriteria, SortOrder} from '../services/task-query.service.js'
@@ -19,6 +20,10 @@ export default class List extends Command {
     // flag with a value (-n, --name=VALUE)
     // name: Flags.string({char: 'n', description: 'name to print'}),
     incomplete: Flags.boolean({char: 'i', description: 'filter tasks to show in-progress and not-started only'}),
+    'no-repo': Flags.boolean({
+      default: false,
+      description: 'use legacy direct file I/O instead of repository pattern',
+    }),
     priority: Flags.string({
       char: 'p',
       description: 'filter tasks by priority (high, medium, low)',
@@ -71,7 +76,10 @@ export default class List extends Command {
 
       const roadmapPath = config.path
 
-      const roadmap = await readRoadmapFile(roadmapPath)
+      // Use repository pattern by default, unless --no-repo flag is set
+      const roadmap = flags['no-repo']
+        ? await readRoadmapFile(roadmapPath)
+        : await RoadmapRepository.fromConfig(config).load(roadmapPath)
 
       // Build filter criteria
       const filterCriteria: Partial<FilterCriteria> = {}
