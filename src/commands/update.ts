@@ -1,5 +1,6 @@
 import {Args, Command, Flags} from '@oclif/core'
 
+import {getDefaultConfigRepository} from '../repositories/config.repository.js'
 import {RoadmapRepository} from '../repositories/roadmap.repository.js'
 import errorHandlerService from '../services/error-handler.service.js'
 import {readConfigFile} from '../util/read-config.js'
@@ -55,8 +56,8 @@ export default class Update extends Command {
     const {args, flags} = await this.parse(Update)
 
     try {
-      const config = await readConfigFile()
       // Use repository pattern by default, unless --no-repo flag is set
+      const config = flags['no-repo'] ? await readConfigFile() : await getDefaultConfigRepository().load()
       const roadmap = flags['no-repo']
         ? await readRoadmapFile(config.path)
         : await RoadmapRepository.fromConfig(config).load(config.path)
@@ -103,7 +104,9 @@ export default class Update extends Command {
 
       const updatedRoadmap = await updateTaskInRoadmap(roadmap, args.taskID, updateObject)
 
-      await (flags['no-repo'] ? writeRoadmapFile(config.path, updatedRoadmap) : RoadmapRepository.fromConfig(config).save(config.path, updatedRoadmap));
+      await (flags['no-repo']
+        ? writeRoadmapFile(config.path, updatedRoadmap)
+        : RoadmapRepository.fromConfig(config).save(config.path, updatedRoadmap))
 
       this.log(`Task ${args.taskID} has been updated.`)
     } catch (error) {

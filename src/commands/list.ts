@@ -1,5 +1,6 @@
 import {/* Args, */ Command, Flags} from '@oclif/core'
 
+import {getDefaultConfigRepository} from '../repositories/config.repository.js'
 import {RoadmapRepository} from '../repositories/roadmap.repository.js'
 import displayService from '../services/display.service.js'
 import errorHandlerService from '../services/error-handler.service.js'
@@ -72,11 +73,11 @@ export default class List extends Command {
           ? (['in-progress', 'not-started'] as STATUS[])
           : (['completed', 'in-progress', 'not-started'] as STATUS[])
 
-      const config = await readConfigFile()
+      // Use repository pattern by default, unless --no-repo flag is set
+      const config = flags['no-repo'] ? await readConfigFile() : await getDefaultConfigRepository().load()
 
       const roadmapPath = config.path
 
-      // Use repository pattern by default, unless --no-repo flag is set
       const roadmap = flags['no-repo']
         ? await readRoadmapFile(roadmapPath)
         : await RoadmapRepository.fromConfig(config).load(roadmapPath)

@@ -1,6 +1,7 @@
 import {Command, Flags} from '@oclif/core'
 import {readFile} from 'node:fs/promises'
 
+import {getDefaultConfigRepository} from '../repositories/config.repository.js'
 import {RoadmapRepository} from '../repositories/roadmap.repository.js'
 import displayService from '../services/display.service.js'
 import errorHandlerService from '../services/error-handler.service.js'
@@ -37,13 +38,13 @@ export default class Validate extends Command {
     try {
       this.log(`validating roadmap...`)
 
-      const config = await readConfigFile()
+      // Use repository pattern by default, unless --no-repo flag is set
+      const config = flags['no-repo'] ? await readConfigFile() : await getDefaultConfigRepository().load()
 
       const roadmapPath = config.path
 
       let roadmap: Roadmap
 
-      // Use repository pattern by default, unless --no-repo flag is set
       if (flags['no-repo']) {
         const roadmapData = await readFile(roadmapPath, 'utf8')
         try {
