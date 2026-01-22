@@ -1,4 +1,3 @@
-/* eslint-disable max-nested-callbacks */
 import {expect} from 'chai'
 
 import {TaskService} from '../../../src/services/task.service.js'
@@ -699,7 +698,7 @@ describe('TaskService', () => {
           title: 'Task',
           type: TASK_TYPE.Bug,
         }),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        
         id: 'invalid' as any,
       }
 
@@ -730,7 +729,6 @@ describe('TaskService', () => {
           title: 'Task',
           type: TASK_TYPE.Bug,
         }),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         type: 'invalid-type' as any,
       }
 
@@ -746,7 +744,7 @@ describe('TaskService', () => {
           title: 'Task',
           type: TASK_TYPE.Feature,
         }),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        
         priority: 'invalid-priority' as any,
       }
 
@@ -762,11 +760,394 @@ describe('TaskService', () => {
           title: 'Task',
           type: TASK_TYPE.Planning,
         }),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        
         status: 'invalid-status' as any,
       }
 
       expect(() => taskService.addTask(roadmap, invalidTask)).to.throw('task ID P-001 has invalid status')
+    })
+  })
+
+  describe('findTask', () => {
+    it('should find an existing task by ID', () => {
+      const task1 = createFeatureTask({id: 'F-001', title: 'Feature 1'})
+      const task2 = createBugTask({id: 'B-001', title: 'Bug 1'})
+      const roadmap = createRoadmap({tasks: [task1, task2]})
+
+      const found = taskService.findTask(roadmap, 'F-001')
+
+      expect(found).to.not.be.undefined
+      expect(found!.id).to.equal('F-001')
+      expect(found!.title).to.equal('Feature 1')
+    })
+
+    it('should return undefined for non-existent task ID', () => {
+      const roadmap = createRoadmap({
+        tasks: [createFeatureTask({id: 'F-001'})],
+      })
+
+      const found = taskService.findTask(roadmap, 'F-999')
+
+      expect(found).to.be.undefined
+    })
+
+    it('should return undefined for empty roadmap', () => {
+      const roadmap = createEmptyRoadmap()
+
+      const found = taskService.findTask(roadmap, 'F-001')
+
+      expect(found).to.be.undefined
+    })
+
+    it('should find task in roadmap with multiple tasks', () => {
+      const roadmap = createRoadmap({
+        tasks: [
+          createBugTask({id: 'B-001'}),
+          createFeatureTask({id: 'F-001'}),
+          createPlanningTask({id: 'P-001'}),
+          createFeatureTask({id: 'F-002'}),
+          createBugTask({id: 'B-002'}),
+        ],
+      })
+
+      const foundFirst = taskService.findTask(roadmap, 'B-001')
+      const foundMiddle = taskService.findTask(roadmap, 'P-001')
+      const foundLast = taskService.findTask(roadmap, 'B-002')
+
+      expect(foundFirst).to.not.be.undefined
+      expect(foundFirst!.id).to.equal('B-001')
+      expect(foundMiddle).to.not.be.undefined
+      expect(foundMiddle!.id).to.equal('P-001')
+      expect(foundLast).to.not.be.undefined
+      expect(foundLast!.id).to.equal('B-002')
+    })
+
+    it('should match exact task ID (case-sensitive)', () => {
+      const roadmap = createRoadmap({
+        tasks: [createFeatureTask({id: 'F-001'})],
+      })
+
+      const foundLower = taskService.findTask(roadmap, 'f-001')
+      const foundUpper = taskService.findTask(roadmap, 'F-001')
+
+      expect(foundLower).to.be.undefined
+      expect(foundUpper).to.not.be.undefined
+    })
+
+    it('should return first task when duplicate IDs exist (edge case)', () => {
+      const task1 = createFeatureTask({id: 'F-001', title: 'First'})
+      const task2 = createFeatureTask({id: 'F-001', title: 'Second'})
+      const roadmap = createRoadmap({tasks: [task1, task2]})
+
+      const found = taskService.findTask(roadmap, 'F-001')
+
+      expect(found).to.not.be.undefined
+      expect(found!.title).to.equal('First')
+    })
+  })
+
+  describe('updateTask', () => {
+    describe('basic updates', () => {
+      it('should update task status', () => {
+        const task = createFeatureTask({id: 'F-001', status: STATUS.NotStarted})
+        const roadmap = createRoadmap({tasks: [task]})
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          status: STATUS.InProgress,
+        })
+
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        expect(updatedTask!.status).to.equal(STATUS.InProgress)
+      })
+
+      it('should update task priority', () => {
+        const task = createFeatureTask({id: 'F-001', priority: PRIORITY.Low})
+        const roadmap = createRoadmap({tasks: [task]})
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          priority: PRIORITY.High,
+        })
+
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        expect(updatedTask!.priority).to.equal(PRIORITY.High)
+      })
+
+      it('should update task title and details', () => {
+        const task = createFeatureTask({
+          details: 'Old details',
+          id: 'F-001',
+          title: 'Old title',
+        })
+        const roadmap = createRoadmap({tasks: [task]})
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          details: 'New details',
+          title: 'New title',
+        })
+
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        expect(updatedTask!.title).to.equal('New title')
+        expect(updatedTask!.details).to.equal('New details')
+      })
+
+      it('should update passes-tests flag', () => {
+        const task = createFeatureTask({id: 'F-001', 'passes-tests': false})
+        const roadmap = createRoadmap({tasks: [task]})
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          'passes-tests': true,
+        })
+
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        expect(updatedTask!['passes-tests']).to.equal(true)
+      })
+
+      it('should update multiple fields simultaneously', () => {
+        const task = createFeatureTask({
+          id: 'F-001',
+          priority: PRIORITY.Low,
+          status: STATUS.NotStarted,
+        })
+        const roadmap = createRoadmap({tasks: [task]})
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          'passes-tests': true,
+          priority: PRIORITY.High,
+          status: STATUS.Completed,
+        })
+
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        expect(updatedTask!.status).to.equal(STATUS.Completed)
+        expect(updatedTask!.priority).to.equal(PRIORITY.High)
+        expect(updatedTask!['passes-tests']).to.equal(true)
+      })
+    })
+
+    describe('timestamp handling', () => {
+      it('should automatically set updatedAt timestamp', () => {
+        const task = createFeatureTask({id: 'F-001'})
+        const roadmap = createRoadmap({tasks: [task]})
+        const beforeUpdate = new Date()
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          status: STATUS.InProgress,
+        })
+
+        const afterUpdate = new Date()
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        const updatedAt = new Date(updatedTask!.updatedAt!)
+
+        expect(updatedAt.getTime()).to.be.at.least(beforeUpdate.getTime())
+        expect(updatedAt.getTime()).to.be.at.most(afterUpdate.getTime())
+      })
+
+      it('should not modify createdAt timestamp', () => {
+        const task = createFeatureTask({id: 'F-001'})
+        const originalCreatedAt = task.createdAt
+        const roadmap = createRoadmap({tasks: [task]})
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          status: STATUS.InProgress,
+        })
+
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        expect(updatedTask!.createdAt).to.equal(originalCreatedAt)
+      })
+
+      it('should override updatedAt even if provided in updates', () => {
+        const task = createFeatureTask({id: 'F-001'})
+        const roadmap = createRoadmap({tasks: [task]})
+        const customTimestamp = '2020-01-01T00:00:00.000Z'
+        const beforeUpdate = new Date()
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          status: STATUS.InProgress,
+          updatedAt: customTimestamp,
+        })
+
+        const afterUpdate = new Date()
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        const updatedAt = new Date(updatedTask!.updatedAt!)
+
+        // Should use current timestamp, not the custom one
+        expect(updatedAt.getTime()).to.be.at.least(beforeUpdate.getTime())
+        expect(updatedAt.getTime()).to.be.at.most(afterUpdate.getTime())
+        expect(updatedTask!.updatedAt).to.not.equal(customTimestamp)
+      })
+    })
+
+    describe('immutability', () => {
+      it('should not mutate the original roadmap', () => {
+        const task = createFeatureTask({id: 'F-001', status: STATUS.NotStarted})
+        const roadmap = createRoadmap({tasks: [task]})
+        const originalStatus = roadmap.tasks[0].status
+
+        taskService.updateTask(roadmap, 'F-001', {
+          status: STATUS.Completed,
+        })
+
+        expect(roadmap.tasks[0].status).to.equal(originalStatus)
+        expect(roadmap.tasks[0].status).to.equal(STATUS.NotStarted)
+      })
+
+      it('should return a new roadmap object', () => {
+        const task = createFeatureTask({id: 'F-001'})
+        const roadmap = createRoadmap({tasks: [task]})
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          status: STATUS.InProgress,
+        })
+
+        expect(updatedRoadmap).to.not.equal(roadmap)
+        expect(updatedRoadmap.tasks).to.not.equal(roadmap.tasks)
+      })
+
+      it('should not mutate the original task object', () => {
+        const task = createFeatureTask({id: 'F-001', status: STATUS.NotStarted})
+        const roadmap = createRoadmap({tasks: [task]})
+        const originalTask = roadmap.tasks[0]
+        const originalStatus = originalTask.status
+
+        taskService.updateTask(roadmap, 'F-001', {
+          status: STATUS.Completed,
+        })
+
+        expect(originalTask.status).to.equal(originalStatus)
+        expect(originalTask.status).to.equal(STATUS.NotStarted)
+      })
+    })
+
+    describe('error handling', () => {
+      it('should throw error when task ID not found', () => {
+        const roadmap = createRoadmap({
+          tasks: [createFeatureTask({id: 'F-001'})],
+        })
+
+        expect(() =>
+          taskService.updateTask(roadmap, 'F-999', {
+            status: STATUS.InProgress,
+          }),
+        ).to.throw('Task with ID F-999 not found')
+      })
+
+      it('should throw error for empty roadmap', () => {
+        const roadmap = createEmptyRoadmap()
+
+        expect(() =>
+          taskService.updateTask(roadmap, 'F-001', {
+            status: STATUS.InProgress,
+          }),
+        ).to.throw('Task with ID F-001 not found')
+      })
+
+      it('should include task ID in error message', () => {
+        const roadmap = createRoadmap({
+          tasks: [createFeatureTask({id: 'F-001'})],
+        })
+
+        try {
+          taskService.updateTask(roadmap, 'B-042', {
+            status: STATUS.InProgress,
+          })
+          expect.fail('Should have thrown error')
+        } catch (error) {
+          expect((error as Error).message).to.include('B-042')
+        }
+      })
+    })
+
+    describe('edge cases', () => {
+      it('should update only specified fields, preserve others', () => {
+        const task = createFeatureTask({
+          details: 'Original details',
+          id: 'F-001',
+          priority: PRIORITY.High,
+          status: STATUS.NotStarted,
+          title: 'Original title',
+        })
+        const roadmap = createRoadmap({tasks: [task]})
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          status: STATUS.InProgress,
+        })
+
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        expect(updatedTask!.status).to.equal(STATUS.InProgress)
+        expect(updatedTask!.title).to.equal('Original title')
+        expect(updatedTask!.details).to.equal('Original details')
+        expect(updatedTask!.priority).to.equal(PRIORITY.High)
+      })
+
+      it('should handle empty updates object (only updates timestamp)', () => {
+        const task = createFeatureTask({id: 'F-001'})
+        const roadmap = createRoadmap({tasks: [task]})
+        const beforeUpdate = new Date()
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {})
+
+        const afterUpdate = new Date()
+        const updatedTask = taskService.findTask(updatedRoadmap, 'F-001')
+        const updatedAt = new Date(updatedTask!.updatedAt!)
+
+        // Verify timestamp was updated
+        expect(updatedAt.getTime()).to.be.at.least(beforeUpdate.getTime())
+        expect(updatedAt.getTime()).to.be.at.most(afterUpdate.getTime())
+        expect(updatedTask!.id).to.equal('F-001')
+      })
+
+      it('should update task at beginning of task list', () => {
+        const roadmap = createRoadmap({
+          tasks: [
+            createFeatureTask({id: 'F-001', status: STATUS.NotStarted}),
+            createFeatureTask({id: 'F-002'}),
+            createFeatureTask({id: 'F-003'}),
+          ],
+        })
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-001', {
+          status: STATUS.Completed,
+        })
+
+        expect(updatedRoadmap.tasks[0].status).to.equal(STATUS.Completed)
+        expect(updatedRoadmap.tasks[1].id).to.equal('F-002')
+        expect(updatedRoadmap.tasks[2].id).to.equal('F-003')
+      })
+
+      it('should update task at end of task list', () => {
+        const roadmap = createRoadmap({
+          tasks: [
+            createFeatureTask({id: 'F-001'}),
+            createFeatureTask({id: 'F-002'}),
+            createFeatureTask({id: 'F-003', status: STATUS.NotStarted}),
+          ],
+        })
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-003', {
+          status: STATUS.Completed,
+        })
+
+        expect(updatedRoadmap.tasks[0].id).to.equal('F-001')
+        expect(updatedRoadmap.tasks[1].id).to.equal('F-002')
+        expect(updatedRoadmap.tasks[2].status).to.equal(STATUS.Completed)
+      })
+
+      it('should update task in middle of task list', () => {
+        const roadmap = createRoadmap({
+          tasks: [
+            createFeatureTask({id: 'F-001'}),
+            createFeatureTask({id: 'F-002', status: STATUS.NotStarted}),
+            createFeatureTask({id: 'F-003'}),
+          ],
+        })
+
+        const updatedRoadmap = taskService.updateTask(roadmap, 'F-002', {
+          status: STATUS.Completed,
+        })
+
+        expect(updatedRoadmap.tasks[0].id).to.equal('F-001')
+        expect(updatedRoadmap.tasks[1].status).to.equal(STATUS.Completed)
+        expect(updatedRoadmap.tasks[2].id).to.equal('F-003')
+      })
     })
   })
 })

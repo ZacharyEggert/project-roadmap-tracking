@@ -1,4 +1,3 @@
-/* eslint-disable max-nested-callbacks */
 import {expect} from 'chai'
 
 import {DisplayService} from '../../../src/services/display.service.js'

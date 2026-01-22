@@ -222,7 +222,6 @@ describe('readRoadmapFile', () => {
       // Add many more tasks to make it large
       const largeTasks = [...roadmap.tasks]
       for (let i = 0; i < 100; i++) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         largeTasks.push({...roadmap.tasks[0], id: `P-${1000 + i}` as any})
       }
 

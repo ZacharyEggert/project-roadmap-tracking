@@ -1,6 +1,3 @@
-/* eslint-disable max-nested-callbacks */
-/* eslint-disable unicorn/no-array-callback-reference */
-/* eslint-disable unicorn/no-array-method-this-argument */
 import {expect} from 'chai'
 
 import {SortOrder, TaskQueryService} from '../../../src/services/task-query.service.js'

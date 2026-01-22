@@ -1158,7 +1158,6 @@ describe('TaskDependencyService', () => {
 
         // Should have: missing-task error, circular error, possibly bidirectional warning
         expect(errors.length).to.be.at.least(2)
-        // eslint-disable-next-line max-nested-callbacks
         const errorTypes = errors.map((e) => e.type)
         expect(errorTypes).to.include('missing-task')
         expect(errorTypes).to.include('circular')
@@ -1260,6 +1259,303 @@ describe('TaskDependencyService', () => {
 
         expect(errors).to.have.lengthOf(0)
       })
+    })
+  })
+
+  describe('getBlockedTasks', () => {
+    it('should return tasks that depend on the specified task', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({
+        'depends-on': ['F-001'] as TaskID[],
+        id: 'F-002',
+      })
+      const task3 = createFeatureTask({
+        'depends-on': ['F-001'] as TaskID[],
+        id: 'F-003',
+      })
+      const allTasks = [task1, task2, task3]
+
+      const blockedTasks = taskDependencyService.getBlockedTasks(task1, allTasks)
+
+      expect(blockedTasks).to.have.lengthOf(2)
+      expect(blockedTasks.map((t) => t.id)).to.include('F-002')
+      expect(blockedTasks.map((t) => t.id)).to.include('F-003')
+    })
+
+    it('should return empty array when no tasks are blocked', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({id: 'F-002'})
+      const allTasks = [task1, task2]
+
+      const blockedTasks = taskDependencyService.getBlockedTasks(task1, allTasks)
+
+      expect(blockedTasks).to.be.an('array')
+      expect(blockedTasks).to.have.lengthOf(0)
+    })
+
+    it('should find single blocked task', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({
+        'depends-on': ['F-001'] as TaskID[],
+        id: 'F-002',
+      })
+      const allTasks = [task1, task2]
+
+      const blockedTasks = taskDependencyService.getBlockedTasks(task1, allTasks)
+
+      expect(blockedTasks).to.have.lengthOf(1)
+      expect(blockedTasks[0].id).to.equal('F-002')
+    })
+
+    it('should find multiple blocked tasks', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({
+        'depends-on': ['F-001'] as TaskID[],
+        id: 'F-002',
+      })
+      const task3 = createFeatureTask({
+        'depends-on': ['F-001'] as TaskID[],
+        id: 'F-003',
+      })
+      const task4 = createFeatureTask({
+        'depends-on': ['F-001'] as TaskID[],
+        id: 'F-004',
+      })
+      const allTasks = [task1, task2, task3, task4]
+
+      const blockedTasks = taskDependencyService.getBlockedTasks(task1, allTasks)
+
+      expect(blockedTasks).to.have.lengthOf(3)
+      expect(blockedTasks.map((t) => t.id)).to.have.members(['F-002', 'F-003', 'F-004'])
+    })
+
+    it('should not return the task itself', () => {
+      const task1 = createFeatureTask({
+        'depends-on': ['F-001'] as TaskID[],
+        id: 'F-001',
+      })
+      const allTasks = [task1]
+
+      const blockedTasks = taskDependencyService.getBlockedTasks(task1, allTasks)
+
+      // Task depends on itself, but getBlockedTasks should still find it
+      expect(blockedTasks).to.have.lengthOf(1)
+      expect(blockedTasks[0]).to.equal(task1)
+    })
+
+    it('should work with tasks of different types', () => {
+      const bugTask = createBugTask({id: 'B-001'})
+      const featureTask = createFeatureTask({
+        'depends-on': ['B-001'] as TaskID[],
+        id: 'F-001',
+      })
+      const planningTask = createPlanningTask({
+        'depends-on': ['B-001'] as TaskID[],
+        id: 'P-001',
+      })
+      const allTasks = [bugTask, featureTask, planningTask]
+
+      const blockedTasks = taskDependencyService.getBlockedTasks(bugTask, allTasks)
+
+      expect(blockedTasks).to.have.lengthOf(2)
+      expect(blockedTasks.map((t) => t.id)).to.have.members(['F-001', 'P-001'])
+    })
+
+    it('should handle empty task list', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const allTasks: Task[] = []
+
+      const blockedTasks = taskDependencyService.getBlockedTasks(task1, allTasks)
+
+      expect(blockedTasks).to.be.an('array')
+      expect(blockedTasks).to.have.lengthOf(0)
+    })
+  })
+
+  describe('getDependsOnTasks', () => {
+    it('should return tasks that this task depends on', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({id: 'F-002'})
+      const task3 = createFeatureTask({
+        'depends-on': ['F-001', 'F-002'] as TaskID[],
+        id: 'F-003',
+      })
+      const allTasks = [task1, task2, task3]
+
+      const dependencies = taskDependencyService.getDependsOnTasks(task3, allTasks)
+
+      expect(dependencies).to.have.lengthOf(2)
+      expect(dependencies.map((t) => t.id)).to.include('F-001')
+      expect(dependencies.map((t) => t.id)).to.include('F-002')
+    })
+
+    it('should return empty array when task has no dependencies', () => {
+      const task1 = createFeatureTask({
+        'depends-on': [],
+        id: 'F-001',
+      })
+      const allTasks = [task1]
+
+      const dependencies = taskDependencyService.getDependsOnTasks(task1, allTasks)
+
+      expect(dependencies).to.be.an('array')
+      expect(dependencies).to.have.lengthOf(0)
+    })
+
+    it('should find single dependency', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({
+        'depends-on': ['F-001'] as TaskID[],
+        id: 'F-002',
+      })
+      const allTasks = [task1, task2]
+
+      const dependencies = taskDependencyService.getDependsOnTasks(task2, allTasks)
+
+      expect(dependencies).to.have.lengthOf(1)
+      expect(dependencies[0].id).to.equal('F-001')
+    })
+
+    it('should find multiple dependencies', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({id: 'F-002'})
+      const task3 = createFeatureTask({id: 'F-003'})
+      const task4 = createFeatureTask({
+        'depends-on': ['F-001', 'F-002', 'F-003'] as TaskID[],
+        id: 'F-004',
+      })
+      const allTasks = [task1, task2, task3, task4]
+
+      const dependencies = taskDependencyService.getDependsOnTasks(task4, allTasks)
+
+      expect(dependencies).to.have.lengthOf(3)
+      expect(dependencies.map((t) => t.id)).to.have.members(['F-001', 'F-002', 'F-003'])
+    })
+
+    it('should filter out non-existent task IDs (invalid references)', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({
+        'depends-on': ['F-001', 'F-999'] as TaskID[],
+        id: 'F-002',
+      })
+      const allTasks = [task1, task2]
+
+      const dependencies = taskDependencyService.getDependsOnTasks(task2, allTasks)
+
+      expect(dependencies).to.have.lengthOf(1)
+      expect(dependencies[0].id).to.equal('F-001')
+      expect(dependencies.map((t) => t.id)).to.not.include('F-999')
+    })
+
+    it('should preserve order of dependencies', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({id: 'F-002'})
+      const task3 = createFeatureTask({id: 'F-003'})
+      const task4 = createFeatureTask({
+        'depends-on': ['F-003', 'F-001', 'F-002'] as TaskID[],
+        id: 'F-004',
+      })
+      const allTasks = [task1, task2, task3, task4]
+
+      const dependencies = taskDependencyService.getDependsOnTasks(task4, allTasks)
+
+      expect(dependencies).to.have.lengthOf(3)
+      expect(dependencies[0].id).to.equal('F-003')
+      expect(dependencies[1].id).to.equal('F-001')
+      expect(dependencies[2].id).to.equal('F-002')
+    })
+
+    it('should work with tasks of different types', () => {
+      const bugTask = createBugTask({id: 'B-001'})
+      const featureTask = createFeatureTask({id: 'F-001'})
+      const planningTask = createPlanningTask({
+        'depends-on': ['B-001', 'F-001'] as TaskID[],
+        id: 'P-001',
+      })
+      const allTasks = [bugTask, featureTask, planningTask]
+
+      const dependencies = taskDependencyService.getDependsOnTasks(planningTask, allTasks)
+
+      expect(dependencies).to.have.lengthOf(2)
+      expect(dependencies.map((t) => t.id)).to.have.members(['B-001', 'F-001'])
+    })
+  })
+
+  describe('topologicalSort', () => {
+    it('should return tasks in same order (current TODO implementation)', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({
+        'depends-on': ['F-001'] as TaskID[],
+        id: 'F-002',
+      })
+      const task3 = createFeatureTask({
+        'depends-on': ['F-002'] as TaskID[],
+        id: 'F-003',
+      })
+      const tasks = [task1, task2, task3]
+
+      const sorted = taskDependencyService.topologicalSort(tasks)
+
+      // Current implementation returns tasks in same order
+      expect(sorted).to.have.lengthOf(3)
+      expect(sorted[0].id).to.equal('F-001')
+      expect(sorted[1].id).to.equal('F-002')
+      expect(sorted[2].id).to.equal('F-003')
+    })
+
+    it('should not mutate the original tasks array', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({id: 'F-002'})
+      const tasks = [task1, task2]
+      const originalLength = tasks.length
+      const originalIds = tasks.map((t) => t.id)
+
+      taskDependencyService.topologicalSort(tasks)
+
+      expect(tasks).to.have.lengthOf(originalLength)
+      expect(tasks.map((t) => t.id)).to.deep.equal(originalIds)
+    })
+
+    it('should return new array instance', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createFeatureTask({id: 'F-002'})
+      const tasks = [task1, task2]
+
+      const sorted = taskDependencyService.topologicalSort(tasks)
+
+      expect(sorted).to.not.equal(tasks)
+      expect(sorted).to.be.an('array')
+    })
+
+    it('should handle empty task list', () => {
+      const tasks: Task[] = []
+
+      const sorted = taskDependencyService.topologicalSort(tasks)
+
+      expect(sorted).to.be.an('array')
+      expect(sorted).to.have.lengthOf(0)
+    })
+
+    it('should preserve all tasks in result', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const task2 = createBugTask({id: 'B-001'})
+      const task3 = createPlanningTask({id: 'P-001'})
+      const tasks = [task1, task2, task3]
+
+      const sorted = taskDependencyService.topologicalSort(tasks)
+
+      expect(sorted).to.have.lengthOf(3)
+      expect(sorted.map((t) => t.id)).to.have.members(['F-001', 'B-001', 'P-001'])
+    })
+
+    it('should handle single task', () => {
+      const task1 = createFeatureTask({id: 'F-001'})
+      const tasks = [task1]
+
+      const sorted = taskDependencyService.topologicalSort(tasks)
+
+      expect(sorted).to.have.lengthOf(1)
+      expect(sorted[0].id).to.equal('F-001')
     })
   })
 })

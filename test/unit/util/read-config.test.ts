@@ -185,7 +185,6 @@ describe('readConfigFile', () => {
     it('should handle config with additional unknown fields', async () => {
       const configWithExtras = {
         ...createConfig(),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         extraField: 'should be preserved' as any,
       }
       await createTempConfigFile(configWithExtras, tempDir)
@@ -194,7 +193,6 @@ describe('readConfigFile', () => {
       const result = await readConfigFile()
 
       // Type assertion to check if extra field is preserved
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((result as any).extraField).to.equal('should be preserved')
     })
 

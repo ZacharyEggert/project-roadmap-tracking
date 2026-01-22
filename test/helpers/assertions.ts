@@ -72,9 +72,7 @@ export function assertValidTask(task: unknown, message = 'Expected a valid Task 
  */
 export function assertTaskEquals(actual: Task, expected: Task, message = 'Tasks should be equal'): void {
   // Create copies without timestamp fields
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { createdAt: _a1, updatedAt: _a2, ...actualWithoutTimestamps } = actual
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { createdAt: _e1, updatedAt: _e2, ...expectedWithoutTimestamps } = expected
 
   expect(actualWithoutTimestamps, message).to.deep.equal(expectedWithoutTimestamps)

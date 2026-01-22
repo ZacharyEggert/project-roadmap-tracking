@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from 'chai'
 
 import {PRIORITY, STATUS, Task, TASK_TYPE} from '../../../src/util/types.js'

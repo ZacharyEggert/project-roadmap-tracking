@@ -79,7 +79,6 @@ export async function runCommand(
     }
 
     // Instantiate and run the command
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const command = new CommandClass(argv, {} as any)
     await command.run()
     result.exitCode = 0
