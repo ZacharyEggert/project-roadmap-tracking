@@ -1111,9 +1111,9 @@
       "details": "Create test/commands/init.test.ts for init command integration tests.\n\nReplace stub tests with:\n- Init creates .prtrc.json\n- Init creates prt.json\n- Init fails if files already exist\n- Init with custom path works\n- Files have correct structure\n\nFile: test/commands/init.test.ts\nTarget: src/commands/init.ts",
       "id": "P-052",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-8",
         "integration-tests",
@@ -1121,7 +1121,7 @@
       ],
       "title": "Integration tests for init command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:07:01.000Z"
+      "updatedAt": "2026-01-22T15:38:52.610Z"
     },
     {
       "blocks": [],

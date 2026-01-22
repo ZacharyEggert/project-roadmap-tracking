@@ -1,17 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 
-import type { Command } from '@oclif/core'
+import type {Command} from '@oclif/core'
 
-import { expect } from 'chai'
+import {expect} from 'chai'
 
-import type { Config, Roadmap } from '../../src/util/types.js'
+import type {Config, Roadmap} from '../../src/util/types.js'
 
-import {
-  cleanupTempDir,
-  createTempConfigFile,
-  createTempDir,
-  createTempRoadmapFile,
-} from './fs-helpers.js'
+import {cleanupTempDir, createTempConfigFile, createTempDir, createTempRoadmapFile} from './fs-helpers.js'
 
 /**
  * Result from running a command
@@ -36,7 +31,7 @@ export interface CommandResult {
  * @returns Promise resolving to CommandResult
  */
 export async function runCommand(
-  CommandClass: typeof Command,
+  CommandClass: new (argv: string[], config: any) => Command,
   args: string[] = [],
   flags: Record<string, unknown> = {},
   cwd?: string,
@@ -78,13 +73,34 @@ export async function runCommand(
       }
     }
 
+    // Create a minimal mock Config object for oclif commands
+    const mockConfig = {
+      bin: 'prt',
+      cacheDir: '/tmp/prt-cache',
+      configDir: '/tmp/prt-config',
+      dataDir: '/tmp/prt-data',
+      dirname: 'prt',
+      errlog: '/tmp/prt-error.log',
+      home: '/tmp',
+      name: 'project-roadmap-tracking',
+      pjson: {
+        name: 'project-roadmap-tracking',
+        version: '1.0.0',
+      },
+      root: process.cwd(),
+      runHook: async () => ({failures: [], successes: []}),
+      userAgent: 'prt/1.0.0',
+      version: '1.0.0',
+      windows: false,
+    }
+
     // Instantiate and run the command
-    const command = new CommandClass(argv, {} as any)
+    const command = new CommandClass(argv, mockConfig as any)
     await command.run()
     result.exitCode = 0
   } catch (error) {
     result.error = error as Error
-    result.exitCode = (error as { exitCode?: number })?.exitCode ?? 1
+    result.exitCode = (error as {exitCode?: number})?.exitCode ?? 1
   } finally {
     // Restore stdout/stderr
     process.stdout.write = originalStdoutWrite
@@ -104,7 +120,7 @@ export async function runCommand(
  * @param fn - Function to execute while capturing output
  * @returns Object with stdout and stderr strings
  */
-export async function captureOutput(fn: () => Promise<void>): Promise<{ stderr: string; stdout: string }> {
+export async function captureOutput(fn: () => Promise<void>): Promise<{stderr: string; stdout: string}> {
   let stdout = ''
   let stderr = ''
 
@@ -128,7 +144,7 @@ export async function captureOutput(fn: () => Promise<void>): Promise<{ stderr: 
     process.stderr.write = originalStderrWrite
   }
 
-  return { stderr, stdout }
+  return {stderr, stdout}
 }
 
 /**
@@ -140,11 +156,7 @@ export async function captureOutput(fn: () => Promise<void>): Promise<{ stderr: 
  */
 export async function withTempRoadmap(
   roadmap: Roadmap,
-  callback: (context: {
-    configPath?: string
-    roadmapPath: string
-    tempDir: string
-  }) => Promise<void>,
+  callback: (context: {configPath?: string; roadmapPath: string; tempDir: string}) => Promise<void>,
   includeConfig = true,
 ): Promise<void> {
   const tempDir = await createTempDir()
@@ -155,8 +167,12 @@ export async function withTempRoadmap(
 
     if (includeConfig) {
       const config: Config = {
-        description: roadmap.description,
-        name: roadmap.name,
+        $schema:
+          'https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/config/v1.json',
+        metadata: {
+          description: roadmap.metadata.description,
+          name: roadmap.metadata.name,
+        },
         path: roadmapPath,
       }
       configPath = await createTempConfigFile(config, tempDir)
@@ -167,7 +183,7 @@ export async function withTempRoadmap(
     process.chdir(tempDir)
 
     try {
-      await callback({ configPath, roadmapPath, tempDir })
+      await callback({configPath, roadmapPath, tempDir})
     } finally {
       process.chdir(originalCwd)
     }
@@ -231,8 +247,12 @@ export async function setupCommandTest(
 
   if (includeConfig) {
     const config: Config = {
-      description: roadmap.description,
-      name: roadmap.name,
+      $schema:
+        'https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/config/v1.json',
+      metadata: {
+        description: roadmap.metadata.description,
+        name: roadmap.metadata.name,
+      },
       path: roadmapPath,
     }
     configPath = await createTempConfigFile(config, tempDir)
