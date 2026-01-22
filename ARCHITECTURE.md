@@ -1,7 +1,7 @@
 # ARCHITECTURE.md
 
-**Version:** 0.1.0
-**Last Updated:** 2026-01-16
+**Version:** 0.2.0
+**Last Updated:** 2026-01-21
 **Status:** Living document - evolves with the codebase
 
 ## Table of Contents
@@ -49,16 +49,22 @@ Start simple, add complexity only when needed. The current MVP architecture is i
 
 ## System Architecture
 
-### Current Architecture (v0.1.0)
+### Current Architecture (v0.2.0)
 
 ```
 ┌─────────────────────────────────────┐
 │         CLI Layer (oclif)           │
 │    Commands, Args, Flags, Output    │
 │  ✓ add, complete, update, validate  │
+│  ✓ list, show, pass-test, init     │
 └──────────────┬──────────────────────┘
                │
-               │ (Business logic currently in commands)
+┌──────────────▼──────────────────────┐
+│      Service Layer                  │
+│  ✓ TaskService, TaskQueryService    │
+│  ✓ RoadmapService, DisplayService   │
+│  ✓ TaskDependencyService            │
+└──────────────┬──────────────────────┘
                │
 ┌──────────────▼──────────────────────┐
 │      Utility Layer (helpers)        │
@@ -80,7 +86,7 @@ Start simple, add complexity only when needed. The current MVP architecture is i
 ✓ = Implemented
 ⚡ = Recommended for future
 
-### Recommended Architecture (Future)
+### Recommended Architecture (Future Enhancements)
 
 ```
 ┌─────────────────────────────────────┐
@@ -89,14 +95,15 @@ Start simple, add complexity only when needed. The current MVP architecture is i
 └──────────────┬──────────────────────┘
                │
 ┌──────────────▼──────────────────────┐
-│      Service Layer                  │
-│  ⚡ TaskService, ValidationService   │
-│  ⚡ DependencyService, etc.          │
+│      Service Layer (Current)        │
+│  ✓ TaskService, TaskQueryService    │
+│  ✓ RoadmapService, DisplayService   │
+│  ✓ TaskDependencyService            │
 └──────────────┬──────────────────────┘
                │
 ┌──────────────▼──────────────────────┐
 │    Repository Layer                 │
-│  ⚡ RoadmapRepository                │
+│  ⚡ RoadmapRepository (with caching) │
 │  ⚡ ConfigRepository                 │
 └──────────────┬──────────────────────┘
                │
@@ -123,6 +130,12 @@ src/
 │   ├── show.ts           # Display task details
 │   ├── update.ts         # Update task properties
 │   └── validate.ts       # Validate roadmap integrity
+├── services/             # ✓ Business logic layer
+│   ├── task.service.ts            # Task lifecycle management
+│   ├── task-query.service.ts      # Task filtering/sorting
+│   ├── roadmap.service.ts         # Roadmap I/O and validation
+│   ├── task-dependency.service.ts # Dependency graph & validation
+│   └── display.service.ts         # Output formatting
 ├── util/                 # Utility functions & types
 │   ├── types.ts          # Core type definitions
 │   ├── read-config.ts    # Read .prtrc.json
@@ -135,6 +148,16 @@ src/
 
 test/
 ├── commands/             # Command tests
+│   └── *.test.ts
+├── unit/                 # ✓ Unit tests
+│   ├── services/         # Service layer tests
+│   │   ├── task.service.test.ts
+│   │   ├── task-query.service.test.ts
+│   │   ├── roadmap.service.test.ts
+│   │   ├── task-dependency.service.test.ts
+│   │   └── display.service.test.ts
+│   └── util/             # Utility tests
+│       └── *.test.ts
 └── helpers/              # Test utilities
 ```
 
@@ -177,8 +200,9 @@ test/
 
 ### Pattern 1: Command Pattern (Current - ✓)
 
-All CLI commands follow this structure:
+All CLI commands follow oclif's Command pattern with two approaches:
 
+**Legacy Pattern** (older commands):
 ```typescript
 export default class CommandName extends Command {
   static override args = { /* ... */ }
@@ -203,12 +227,41 @@ export default class CommandName extends Command {
 }
 ```
 
+**Service-Based Pattern** (recommended, current):
+```typescript
+export default class CommandName extends Command {
+  static override args = { /* ... */ }
+  static override flags = { /* ... */ }
+
+  public async run(): Promise<void> {
+    // 1. Parse input
+    const {args, flags} = await this.parse(CommandName)
+
+    // 2. Read config
+    const config = await readConfigFile()
+
+    // 3. Use services for business logic
+    const roadmap = await roadmapService.load(config.path)
+    const filtered = taskQueryService.filter(roadmap.tasks, criteria)
+
+    // 4. Display using DisplayService
+    const lines = displayService.formatTaskList(filtered)
+    for (const line of lines) {
+      console.log(line)
+    }
+  }
+}
+```
+
 **Benefits:**
 - Consistent structure across all commands
-- Easy to understand and modify
+- Separation of concerns (commands handle I/O, services handle logic)
 - oclif handles parsing, validation, help generation
+- Services are testable in isolation
 
-**Example:** See `src/commands/add.ts:45-87`
+**Examples:**
+- Legacy: `src/commands/add.ts`
+- Service-based: `src/commands/list.ts`, `src/commands/validate.ts`
 
 ### Pattern 2: Immutable Updates (Current - ✓)
 
@@ -245,41 +298,67 @@ export async function updateTaskInRoadmap(
 - Easier to track changes
 - Automatically sets `updatedAt` timestamp
 
-### Pattern 3: Service Layer (Recommended - ⚡)
+### Pattern 3: Service Layer (Current - ✓)
 
-Extract business logic into dedicated services:
+Business logic has been extracted into dedicated services:
 
+**Implemented Services:**
+
+1. **TaskService** (`src/services/task.service.ts`)
+   - `createTask()` - Create new task objects
+   - `addTask()` - Add task to roadmap (immutable)
+   - `updateTask()` - Update task properties
+   - `findTask()` - Find task by ID
+   - `generateNextId()` - Generate next sequential ID
+
+2. **TaskQueryService** (`src/services/task-query.service.ts`)
+   - `filter()` - Filter tasks by criteria
+   - `search()` - Search tasks by text
+   - `sort()` - Sort tasks by field
+   - `getByStatus()` - Get tasks by status
+   - `getByType()` - Get tasks by type
+
+3. **RoadmapService** (`src/services/roadmap.service.ts`)
+   - `load()` - Read and parse roadmap
+   - `save()` - Validate and write roadmap
+   - `validate()` - Validate roadmap structure
+   - `getStats()` - Get roadmap statistics
+
+4. **TaskDependencyService** (`src/services/task-dependency.service.ts`)
+   - `buildGraph()` - Build dependency graph
+   - `detectCircular()` - Detect circular dependencies
+   - `validateDependencies()` - Validate all dependencies
+   - `getBlockedTasks()` - Get tasks blocked by a task
+   - `getDependsOnTasks()` - Get task dependencies
+   - `topologicalSort()` - Sort tasks by dependencies (TODO)
+
+5. **DisplayService** (`src/services/display.service.ts`)
+   - `formatTaskList()` - Format task list output
+   - `formatTaskSummary()` - Format single task summary
+   - `formatTaskDetails()` - Format complete task details
+   - `formatValidationErrors()` - Format validation errors
+   - `formatRoadmapStats()` - Format statistics
+   - Helper formatters for status, priority, tests
+
+**Example Usage:**
 ```typescript
-// RECOMMENDED: src/services/task.service.ts
-export class TaskService {
-  constructor(
-    private roadmapRepo: RoadmapRepository,
-    private validator: ValidationService
-  ) {}
+// From src/commands/list.ts
+import displayService from '../services/display.service.js'
+import taskQueryService from '../services/task-query.service.js'
 
-  async addTask(taskData: CreateTaskDTO): Promise<Task> {
-    const roadmap = await this.roadmapRepo.load()
-    const newId = this.generateNextId(roadmap, taskData.type)
-    const task = this.createTask(newId, taskData)
-
-    this.validator.validate(task)
-
-    const updatedRoadmap = {
-      ...roadmap,
-      tasks: [...roadmap.tasks, task]
-    }
-
-    await this.roadmapRepo.save(updatedRoadmap)
-    return task
-  }
-
-  private generateNextId(roadmap: Roadmap, type: TASK_TYPE): TaskID {
-    // ID generation logic from add.ts:53-66
-  }
+const filtered = taskQueryService.filter(roadmap.tasks, filterCriteria)
+const sorted = taskQueryService.sort(filtered, sortBy, SortOrder.Ascending)
+const lines = displayService.formatTaskList(sorted)
+for (const line of lines) {
+  console.log(line)
 }
 ```
 
-**Migration:** Extract logic from commands into services gradually
+**Benefits:**
+- Separation of concerns (commands are thin handlers)
+- Business logic is testable in isolation
+- Services exported as singletons for convenience
+- Immutable patterns throughout
 
 ### Pattern 4: Repository Pattern (Recommended - ⚡)
 
@@ -327,8 +406,9 @@ export class RoadmapRepository {
 
 ## Data Flow
 
-### Current Flow (v0.1.0)
+### Current Flow (v0.2.0)
 
+**Legacy Pattern Flow** (some commands still use this):
 ```
 User runs command: prt add "Task" -t feature
          ↓
@@ -354,7 +434,32 @@ User runs command: prt add "Task" -t feature
   Output to console
 ```
 
-### Recommended Flow (Future)
+**Service-Based Pattern Flow** (current implementation):
+```
+User runs command: prt list -p high
+         ↓
+    oclif parses input
+         ↓
+  Command.run() (thin handler)
+         ↓
+   readConfigFile()
+         ↓
+  reads .prtrc.json
+         ↓
+   readRoadmapFile(path)
+         ↓
+  reads prt.json
+         ↓
+  TaskQueryService.filter(tasks, criteria)
+         ↓
+  TaskQueryService.sort(tasks, field)
+         ↓
+  DisplayService.formatTaskList(tasks)
+         ↓
+  Output to console
+```
+
+### Recommended Flow (Future with Repository Layer)
 
 ```
 User runs command: prt add "Task" -t feature
@@ -369,13 +474,15 @@ User runs command: prt add "Task" -t feature
          ↓
   (returns cached or reads file)
          ↓
-  ValidationService.validate(task)
+  TaskService.createTask() + validate()
          ↓
   RoadmapRepository.save(roadmap)
          ↓
   (writes file, updates cache)
          ↓
-  Output formatter
+  DisplayService.formatTaskDetails(task)
+         ↓
+  Output to console
 ```
 
 ---
@@ -457,56 +564,58 @@ Current validation (`src/commands/validate.ts`) checks:
 - ✓ JSON structure validity
 - ✓ Task field validation
 - ✓ TaskID format
+- ✓ Circular dependency detection
+- ✓ Invalid task references (missing tasks)
+- ✓ Bidirectional consistency (blocks ↔ depends-on)
 
 **Missing (⚡ Recommended):**
-- Circular dependency detection
-- Orphaned dependency references
-- Topological sorting for execution order
+- Topological sorting for execution order (partial implementation exists)
 
-### Recommended: Circular Dependency Detection
+### Implemented: Circular Dependency Detection
+
+The `TaskDependencyService` (`src/services/task-dependency.service.ts`) implements circular dependency detection using a three-color DFS algorithm:
 
 ```typescript
-// RECOMMENDED: src/services/dependency.service.ts
-export class DependencyService {
-  detectCircular(roadmap: Roadmap): TaskID[][] {
-    const graph = this.buildGraph(roadmap)
-    const circles: TaskID[][] = []
+// From src/services/task-dependency.service.ts
+export class TaskDependencyService {
+  /**
+   * Detects circular dependencies using depth-first search.
+   * Returns the first circular dependency found, or null if none exist.
+   */
+  detectCircular(tasks: Task[]): CircularDependency | null {
+    const graph = this.buildUnifiedGraph(tasks)
+    const visited = new Set<TaskID>()
 
-    for (const task of roadmap.tasks) {
-      const visited = new Set<TaskID>()
+    for (const task of tasks) {
       const path: TaskID[] = []
-
       if (this.hasCycle(task.id, graph, visited, path)) {
-        circles.push([...path])
+        const cycle = this.extractCycle(path)
+        const message = `Circular dependency detected: ${cycle.join(' -> ')}`
+        return {cycle, message}
       }
     }
 
-    return circles
+    return null
   }
 
-  private hasCycle(
-    taskId: TaskID,
-    graph: Map<TaskID, TaskID[]>,
-    visited: Set<TaskID>,
-    path: TaskID[]
-  ): boolean {
-    if (path.includes(taskId)) return true
-    if (visited.has(taskId)) return false
-
-    visited.add(taskId)
-    path.push(taskId)
-
-    for (const dep of graph.get(taskId) || []) {
-      if (this.hasCycle(dep, graph, visited, path)) {
-        return true
-      }
-    }
-
-    path.pop()
-    return false
+  /**
+   * Validates all dependencies in a roadmap.
+   * Checks for invalid references, circular dependencies, and more.
+   */
+  validateDependencies(roadmap: Roadmap): DependencyValidationError[] {
+    // Returns array of validation errors
   }
 }
 ```
+
+**Features:**
+- Three-color DFS (white/gray/black nodes)
+- Unified graph combining depends-on and blocks
+- Detailed error messages with cycle paths
+- Validation of task references
+- Used by `validate` command
+
+**Example:** See `src/commands/validate.ts:63-73`
 
 ---
 
@@ -586,11 +695,27 @@ Potential integrations:
 
 ## Testing Strategy
 
-### Current State (v0.1.0)
+### Current State (v0.2.0)
 
 - ✓ Test structure exists (`test/` directory)
 - ✓ Mocha + Chai configured
-- ⚡ Minimal actual tests (mostly stubs)
+- ✓ Unit tests for all services
+  - `test/unit/services/task.service.test.ts`
+  - `test/unit/services/task-query.service.test.ts`
+  - `test/unit/services/roadmap.service.test.ts`
+  - `test/unit/services/task-dependency.service.test.ts`
+  - `test/unit/services/display.service.test.ts`
+- ✓ Unit tests for utilities
+  - `test/unit/util/validate-task.test.ts`
+  - `test/unit/util/validate-task-id.test.ts`
+  - `test/unit/util/update-task.test.ts`
+  - `test/unit/util/read-roadmap.test.ts`
+  - `test/unit/util/write-roadmap.test.ts`
+  - `test/unit/util/read-config.test.ts`
+- ✓ Command tests (basic)
+  - `test/commands/*.test.ts`
+- ⚡ Integration tests needed
+- ⚡ E2E tests needed
 
 ### Recommended Testing Pyramid
 
@@ -901,21 +1026,26 @@ interface TaskIndex {
 
 ## Migration Path
 
-### Phase 1: Service Layer Extraction (No Breaking Changes)
+### Phase 1: Service Layer Extraction (✓ COMPLETED)
 
 **Goal:** Extract business logic from commands into services
 
-**Steps:**
-1. Create `src/services/task.service.ts`
-2. Move ID generation logic from `add.ts`
-3. Move validation orchestration from `validate.ts`
-4. Update commands to use services
-5. Add unit tests for services
+**Completed Steps:**
+1. ✓ Created `src/services/` directory with five services:
+   - `task.service.ts` - Task lifecycle management
+   - `task-query.service.ts` - Filtering and sorting
+   - `roadmap.service.ts` - File I/O and validation
+   - `task-dependency.service.ts` - Dependency validation
+   - `display.service.ts` - Output formatting
+2. ✓ Moved ID generation logic to `TaskService`
+3. ✓ Moved validation logic to `TaskDependencyService`
+4. ✓ Updated commands to use services (`list`, `validate`)
+5. ✓ Added comprehensive unit tests for all services
 
-**Files to refactor:**
-- `src/commands/add.ts` → `TaskService.addTask()`
-- `src/commands/update.ts` → `TaskService.updateTask()`
-- `src/commands/complete.ts` → `TaskService.completeTask()`
+**Status:** Phase 1 complete. Services are implemented and tested.
+
+**Remaining work:**
+- Some commands still use legacy pattern (can migrate incrementally)
 
 ### Phase 2: Repository Pattern (Add Abstraction)
 
@@ -1028,7 +1158,13 @@ interface TaskIndex {
 | `src/commands/add.ts` | ID generation algorithm | 53-66 |
 | `src/util/update-task.ts` | Immutable update pattern | 3-23 (entire file) |
 | `src/util/validate-task.ts` | Validation logic | 3-23 (entire file) |
-| `src/commands/validate.ts` | Validation orchestration | 21-59 |
+| `src/commands/validate.ts` | Validation orchestration | 21-77 |
+| `src/services/task.service.ts` | Task lifecycle management | 1-408 (entire file) |
+| `src/services/task-query.service.ts` | Filtering and sorting | 1-200+ (entire file) |
+| `src/services/roadmap.service.ts` | File I/O and validation | 1-200+ (entire file) |
+| `src/services/task-dependency.service.ts` | Dependency graph & circular detection | 112-126 (detectCircular), 214-302 (validateDependencies) |
+| `src/services/display.service.ts` | Output formatting | 1-366 (entire file) |
+| `src/commands/list.ts` | Service-based command example | 85-98 (service usage) |
 
 ---
 
