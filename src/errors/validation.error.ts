@@ -1,4 +1,4 @@
-import { PrtError, PrtErrorCode } from './base.error.js'
+import {PrtError, PrtErrorCode} from './base.error.js'
 
 /**
  * Details about a single validation error
@@ -7,7 +7,15 @@ export interface ValidationErrorDetail {
   field?: string
   message: string
   taskId?: string
-  type: 'circular-dependency' | 'duplicate-id' | 'invalid-reference' | 'invalid-value' | 'missing-field' | 'missing-task' | 'structure' | 'task'
+  type:
+    | 'circular-dependency'
+    | 'duplicate-id'
+    | 'invalid-reference'
+    | 'invalid-value'
+    | 'missing-field'
+    | 'missing-task'
+    | 'structure'
+    | 'task'
 }
 
 /**

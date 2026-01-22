@@ -93,9 +93,7 @@ describe('ValidationError', () => {
     })
 
     it('should preserve stack trace', () => {
-      const errors: ValidationErrorDetail[] = [
-        {message: 'Test error', type: 'invalid-value'},
-      ]
+      const errors: ValidationErrorDetail[] = [{message: 'Test error', type: 'invalid-value'}]
       const error = new ValidationError(errors)
 
       expect(error.stack).to.be.a('string')

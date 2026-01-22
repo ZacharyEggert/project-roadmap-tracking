@@ -332,5 +332,4 @@ export default new RoadmapService()
 
 // Re-export ValidationErrorDetail for backward compatibility
 
-
 export {type ValidationErrorDetail} from '../errors/index.js'

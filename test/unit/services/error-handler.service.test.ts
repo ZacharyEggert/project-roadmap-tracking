@@ -16,16 +16,12 @@ import errorHandlerService, {ExitCodes} from '../../../src/services/error-handle
 describe('ErrorHandlerService', () => {
   describe('getExitCodeForErrorCode', () => {
     it('should map config not found to NOT_FOUND exit code', () => {
-      const exitCode = errorHandlerService.getExitCodeForErrorCode(
-        PrtErrorCode.PRT_FILE_CONFIG_NOT_FOUND,
-      )
+      const exitCode = errorHandlerService.getExitCodeForErrorCode(PrtErrorCode.PRT_FILE_CONFIG_NOT_FOUND)
       expect(exitCode).to.equal(ExitCodes.NOT_FOUND)
     })
 
     it('should map roadmap not found to NOT_FOUND exit code', () => {
-      const exitCode = errorHandlerService.getExitCodeForErrorCode(
-        PrtErrorCode.PRT_FILE_ROADMAP_NOT_FOUND,
-      )
+      const exitCode = errorHandlerService.getExitCodeForErrorCode(PrtErrorCode.PRT_FILE_ROADMAP_NOT_FOUND)
       expect(exitCode).to.equal(ExitCodes.NOT_FOUND)
     })
 
@@ -45,16 +41,12 @@ describe('ErrorHandlerService', () => {
     })
 
     it('should map validation failed to VALIDATION_ERROR exit code', () => {
-      const exitCode = errorHandlerService.getExitCodeForErrorCode(
-        PrtErrorCode.PRT_VALIDATION_FAILED,
-      )
+      const exitCode = errorHandlerService.getExitCodeForErrorCode(PrtErrorCode.PRT_VALIDATION_FAILED)
       expect(exitCode).to.equal(ExitCodes.VALIDATION_ERROR)
     })
 
     it('should map circular dependency to DEPENDENCY_ERROR exit code', () => {
-      const exitCode = errorHandlerService.getExitCodeForErrorCode(
-        PrtErrorCode.PRT_VALIDATION_CIRCULAR_DEPENDENCY,
-      )
+      const exitCode = errorHandlerService.getExitCodeForErrorCode(PrtErrorCode.PRT_VALIDATION_CIRCULAR_DEPENDENCY)
       expect(exitCode).to.equal(ExitCodes.DEPENDENCY_ERROR)
     })
 

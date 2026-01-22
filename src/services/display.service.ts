@@ -85,7 +85,28 @@ export class DisplayService {
   formatRoadmapStats(stats: RoadmapStats): string[] {
     const lines: string[] = []
 
-    lines.push('Roadmap Statistics:', '', `Total Tasks: ${stats.totalTasks}`, '', 'By Status:', `  Completed: ${stats.byStatus[STATUS.Completed]}`, `  In Progress: ${stats.byStatus[STATUS.InProgress]}`, `  Not Started: ${stats.byStatus[STATUS.NotStarted]}`, '', 'By Type:', `  Features: ${stats.byType.feature}`, `  Bugs: ${stats.byType.bug}`, `  Improvements: ${stats.byType.improvement}`, `  Planning: ${stats.byType.planning}`, `  Research: ${stats.byType.research}`, '', 'By Priority:', `  High: ${stats.byPriority[PRIORITY.High]}`, `  Medium: ${stats.byPriority[PRIORITY.Medium]}`, `  Low: ${stats.byPriority[PRIORITY.Low]}`)
+    lines.push(
+      'Roadmap Statistics:',
+      '',
+      `Total Tasks: ${stats.totalTasks}`,
+      '',
+      'By Status:',
+      `  Completed: ${stats.byStatus[STATUS.Completed]}`,
+      `  In Progress: ${stats.byStatus[STATUS.InProgress]}`,
+      `  Not Started: ${stats.byStatus[STATUS.NotStarted]}`,
+      '',
+      'By Type:',
+      `  Features: ${stats.byType.feature}`,
+      `  Bugs: ${stats.byType.bug}`,
+      `  Improvements: ${stats.byType.improvement}`,
+      `  Planning: ${stats.byType.planning}`,
+      `  Research: ${stats.byType.research}`,
+      '',
+      'By Priority:',
+      `  High: ${stats.byPriority[PRIORITY.High]}`,
+      `  Medium: ${stats.byPriority[PRIORITY.Medium]}`,
+      `  Low: ${stats.byPriority[PRIORITY.Low]}`,
+    )
 
     return lines
   }
@@ -164,7 +185,16 @@ export class DisplayService {
     const testSymbol = this.formatTestStatus(task['passes-tests'])
 
     // Header with blank line before
-    lines.push('', `Task: ${task.id}`, '', `Title: ${task.title}`, `Type: ${task.type}`, `Priority: ${priorityLabel}`, `Status: ${statusSymbol} ${statusText} | ${testSymbol} Tests Passing`, `\nDetails:\n${task.details}`)
+    lines.push(
+      '',
+      `Task: ${task.id}`,
+      '',
+      `Title: ${task.title}`,
+      `Type: ${task.type}`,
+      `Priority: ${priorityLabel}`,
+      `Status: ${statusSymbol} ${statusText} | ${testSymbol} Tests Passing`,
+      `\nDetails:\n${task.details}`,
+    )
 
     // Dependencies
     if (task['depends-on'].length > 0) {
@@ -272,7 +302,10 @@ export class DisplayService {
     const tests = this.formatTestStatus(task['passes-tests'])
 
     // First line: status [priority] [id] title
-    lines.push(`${status} [${priority}] [${task.id}] ${task.title}`, `   Type: ${task.type} | Tests: ${tests} | Deps: ${task['depends-on'].length}`)
+    lines.push(
+      `${status} [${priority}] [${task.id}] ${task.title}`,
+      `   Type: ${task.type} | Tests: ${tests} | Deps: ${task['depends-on'].length}`,
+    )
 
     // Third line (conditional): Depends on list
     if (task['depends-on'].length > 0) {

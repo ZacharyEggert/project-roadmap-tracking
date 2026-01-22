@@ -1,15 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { expect } from 'chai'
+import {expect} from 'chai'
 
-import {
-  PRIORITY,
-  type Roadmap,
-  STATUS,
-  type Task,
-  TASK_ID_REGEX,
-  TASK_TYPE,
-  type TaskID,
-} from '../../src/util/types.js'
+import {PRIORITY, type Roadmap, STATUS, type Task, TASK_ID_REGEX, TASK_TYPE, type TaskID} from '../../src/util/types.js'
 
 /**
  * Assert that a string is a valid TaskID format
@@ -72,8 +64,8 @@ export function assertValidTask(task: unknown, message = 'Expected a valid Task 
  */
 export function assertTaskEquals(actual: Task, expected: Task, message = 'Tasks should be equal'): void {
   // Create copies without timestamp fields
-  const { createdAt: _a1, updatedAt: _a2, ...actualWithoutTimestamps } = actual
-  const { createdAt: _e1, updatedAt: _e2, ...expectedWithoutTimestamps } = expected
+  const {createdAt: _a1, updatedAt: _a2, ...actualWithoutTimestamps} = actual
+  const {createdAt: _e1, updatedAt: _e2, ...expectedWithoutTimestamps} = expected
 
   expect(actualWithoutTimestamps, message).to.deep.equal(expectedWithoutTimestamps)
 }
@@ -83,7 +75,10 @@ export function assertTaskEquals(actual: Task, expected: Task, message = 'Tasks 
  * @param roadmap - The roadmap to validate
  * @param message - Optional custom error message
  */
-export function assertRoadmapValid(roadmap: unknown, message = 'Expected a valid Roadmap object'): asserts roadmap is Roadmap {
+export function assertRoadmapValid(
+  roadmap: unknown,
+  message = 'Expected a valid Roadmap object',
+): asserts roadmap is Roadmap {
   expect(roadmap, message).to.be.an('object')
   expect(roadmap, message).to.not.be.null
 
@@ -127,7 +122,11 @@ export function assertRoadmapValid(roadmap: unknown, message = 'Expected a valid
  * @param count - The expected number of tasks
  * @param message - Optional custom error message
  */
-export function assertHasTasks(roadmap: Roadmap, count: number, message = `Expected roadmap to have ${count} tasks`): void {
+export function assertHasTasks(
+  roadmap: Roadmap,
+  count: number,
+  message = `Expected roadmap to have ${count} tasks`,
+): void {
   expect(roadmap.tasks, message).to.have.lengthOf(count)
 }
 
@@ -159,6 +158,6 @@ export function assertRoadmapContainsTask(
   taskId: TaskID,
   message = `Expected roadmap to contain task ${taskId}`,
 ): void {
-  const task = roadmap.tasks.find(t => t.id === taskId)
+  const task = roadmap.tasks.find((t) => t.id === taskId)
   expect(task, message).to.not.be.undefined
 }

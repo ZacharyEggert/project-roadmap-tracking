@@ -133,10 +133,12 @@ export default class Init extends Command {
           await writeFile(`${path}/prt.json`, JSON.stringify(roadmap, null, 2))
           this.log('project roadmap initialized')
         })
-      .catch((error) => {
-        this.error(`failed to read directory: ${error.message}`)
-      })    } catch (error) {
+        .catch((error) => {
+          this.error(`failed to read directory: ${error.message}`)
+        })
+    } catch (error) {
       const exitCode = errorHandlerService.handleError(error)
       this.error(errorHandlerService.formatErrorMessage(error, flags.verbose), {exit: exitCode})
-    }  }
+    }
+  }
 }

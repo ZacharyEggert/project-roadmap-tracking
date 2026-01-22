@@ -1,4 +1,4 @@
-import { PRIORITY, Roadmap, STATUS, TASK_TYPE } from '../../src/util/types.js'
+import {PRIORITY, Roadmap, STATUS, TASK_TYPE} from '../../src/util/types.js'
 import {
   createBugTask,
   createFeatureTask,
@@ -35,10 +35,10 @@ export function createSimpleRoadmap(overrides: Partial<Roadmap> = {}): Roadmap {
   resetTaskCounter()
 
   const tasks = [
-    createFeatureTask({ title: 'Add user authentication' }),
-    createBugTask({ title: 'Fix login bug' }),
-    createImprovementTask({ title: 'Improve performance' }),
-    createPlanningTask({ title: 'Plan Q2 roadmap' }),
+    createFeatureTask({title: 'Add user authentication'}),
+    createBugTask({title: 'Fix login bug'}),
+    createImprovementTask({title: 'Improve performance'}),
+    createPlanningTask({title: 'Plan Q2 roadmap'}),
   ]
 
   return createRoadmap({

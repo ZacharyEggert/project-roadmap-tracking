@@ -1,5 +1,3 @@
- 
-
 import {expect} from 'chai'
 
 import List from '../../src/commands/list.js'

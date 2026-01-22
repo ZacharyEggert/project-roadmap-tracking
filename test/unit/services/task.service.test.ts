@@ -698,7 +698,7 @@ describe('TaskService', () => {
           title: 'Task',
           type: TASK_TYPE.Bug,
         }),
-        
+
         id: 'invalid' as any,
       }
 
@@ -744,7 +744,7 @@ describe('TaskService', () => {
           title: 'Task',
           type: TASK_TYPE.Feature,
         }),
-        
+
         priority: 'invalid-priority' as any,
       }
 
@@ -760,7 +760,7 @@ describe('TaskService', () => {
           title: 'Task',
           type: TASK_TYPE.Planning,
         }),
-        
+
         status: 'invalid-status' as any,
       }
 

@@ -1,4 +1,4 @@
-import { PRIORITY, STATUS, Task, TASK_TYPE, TaskID } from '../../src/util/types.js'
+import {PRIORITY, STATUS, Task, TASK_TYPE, TaskID} from '../../src/util/types.js'
 
 // Counter for generating unique sequential IDs within test runs
 let taskCounter = 0
@@ -30,11 +30,11 @@ export function createTask(overrides: Partial<Task> = {}): Task {
 }
 
 export function createTasks(count: number, overrides: Partial<Task> = {}): Task[] {
-  return Array.from({ length: count }, (_, i) =>
+  return Array.from({length: count}, (_, i) =>
     createTask({
       ...overrides,
       title: `${overrides.title ?? 'Test Task'} ${i + 1}`,
-    })
+    }),
   )
 }
 
@@ -85,10 +85,16 @@ export function createResearchTask(overrides: Partial<Task> = {}): Task {
 function generateDefaultId(type: TASK_TYPE): TaskID {
   taskCounter++
   const num = String(taskCounter).padStart(3, '0')
-  const prefix = type === TASK_TYPE.Bug ? 'B' :
-                 type === TASK_TYPE.Feature ? 'F' :
-                 type === TASK_TYPE.Improvement ? 'I' :
-                 type === TASK_TYPE.Planning ? 'P' : 'R'
+  const prefix =
+    type === TASK_TYPE.Bug
+      ? 'B'
+      : type === TASK_TYPE.Feature
+        ? 'F'
+        : type === TASK_TYPE.Improvement
+          ? 'I'
+          : type === TASK_TYPE.Planning
+            ? 'P'
+            : 'R'
   return `${prefix}-${num}` as TaskID
 }
 

@@ -26,11 +26,7 @@ export class PrtError extends Error {
   public readonly code: PrtErrorCode
   public readonly context?: Record<string, unknown>
 
-  constructor(
-    message: string,
-    code: PrtErrorCode = PrtErrorCode.PRT_UNKNOWN,
-    context?: Record<string, unknown>,
-  ) {
+  constructor(message: string, code: PrtErrorCode = PrtErrorCode.PRT_UNKNOWN, context?: Record<string, unknown>) {
     super(message)
     this.name = this.constructor.name
     this.code = code

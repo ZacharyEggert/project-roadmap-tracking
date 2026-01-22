@@ -1,9 +1,9 @@
 import * as fs from 'node:fs'
 import * as fsPromises from 'node:fs/promises'
 import * as os from 'node:os'
-import { join } from 'node:path'
+import {join} from 'node:path'
 
-import type { Config, Roadmap } from '../../src/util/types.js'
+import type {Config, Roadmap} from '../../src/util/types.js'
 
 /**
  * Create a temporary directory for testing
@@ -21,7 +21,7 @@ export async function createTempDir(prefix = 'prt-test-'): Promise<string> {
  */
 export async function cleanupTempDir(dirPath: string): Promise<void> {
   try {
-    await fsPromises.rm(dirPath, { force: true, recursive: true })
+    await fsPromises.rm(dirPath, {force: true, recursive: true})
   } catch (error) {
     // Ignore errors during cleanup (directory might not exist)
     console.warn(`Failed to cleanup temp directory ${dirPath}:`, error)
@@ -40,7 +40,7 @@ export async function createTempRoadmapFile(
   dirPath?: string,
   fileName = 'prt.json',
 ): Promise<string> {
-  const dir = dirPath ?? await createTempDir()
+  const dir = dirPath ?? (await createTempDir())
   const filePath = join(dir, fileName)
   await fsPromises.writeFile(filePath, JSON.stringify(roadmap, null, 2), 'utf8')
   return filePath
@@ -58,7 +58,7 @@ export async function createTempConfigFile(
   dirPath?: string,
   fileName = '.prtrc.json',
 ): Promise<string> {
-  const dir = dirPath ?? await createTempDir()
+  const dir = dirPath ?? (await createTempDir())
   const filePath = join(dir, fileName)
   await fsPromises.writeFile(filePath, JSON.stringify(config, null, 2), 'utf8')
   return filePath
@@ -101,7 +101,7 @@ export async function fileExists(filePath: string): Promise<boolean> {
  * Helper for Mocha beforeEach hook - creates a temp directory
  * @returns Object with tempDir path and cleanup function
  */
-export async function setupTempDir(): Promise<{ cleanup: () => Promise<void>; tempDir: string }> {
+export async function setupTempDir(): Promise<{cleanup: () => Promise<void>; tempDir: string}> {
   const tempDir = await createTempDir()
   return {
     cleanup: async () => cleanupTempDir(tempDir),

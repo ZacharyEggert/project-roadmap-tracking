@@ -26,6 +26,7 @@
     "eslint-config-prettier": "^10",
     "mocha": "^10",
     "oclif": "^4",
+    "prettier": "^3.8.1",
     "shx": "^0.3.3",
     "ts-node": "^10",
     "tsx": "^4.21.0",
@@ -65,20 +66,22 @@
   "scripts": {
     "build": "shx rm -rf dist && tsc",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier 'src/**/*.{ts,tsx}' 'test/**/*.{ts,tsx}' --write",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "yarn lint",
     "prepack": "oclif manifest && oclif readme",
-		"test": "c8 mocha --loader=tsx/esm --forbid-only 'test/**/*.test.ts'",
-		"test:coverage": "c8 report",
-		"test:coverage:summary": "c8 report --reporter=text",
+    "test": "c8 mocha --loader=tsx/esm --forbid-only 'test/**/*.test.ts'",
+    "test:coverage": "c8 report",
+    "test:coverage:summary": "c8 report --reporter=text",
     "version": "oclif readme && git add README.md"
   },
-	"c8": {
-		"reporter": [
-			"lcov",
-			"html"
-		],
-		"reports-dir": "./coverage"
-	},
+  "c8": {
+    "reporter": [
+      "lcov",
+      "html"
+    ],
+    "reports-dir": "./coverage"
+  },
   "types": "dist/index.d.ts"
 }
