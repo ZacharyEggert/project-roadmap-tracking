@@ -1301,9 +1301,9 @@
       "details": "Create error utilities and exit codes in src/errors/error-handler.ts.\n\nUtilities:\n- handleError(error) - Central error handler\n- Exit codes enum (SUCCESS=0, INVALID_INPUT=1, NOT_FOUND=2, etc.)\n- formatErrorMessage(error) - Format for display\n- isRecoverableError(error) - Check if error is recoverable\n\nFile: src/errors/error-handler.ts",
       "id": "P-061",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "low",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-9",
         "error-handling",
@@ -1311,7 +1311,7 @@
       ],
       "title": "Create error utilities and exit codes",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:08:01.000Z"
+      "updatedAt": "2026-01-22T07:08:45.526Z"
     },
     {
       "blocks": [],
@@ -1322,9 +1322,9 @@
       "details": "Update all service methods to throw custom errors instead of generic Error.\n\nChanges:\n- TaskService throws TaskNotFoundError, InvalidTaskError\n- RoadmapService throws RoadmapNotFoundError\n- TaskDependencyService throws CircularDependencyError\n- All services throw ValidationError for validation failures\n\nFiles: All files in src/services/",
       "id": "P-062",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "low",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-9",
         "error-handling",
@@ -1332,7 +1332,7 @@
       ],
       "title": "Update services to use custom errors",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:08:02.000Z"
+      "updatedAt": "2026-01-22T07:08:53.711Z"
     },
     {
       "blocks": [],
@@ -1344,9 +1344,9 @@
       "details": "Update all commands to use centralized error handler.\n\nChanges:\n- Wrap command logic in try-catch\n- Call handleError() for all errors\n- Use appropriate exit codes\n- Format error messages consistently\n- Add --verbose flag for stack traces (optional)\n\nFiles: All files in src/commands/",
       "id": "P-063",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "low",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-9",
         "error-handling",
@@ -1354,7 +1354,7 @@
       ],
       "title": "Update commands to use error handler",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:08:03.000Z"
+      "updatedAt": "2026-01-22T07:08:59.703Z"
     },
     {
       "blocks": [],

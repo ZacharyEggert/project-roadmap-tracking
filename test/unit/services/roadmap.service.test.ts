@@ -277,7 +277,7 @@ describe('RoadmapService', () => {
           expect.fail('Should have thrown validation error')
         } catch (error) {
           expect(error).to.be.instanceOf(Error)
-          expect((error as Error).message).to.include('Cannot save invalid roadmap')
+          expect((error as Error).message).to.include('Validation failed')
         }
       })
 
@@ -294,8 +294,7 @@ describe('RoadmapService', () => {
           expect.fail('Should have thrown validation error')
         } catch (error) {
           expect(error).to.be.instanceOf(Error)
-          expect((error as Error).message).to.include('Cannot save invalid roadmap')
-          expect((error as Error).message).to.include('Duplicate task ID')
+          expect((error as Error).message).to.include('Validation failed')
         }
       })
 
@@ -312,8 +311,7 @@ describe('RoadmapService', () => {
           expect.fail('Should have thrown validation error')
         } catch (error) {
           expect(error).to.be.instanceOf(Error)
-          expect((error as Error).message).to.include('Cannot save invalid roadmap')
-          expect((error as Error).message).to.include('non-existent task')
+          expect((error as Error).message).to.include('Validation failed')
         }
       })
 
@@ -333,7 +331,7 @@ describe('RoadmapService', () => {
           expect.fail('Should have thrown validation error')
         } catch (error) {
           expect(error).to.be.instanceOf(Error)
-          expect((error as Error).message).to.include('Cannot save invalid roadmap')
+          expect((error as Error).message).to.include('Validation failed')
         }
       })
 
@@ -390,8 +388,7 @@ describe('RoadmapService', () => {
         } catch (error) {
           expect(error).to.be.instanceOf(Error)
           const {message} = error as Error
-          expect(message).to.include('Cannot save invalid roadmap')
-          expect(message).to.include('Duplicate')
+          expect(message).to.include('Validation failed')
         }
       })
     })

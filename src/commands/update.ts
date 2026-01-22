@@ -1,5 +1,6 @@
 import {Args, Command, Flags} from '@oclif/core'
 
+import errorHandlerService from '../services/error-handler.service.js'
 import {readConfigFile} from '../util/read-config.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
 import {STATUS, Task, TaskID} from '../util/types.js'
@@ -33,6 +34,11 @@ export default class Update extends Command {
       description: 'update whether the task passes tests',
       options: ['true', 'false'],
     }),
+    verbose: Flags.boolean({
+      char: 'v',
+      default: false,
+      description: 'show detailed error information including stack traces',
+    }),
 
     // flag with no value (-f, --force)
     // force: Flags.boolean({char: 'f'}),
@@ -43,53 +49,58 @@ export default class Update extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Update)
 
-    const config = await readConfigFile()
-    const roadmap = await readRoadmapFile(config.path)
+    try {
+      const config = await readConfigFile()
+      const roadmap = await readRoadmapFile(config.path)
 
-    const updateObject: Partial<Task> = {}
+      const updateObject: Partial<Task> = {}
 
-    if (flags['clear-notes']) {
-      updateObject.notes = ''
-    }
-
-    if (flags.notes) {
-      let existingNotes = ''
-
-      if (!flags['clear-notes']) {
-        const existingTask = roadmap.tasks.find((task) => task.id === args.taskID)
-        existingNotes = existingTask?.notes ? existingTask.notes + '\n' : ''
+      if (flags['clear-notes']) {
+        updateObject.notes = ''
       }
 
-      updateObject.notes = existingNotes + flags.notes
-    }
+      if (flags.notes) {
+        let existingNotes = ''
 
-    if (flags.status) {
-      updateObject.status = flags.status as STATUS
-    }
-
-    if (flags.tested) {
-      updateObject['passes-tests'] = flags.tested === 'true'
-    }
-
-    if (flags.deps) {
-      const depsArray = flags.deps.split(',').map((dep) => dep.trim())
-
-      // checking that each depArray item matches TaskID format
-      for (const dep of depsArray) {
-        try {
-          validateTaskID(dep)
-        } catch {
-          this.error(`Invalid task ID in dependencies: ${dep}`)
+        if (!flags['clear-notes']) {
+          const existingTask = roadmap.tasks.find((task) => task.id === args.taskID)
+          existingNotes = existingTask?.notes ? existingTask.notes + '\n' : ''
         }
+
+        updateObject.notes = existingNotes + flags.notes
       }
 
-      updateObject['depends-on'] = depsArray as TaskID[]
+      if (flags.status) {
+        updateObject.status = flags.status as STATUS
+      }
+
+      if (flags.tested) {
+        updateObject['passes-tests'] = flags.tested === 'true'
+      }
+
+      if (flags.deps) {
+        const depsArray = flags.deps.split(',').map((dep) => dep.trim())
+
+        // checking that each depArray item matches TaskID format
+        for (const dep of depsArray) {
+          try {
+            validateTaskID(dep)
+          } catch {
+            this.error(`Invalid task ID in dependencies: ${dep}`)
+          }
+        }
+
+        updateObject['depends-on'] = depsArray as TaskID[]
+      }
+
+      const updatedRoadmap = await updateTaskInRoadmap(roadmap, args.taskID, updateObject)
+
+      await writeRoadmapFile(config.path, updatedRoadmap)
+
+      this.log(`Task ${args.taskID} has been updated.`)
+    } catch (error) {
+      const exitCode = errorHandlerService.handleError(error)
+      this.error(errorHandlerService.formatErrorMessage(error, flags.verbose), {exit: exitCode})
     }
-
-    const updatedRoadmap = await updateTaskInRoadmap(roadmap, args.taskID, updateObject)
-
-    await writeRoadmapFile(config.path, updatedRoadmap)
-
-    this.log(`Task ${args.taskID} updated.`)
   }
 }

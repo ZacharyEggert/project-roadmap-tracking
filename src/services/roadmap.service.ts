@@ -1,4 +1,4 @@
-import {ValidationErrorDetail} from '../errors/index.js'
+import {ValidationError, ValidationErrorDetail} from '../errors/index.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
 import {PRIORITY, Roadmap, STATUS, TASK_TYPE} from '../util/types.js'
 import {validateTask} from '../util/validate-task.js'
@@ -119,7 +119,8 @@ export class RoadmapService {
    * @param path - The file path to write the roadmap to
    * @param roadmap - The roadmap object to save
    * @returns A Promise that resolves when the file is written
-   * @throws Error if validation fails or the file cannot be written
+   * @throws ValidationError if validation fails
+   * @throws Error if the file cannot be written
    *
    * @example
    * ```typescript
@@ -129,7 +130,7 @@ export class RoadmapService {
   async save(path: string, roadmap: Roadmap): Promise<void> {
     const errors = this.validate(roadmap)
     if (errors.length > 0) {
-      throw new Error(`Cannot save invalid roadmap: ${errors.map((e) => e.message).join(', ')}`)
+      throw new ValidationError(errors)
     }
 
     try {

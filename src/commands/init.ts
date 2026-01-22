@@ -1,6 +1,7 @@
 import {Args, Command, Flags} from '@oclif/core'
 import {mkdir, readdir, writeFile} from 'node:fs/promises'
 
+import errorHandlerService from '../services/error-handler.service.js'
 import {Config, PRIORITY, Roadmap, STATUS, TASK_TYPE} from '../util/types.js'
 
 export default class Init extends Command {
@@ -15,6 +16,11 @@ export default class Init extends Command {
     force: Flags.boolean({char: 'f', description: 'force initialization even if files already exist'}),
     // flag with a value (-n, --name=VALUE)
     name: Flags.string({char: 'n', description: 'name to print'}),
+    verbose: Flags.boolean({
+      char: 'v',
+      default: false,
+      description: 'show detailed error information including stack traces',
+    }),
     withSampleTasks: Flags.boolean({description: 'include sample tasks in the initialized roadmap'}),
   }
 
@@ -74,60 +80,63 @@ export default class Init extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Init)
 
-    const path = args.folder ?? '.'
-    this.log(`creating project roadmap in${path === '.' ? ' current directory' : ': ' + args.folder}`)
-    const name = flags.name ?? 'My Project Roadmap'
-    const description = flags.description ?? 'A project roadmap managed by Project Roadmap Tracking'
+    try {
+      const path = args.folder ?? '.'
+      this.log(`creating project roadmap in${path === '.' ? ' current directory' : ': ' + args.folder}`)
+      const name = flags.name ?? 'My Project Roadmap'
+      const description = flags.description ?? 'A project roadmap managed by Project Roadmap Tracking'
 
-    // create prt.json and prt.config.json files here
-    const config = this.buildConfig({description, name, path})
-    const roadmap = this.buildBlankRoadmap({description, name, withSampleTasks: flags.withSampleTasks ?? false})
+      // create prt.json and prt.config.json files here
+      const config = this.buildConfig({description, name, path})
+      const roadmap = this.buildBlankRoadmap({description, name, withSampleTasks: flags.withSampleTasks ?? false})
 
-    if (path !== '.') {
-      // check if target directory exists
-      // if it does not, create it
-      await readdir(path).catch(async (error) => {
-        if (error) {
-          this.log(`target directory does not exist, creating: ${path}`)
-          try {
-            // create the directory
-            await mkdir(path, {recursive: true})
-          } catch (error) {
-            this.error(`failed to create target directory: ${(error as Error).message}`)
+      if (path !== '.') {
+        // check if target directory exists
+        // if it does not, create it
+        await readdir(path).catch(async (error) => {
+          if (error) {
+            this.log(`target directory does not exist, creating: ${path}`)
+            try {
+              // create the directory
+              await mkdir(path, {recursive: true})
+            } catch (error) {
+              this.error(`failed to create target directory: ${(error as Error).message}`)
+            }
           }
-        }
-      })
-    }
+        })
+      }
 
-    // check if config already exists in the target directory
-    // if it does, and --force is not set, throw an error
-    // if it does, and --force is set, overwrite the files
-    await readdir('.')
-      .then(async (files) => {
-        if (!flags.force && (files.includes('prt.json') || files.includes('prt.config.json'))) {
-          this.error('prt.config.json already exist in the current directory. Use --force to overwrite.')
-        }
+      // check if config already exists in the target directory
+      // if it does, and --force is not set, throw an error
+      // if it does, and --force is set, overwrite the files
+      await readdir('.')
+        .then(async (files) => {
+          if (!flags.force && (files.includes('prt.json') || files.includes('prt.config.json'))) {
+            this.error('prt.config.json already exist in the current directory. Use --force to overwrite.')
+          }
 
-        await writeFile(`./.prtrc.json`, JSON.stringify(config, null, 2))
-        this.log('project roadmap config initialized')
-      })
-      .catch((error) => {
-        this.error(`failed to read current directory: ${error.message}`)
-      })
+          await writeFile(`./.prtrc.json`, JSON.stringify(config, null, 2))
+          this.log('project roadmap config initialized')
+        })
+        .catch((error) => {
+          this.error(`failed to read current directory: ${error.message}`)
+        })
 
-    // create prt.json and prt.config.json files in specified directory
+      // create prt.json and prt.config.json files in specified directory
 
-    await readdir(path)
-      .then(async (files) => {
-        if (!flags.force && files.includes('prt.json')) {
-          this.error('prt.json already exists in the target directory. Use --force to overwrite.')
-        }
+      await readdir(path)
+        .then(async (files) => {
+          if (!flags.force && files.includes('prt.json')) {
+            this.error('prt.json already exists in the target directory. Use --force to overwrite.')
+          }
 
-        await writeFile(`${path}/prt.json`, JSON.stringify(roadmap, null, 2))
-        this.log('project roadmap initialized')
-      })
+          await writeFile(`${path}/prt.json`, JSON.stringify(roadmap, null, 2))
+          this.log('project roadmap initialized')
+        })
       .catch((error) => {
         this.error(`failed to read directory: ${error.message}`)
-      })
-  }
+      })    } catch (error) {
+      const exitCode = errorHandlerService.handleError(error)
+      this.error(errorHandlerService.formatErrorMessage(error, flags.verbose), {exit: exitCode})
+    }  }
 }
