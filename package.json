@@ -19,6 +19,7 @@
     "@types/chai": "^4",
     "@types/mocha": "^10",
     "@types/node": "^18",
+    "c8": "^10.1.3",
     "chai": "^4",
     "eslint": "^9",
     "eslint-config-oclif": "^6",
@@ -68,7 +69,16 @@
     "posttest": "yarn lint",
     "prepack": "oclif manifest && oclif readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+		"c8:test": "c8 mocha --loader=tsx/esm --forbid-only 'test/**/*.test.ts'",
+		"c8:coverage": "c8 report",
     "version": "oclif readme && git add README.md"
   },
+	"c8": {
+		"reporter": [
+			"lcov",
+			"html"
+		],
+		"reports-dir": "./coverage"
+	},
   "types": "dist/index.d.ts"
 }

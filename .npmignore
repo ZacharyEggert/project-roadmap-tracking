@@ -1,4 +1,5 @@
 # Development files
+coverage/
 test/
 .mocharc.json
 .eslintrc*
