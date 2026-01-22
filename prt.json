@@ -1176,9 +1176,9 @@
       "details": "Create test/commands/update.test.ts for update command integration tests.\n\nReplace stub tests with:\n- Update changes task fields\n- Update sets updatedAt timestamp\n- Update validates changes\n- Update with invalid task ID fails\n- Multiple fields can be updated at once\n- Original task immutability\n\nFile: test/commands/update.test.ts\nTarget: src/commands/update.ts",
       "id": "P-055",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-8",
         "integration-tests",
@@ -1186,7 +1186,7 @@
       ],
       "title": "Integration tests for update command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:07:04.000Z"
+      "updatedAt": "2026-01-22T16:30:52.236Z"
     },
     {
       "blocks": [],
@@ -1197,9 +1197,9 @@
       "details": "Create test/commands/complete.test.ts for complete command integration tests.\n\nReplace stub tests with:\n- Complete sets status to completed\n- Complete sets passes-tests to true\n- Complete updates timestamp\n- Complete with invalid task ID fails\n- Complete already-completed task is idempotent\n\nFile: test/commands/complete.test.ts\nTarget: src/commands/complete.ts",
       "id": "P-056",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-8",
         "integration-tests",
@@ -1207,7 +1207,7 @@
       ],
       "title": "Integration tests for complete command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:07:05.000Z"
+      "updatedAt": "2026-01-22T16:30:52.938Z"
     },
     {
       "blocks": [],
@@ -1218,9 +1218,9 @@
       "details": "Create test/commands/pass-test.test.ts for pass-test command integration tests.\n\nReplace stub tests with:\n- Pass-test sets passes-tests to true\n- Pass-test updates timestamp\n- Pass-test with invalid task ID fails\n- Pass-test already-passing task is idempotent\n\nFile: test/commands/pass-test.test.ts\nTarget: src/commands/pass-test.ts",
       "id": "P-057",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-8",
         "integration-tests",
@@ -1228,7 +1228,7 @@
       ],
       "title": "Integration tests for pass-test command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:07:06.000Z"
+      "updatedAt": "2026-01-22T16:30:53.623Z"
     },
     {
       "blocks": [],
@@ -1239,9 +1239,9 @@
       "details": "Create test/commands/show.test.ts for show command integration tests.\n\nReplace stub tests with:\n- Show displays single task\n- Show with invalid task ID fails\n- Show displays all task fields\n- Show formatting is correct\n\nFile: test/commands/show.test.ts\nTarget: src/commands/show.ts",
       "id": "P-058",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-8",
         "integration-tests",
@@ -1249,7 +1249,7 @@
       ],
       "title": "Integration tests for show command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:07:07.000Z"
+      "updatedAt": "2026-01-22T16:30:54.300Z"
     },
     {
       "blocks": [],
@@ -1261,9 +1261,9 @@
       "details": "Create test/commands/validate.test.ts for validate command integration tests.\n\nReplace stub tests with:\n- Validate passes for valid roadmap\n- Validate catches invalid tasks\n- Validate catches circular dependencies\n- Validate catches duplicate task IDs\n- Validate catches invalid TaskID references\n- Validate displays all errors\n\nFile: test/commands/validate.test.ts\nTarget: src/commands/validate.ts",
       "id": "P-059",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-8",
         "integration-tests",
@@ -1271,7 +1271,7 @@
       ],
       "title": "Integration tests for validate command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:07:08.000Z"
+      "updatedAt": "2026-01-22T16:30:54.977Z"
     },
     {
       "blocks": [],
