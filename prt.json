@@ -1090,9 +1090,9 @@
       "details": "Create test/helpers/command-runner.ts for command testing.\n\nHelper should provide:\n- runCommand(commandClass, args, flags) - Execute command\n- captureOutput() - Capture stdout/stderr\n- withTempRoadmap(roadmap, callback) - Run test with temp roadmap\n- assertCommandSuccess() - Assert command succeeded\n- assertCommandError() - Assert command failed with expected error\n\nFile: test/helpers/command-runner.ts\nThis enables integration testing of commands.",
       "id": "P-051",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-8",
         "integration-tests",
@@ -1100,7 +1100,7 @@
       ],
       "title": "Create command runner helper",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:07:00.000Z"
+      "updatedAt": "2026-01-22T05:29:56.491Z"
     },
     {
       "blocks": [],
