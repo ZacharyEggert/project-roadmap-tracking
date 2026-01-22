@@ -1133,9 +1133,9 @@
       "details": "Create test/commands/add.test.ts for add command integration tests.\n\nReplace stub tests with:\n- Add creates task with correct ID\n- Add generates sequential IDs\n- Add fills gaps in ID sequence\n- Add with all flags works correctly\n- Add validates input\n- Task appears in roadmap file\n\nFile: test/commands/add.test.ts\nTarget: src/commands/add.ts",
       "id": "P-053",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-8",
         "integration-tests",
@@ -1143,7 +1143,7 @@
       ],
       "title": "Integration tests for add command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:07:02.000Z"
+      "updatedAt": "2026-01-22T16:04:41.212Z"
     },
     {
       "blocks": [],
@@ -1155,9 +1155,9 @@
       "details": "Create test/commands/list.test.ts for list command integration tests.\n\nReplace stub tests with:\n- List displays all tasks\n- Filter by status works\n- Filter by type works\n- Filter by priority works\n- Filter by tags works\n- Sort options work\n- Empty roadmap handled gracefully\n\nFile: test/commands/list.test.ts\nTarget: src/commands/list.ts",
       "id": "P-054",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-8",
         "integration-tests",
@@ -1165,7 +1165,7 @@
       ],
       "title": "Integration tests for list command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:07:03.000Z"
+      "updatedAt": "2026-01-22T16:04:45.498Z"
     },
     {
       "blocks": [],

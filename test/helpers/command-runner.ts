@@ -100,7 +100,10 @@ export async function runCommand(
     result.exitCode = 0
   } catch (error) {
     result.error = error as Error
-    result.exitCode = (error as {exitCode?: number})?.exitCode ?? 1
+    // Handle both oclif errors (with oclif.exit) and standard errors (with exitCode)
+    const oclifError = error as {oclif?: {exit?: number}}
+    const standardError = error as {exitCode?: number}
+    result.exitCode = oclifError.oclif?.exit ?? standardError.exitCode ?? 1
   } finally {
     // Restore stdout/stderr
     process.stdout.write = originalStdoutWrite
