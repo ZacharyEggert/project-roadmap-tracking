@@ -1047,9 +1047,9 @@
       "details": "Extract display logic from src/commands/list.ts to DisplayService.\n\nChanges:\n- Move formatting code to DisplayService.formatTaskList()\n- Update list.ts to call DisplayService methods\n- Support existing output formats (table, json, compact)\n- Ensure output looks identical to current format\n\nFiles: src/commands/list.ts, src/services/display.service.ts",
       "id": "P-049",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "low",
-      "status": "not-started",
+      "status": "completed",
       "tags": [
         "phase-7",
         "service-layer",
@@ -1057,7 +1057,7 @@
       ],
       "title": "Extract display logic from list command",
       "type": "planning",
-      "updatedAt": "2026-01-16T04:06:01.000Z"
+      "updatedAt": "2026-01-22T05:15:18.177Z"
     },
     {
       "blocks": [],

@@ -205,6 +205,45 @@ export class DisplayService {
   }
 
   /**
+   * Formats a list of tasks for display.
+   * Returns an array of lines including a header and all task summaries.
+   *
+   * @param tasks - The tasks to format
+   * @param options - Optional formatting options (reserved for future use)
+   * @param options.format - Output format: 'default' (current), 'compact', or 'json' (reserved)
+   * @returns Array of formatted lines ready for output
+   *
+   * @example
+   * ```typescript
+   * const lines = displayService.formatTaskList(tasks);
+   * for (const line of lines) {
+   *   console.log(line);
+   * }
+   * ```
+   */
+  formatTaskList(tasks: Task[], options?: {format?: 'compact' | 'default' | 'json'}): string[] {
+    const lines: string[] = []
+    const format = options?.format ?? 'default'
+
+    // For now, only default format is implemented
+    // Future: support compact and json formats
+    if (format === 'default') {
+      // Add header
+      lines.push('', `Tasks (${tasks.length} total):`, '')
+
+      // Add each task summary
+      for (const task of tasks) {
+        const taskLines = this.formatTaskSummary(task)
+        for (const line of taskLines) {
+          lines.push(line)
+        }
+      }
+    }
+
+    return lines
+  }
+
+  /**
    * Formats a task summary for list display.
    * Returns an array of lines to be output.
    *

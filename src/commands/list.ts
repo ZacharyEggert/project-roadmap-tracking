@@ -91,13 +91,10 @@ export default class List extends Command {
 
     const tasks = sortBy ? taskQueryService.sort(filtered, sortBy, SortOrder.Ascending) : filtered
 
-    // Display
-    console.log(`\nTasks (${tasks.length} total):\n`)
-    for (const task of tasks) {
-      const lines = displayService.formatTaskSummary(task)
-      for (const line of lines) {
-        console.log(line)
-      }
+    // Display using DisplayService
+    const lines = displayService.formatTaskList(tasks)
+    for (const line of lines) {
+      console.log(line)
     }
   }
 }
