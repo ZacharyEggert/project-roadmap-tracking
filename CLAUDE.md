@@ -222,13 +222,17 @@ prt list -p high --incomplete
 prt list --status=in-progress --sort=createdAt
 ```
 
-#### 4. `prt show TASK`
+#### 4. `prt show TASK [--show-dependencies]`
 
 Display detailed information about a specific task.
 
 **Arguments:**
 
 - `TASK` - Task ID (e.g., `F-001`, `B-042`)
+
+**Flags:**
+
+- `-d, --show-dependencies` - Show task dependencies at once (one level deep)
 
 **Example:**
 

@@ -18,6 +18,11 @@ export default class Show extends Command {
       default: false,
       description: 'use legacy direct file I/O instead of repository pattern',
     }),
+    'show-dependencies': Flags.boolean({
+      char: 'd',
+      default: false,
+      description: 'show task dependencies',
+    }),
     // flag with no value (-f, --force)
     // force: Flags.boolean({char: 'f'}),
     // flag with a value (-n, --name=VALUE)
@@ -49,6 +54,13 @@ export default class Show extends Command {
       const lines = displayService.formatTaskDetails(task)
       for (const line of lines) {
         console.log(line)
+      }
+
+      if (flags['show-dependencies'] && task) {
+        const dependencyLines = displayService.formatTaskDependencies(task, roadmap)
+        for (const line of dependencyLines) {
+          console.log(line)
+        }
       }
     } catch (error) {
       const exitCode = errorHandlerService.handleError(error)

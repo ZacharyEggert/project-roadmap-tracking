@@ -1,4 +1,4 @@
-import {PRIORITY, STATUS, Task} from '../util/types.js'
+import {PRIORITY, Roadmap, STATUS, Task} from '../util/types.js'
 import {RoadmapStats} from './roadmap.service.js'
 import {DependencyValidationError} from './task-dependency.service.js'
 
@@ -159,6 +159,40 @@ export class DisplayService {
       .split(' ')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
+  }
+
+  /**
+   * Formats the dependencies of a task for display.
+   *
+   *
+   * @param task - the task whose dependencies are to be formatted
+   * @param roadmap - the roadmap containing all tasks
+   * @returns Array of formatted dependency lines
+   */
+  formatTaskDependencies(task: Task, roadmap: Roadmap) {
+    const lines: string[] = []
+    lines.push(`\nDependencies for Task: ${task.id}\n`)
+
+    if (task['depends-on'].length === 0) {
+      lines.push('This task has no dependencies.\n')
+      return lines
+    }
+
+    for (const depId of task['depends-on']) {
+      const depTask = roadmap.tasks.find((t) => t.id === depId)
+      if (depTask) {
+        const statusSymbol = this.formatStatusSymbol(depTask.status)
+        const priorityLabel = this.formatPriorityLabel(depTask.priority)
+        lines.push(
+          `  ${statusSymbol} [${priorityLabel}] [${depTask.id}] ${depTask.title}`,
+          `  Details: ${depTask.details}\n`,
+        )
+      } else {
+        lines.push(`❌ [Unknown Task] [${depId}] (Task not found in roadmap)`)
+      }
+    }
+
+    return lines
   }
 
   /**

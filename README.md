@@ -49,6 +49,9 @@ prt list -p high
 # Show task details
 prt show F-001
 
+# Show task details with dependencies
+prt show F-001 -d
+
 # Update task status
 prt update F-001 --status=in-progress
 
