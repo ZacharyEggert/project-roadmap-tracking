@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.1] - 2026-01-23
 
+### Added
+- **Update Task Type Flag**: Introduced `--type` flag to `prt update` command for modifying task types directly
+
 ### Changed
 - Updated documentation to reflect accurate test coverage metrics
 - Corrected ARCHITECTURE.md with current version (0.2.1) and accurate test coverage (96.81%)
