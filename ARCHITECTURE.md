@@ -623,70 +623,504 @@ export class TaskDependencyService {
 
 ## Extension Points
 
-### 1. Custom Commands (✓ Supported Today)
+PRT supports extensibility through oclif's plugin system. This section provides comprehensive guidance for building plugins that extend PRT functionality.
 
-oclif auto-discovers commands in `src/commands/`:
+### 8.1 Overview
+
+PRT plugins are oclif plugins that:
+- Add new commands to the `prt` CLI
+- Leverage PRT's service layer for business logic
+- Follow consistent patterns for maintainability
+- Can be distributed via npm or installed from GitHub
+
+**Reference Implementation:** See `examples/plugins/example-prt-plugin/` for a complete working example.
+
+### 8.2 Plugin Architecture
+
+#### 8.2.1 Directory Structure
+
+```
+my-prt-plugin/
+├── package.json              # oclif config with bin="prt"
+├── tsconfig.json             # TypeScript configuration
+├── src/
+│   ├── index.ts              # Plugin entry point (exports commands)
+│   ├── commands/
+│   │   └── my-command.ts     # Command implementations
+│   └── services/
+│       └── my.service.ts     # Business logic (optional)
+├── test/
+│   ├── commands/
+│   │   └── my-command.test.ts
+│   └── services/
+│       └── my.service.test.ts
+└── examples/
+    └── sample-output.md      # Example outputs (optional)
+```
+
+#### 8.2.2 File Responsibilities
+
+| File | Purpose |
+|------|---------|
+| `package.json` | oclif configuration, peer dependencies, scripts |
+| `src/index.ts` | Export all commands for oclif discovery |
+| `src/commands/*.ts` | Command implementations (thin handlers) |
+| `src/services/*.ts` | Reusable business logic (pure functions) |
+| `test/` | Unit and integration tests |
+
+### 8.3 Import Patterns (Critical)
+
+**IMPORTANT:** ES modules require specific import paths. Always use `/dist/` and include the `.js` extension.
+
+#### Service Imports
 
 ```typescript
-// src/commands/custom.ts
-import {Command, Flags} from '@oclif/core'
+// Services - import from compiled dist directory
+import roadmapService from 'project-roadmap-tracking/dist/services/roadmap.service.js'
+import taskService from 'project-roadmap-tracking/dist/services/task.service.js'
+import taskQueryService from 'project-roadmap-tracking/dist/services/task-query.service.js'
+import taskDependencyService from 'project-roadmap-tracking/dist/services/task-dependency.service.js'
+import displayService from 'project-roadmap-tracking/dist/services/display.service.js'
+import errorHandlerService from 'project-roadmap-tracking/dist/services/error-handler.service.js'
+```
 
-export default class Custom extends Command {
-  static description = 'Your custom command'
+#### Utility Imports
+
+```typescript
+// Utilities
+import {readConfigFile} from 'project-roadmap-tracking/dist/util/read-config.js'
+import {readRoadmapFile} from 'project-roadmap-tracking/dist/util/read-roadmap.js'
+import {writeRoadmapFile} from 'project-roadmap-tracking/dist/util/write-roadmap.js'
+```
+
+#### Type Imports
+
+```typescript
+// Types and enums
+import {
+  Roadmap,
+  Task,
+  Config,
+  TASK_TYPE,
+  STATUS,
+  PRIORITY,
+  TaskID,
+  Tag,
+} from 'project-roadmap-tracking/dist/util/types.js'
+
+// Errors
+import {
+  PrtError,
+  TaskNotFoundError,
+  ValidationError,
+} from 'project-roadmap-tracking/dist/errors/index.js'
+```
+
+#### Why `/dist/` is Required
+
+- ES modules require compiled JavaScript paths at runtime
+- Node16 module resolution mandates `.js` extension
+- TypeScript source files (`/src/`) are not directly importable
+- The `/dist/` directory contains the compiled, runnable code
+
+### 8.4 Command Implementation Pattern
+
+Commands follow the service-based pattern: thin handlers that delegate business logic to services.
+
+```typescript
+// src/commands/export.ts
+import {Command, Flags, Args} from '@oclif/core'
+import {readConfigFile} from 'project-roadmap-tracking/dist/util/read-config.js'
+import roadmapService from 'project-roadmap-tracking/dist/services/roadmap.service.js'
+import taskQueryService from 'project-roadmap-tracking/dist/services/task-query.service.js'
+import {Roadmap, STATUS, PRIORITY} from 'project-roadmap-tracking/dist/util/types.js'
+import {MyExporterService} from '../services/my-exporter.service.js'
+
+export default class Export extends Command {
+  static override description = 'Export roadmap to custom format'
+
+  static override examples = [
+    '<%= config.bin %> <%= command.id %> -o output.md',
+    '<%= config.bin %> <%= command.id %> --format=json --priority=high',
+  ]
+
+  static override args = {
+    file: Args.string({
+      description: 'Output file path',
+      required: false,
+    }),
+  }
+
+  static override flags = {
+    output: Flags.string({
+      char: 'o',
+      description: 'Output file path',
+    }),
+    format: Flags.string({
+      char: 'f',
+      description: 'Export format',
+      options: ['markdown', 'json', 'csv'],
+      default: 'markdown',
+    }),
+    priority: Flags.string({
+      char: 'p',
+      description: 'Filter by priority',
+      options: ['high', 'medium', 'low'],
+    }),
+  }
 
   async run(): Promise<void> {
-    // Implementation
+    const {args, flags} = await this.parse(Export)
+
+    // 1. Load configuration
+    const config = await readConfigFile()
+
+    // 2. Load roadmap using PRT service
+    const roadmap = await roadmapService.load(config.path)
+
+    // 3. Apply filters using query service
+    let tasks = roadmap.tasks
+    if (flags.priority) {
+      tasks = taskQueryService.filter(tasks, {
+        priority: flags.priority.toUpperCase() as keyof typeof PRIORITY,
+      })
+    }
+
+    // 4. Use custom service for business logic
+    const exporter = new MyExporterService()
+    const output = exporter.export({...roadmap, tasks}, {format: flags.format})
+
+    // 5. Handle output (I/O belongs in command)
+    const outputPath = args.file ?? flags.output
+    if (outputPath) {
+      await this.writeFile(outputPath, output)
+      this.log(`Exported to ${outputPath}`)
+    } else {
+      this.log(output)
+    }
+  }
+
+  private async writeFile(path: string, content: string): Promise<void> {
+    const fs = await import('node:fs/promises')
+    await fs.writeFile(path, content, 'utf8')
   }
 }
 ```
 
-Run with: `prt custom`
+**Key Principles:**
+- Commands handle I/O (reading config, writing files, console output)
+- Services handle business logic (filtering, transformation, validation)
+- Use oclif's `Flags` and `Args` for type-safe CLI parsing
+- Provide `examples` for help documentation
 
-### 2. oclif Plugins (✓ Supported Today)
+### 8.5 package.json Configuration
 
-Already includes `@oclif/plugin-plugins`:
-
-```bash
-# Install plugin
-prt plugins install my-prt-plugin
-
-# Plugin can add commands, hooks, etc.
+```json
+{
+  "name": "my-prt-plugin",
+  "version": "1.0.0",
+  "description": "Custom plugin for PRT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "oclif": {
+    "bin": "prt",
+    "dirname": "prt",
+    "commands": "./dist/commands",
+    "plugins": [],
+    "topicSeparator": " "
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha --loader=tsx/esm 'test/**/*.test.ts'",
+    "lint": "eslint src test",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "@oclif/core": "^4.0.0",
+    "project-roadmap-tracking": "^0.2.0"
+  },
+  "devDependencies": {
+    "@oclif/core": "^4.0.0",
+    "@types/chai": "^4",
+    "@types/mocha": "^10",
+    "@types/node": "^18",
+    "chai": "^4",
+    "mocha": "^10",
+    "project-roadmap-tracking": "^0.2.0",
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}
 ```
 
-### 3. Validation Hooks (⚡ Recommended)
+**Critical Configuration:**
+
+| Setting | Value | Purpose |
+|---------|-------|---------|
+| `oclif.bin` | `"prt"` | Extends PRT CLI (not standalone) |
+| `oclif.commands` | `"./dist/commands"` | Where oclif finds command files |
+| `type` | `"module"` | ES modules support |
+| `peerDependencies` | `@oclif/core`, `project-roadmap-tracking` | Ensures version compatibility |
+
+### 8.6 Service Usage Reference
+
+PRT exposes these services for plugin use:
+
+| Service | Key Methods | Purpose |
+|---------|-------------|---------|
+| `roadmapService` | `load(path)`, `save(path, roadmap)`, `validate(roadmap)`, `getStats(roadmap)` | File I/O and roadmap operations |
+| `taskService` | `createTask(data)`, `addTask(roadmap, task)`, `updateTask(roadmap, id, updates)`, `findTask(roadmap, id)`, `generateNextId(roadmap, type)` | Task lifecycle management |
+| `taskQueryService` | `filter(tasks, criteria)`, `search(tasks, query)`, `sort(tasks, field, order)`, `getByStatus(tasks, status)`, `getByType(tasks, type)` | Query and filter tasks |
+| `taskDependencyService` | `buildDependencyGraph(roadmap)`, `detectCircularDependency(roadmap)`, `validateDependencies(roadmap)` | Dependency graph analysis |
+| `displayService` | `formatTaskList(tasks)`, `formatTaskDetails(task)`, `formatValidationErrors(errors)`, `formatRoadmapStats(stats)` | Terminal output formatting |
+| `errorHandlerService` | `handleError(error, verbose)`, `formatErrorMessage(error)` | Unified error handling |
+
+**Example Usage:**
 
 ```typescript
-// RECOMMENDED: src/hooks/validation.hook.ts
+// Load and filter tasks
+const roadmap = await roadmapService.load(config.path)
+const highPriority = taskQueryService.filter(roadmap.tasks, {
+  priority: PRIORITY.High,
+  status: STATUS.InProgress,
+})
+
+// Get statistics
+const stats = roadmapService.getStats(roadmap)
+console.log(`Total tasks: ${stats.totalTasks}`)
+
+// Create and add a task
+const nextId = taskService.generateNextId(roadmap, TASK_TYPE.Feature)
+const task = taskService.createTask({
+  id: nextId,
+  title: 'New feature',
+  details: 'Description',
+  type: TASK_TYPE.Feature,
+  priority: PRIORITY.High,
+})
+const updatedRoadmap = taskService.addTask(roadmap, task)
+await roadmapService.save(config.path, updatedRoadmap)
+```
+
+### 8.7 Testing Strategies
+
+#### Service Testing
+
+Test services with pure data fixtures:
+
+```typescript
+// test/services/my-exporter.service.test.ts
+import {expect} from 'chai'
+import {MyExporterService} from '../../src/services/my-exporter.service.js'
+import {Roadmap, STATUS, PRIORITY, TASK_TYPE} from 'project-roadmap-tracking/dist/util/types.js'
+
+describe('MyExporterService', () => {
+  let service: MyExporterService
+
+  beforeEach(() => {
+    service = new MyExporterService()
+  })
+
+  it('should export roadmap to markdown', () => {
+    const roadmap: Roadmap = {
+      $schema: '...',
+      metadata: {
+        name: 'Test Project',
+        description: 'Test description',
+        createdAt: '2026-01-01T00:00:00.000Z',
+        createdBy: 'test',
+      },
+      tasks: [
+        {
+          id: 'F-001',
+          title: 'Test Feature',
+          details: 'Details',
+          type: TASK_TYPE.Feature,
+          status: STATUS.NotStarted,
+          priority: PRIORITY.Medium,
+          'passes-tests': false,
+          'depends-on': [],
+          blocks: [],
+          tags: [],
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-01T00:00:00.000Z',
+        },
+      ],
+    }
+
+    const result = service.export(roadmap, {format: 'markdown'})
+
+    expect(result).to.include('Test Project')
+    expect(result).to.include('F-001')
+    expect(result).to.include('Test Feature')
+  })
+})
+```
+
+#### Command Testing with Temp Directories
+
+```typescript
+// test/commands/export.test.ts
+import {expect} from 'chai'
+import * as fs from 'node:fs/promises'
+import * as os from 'node:os'
+import * as path from 'node:path'
+import Export from '../../src/commands/export.js'
+
+async function withTempRoadmap(
+  roadmap: Roadmap,
+  callback: (context: {tempDir: string; roadmapPath: string}) => Promise<void>
+): Promise<void> {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'prt-test-'))
+
+  try {
+    const roadmapPath = path.join(tempDir, 'prt.json')
+    await fs.writeFile(roadmapPath, JSON.stringify(roadmap, null, 2))
+
+    const configPath = path.join(tempDir, '.prtrc.json')
+    await fs.writeFile(configPath, JSON.stringify({
+      $schema: '...',
+      metadata: {name: 'Test', description: 'Test'},
+      path: roadmapPath,
+    }, null, 2))
+
+    const originalCwd = process.cwd()
+    process.chdir(tempDir)
+
+    try {
+      await callback({tempDir, roadmapPath})
+    } finally {
+      process.chdir(originalCwd)
+    }
+  } finally {
+    await fs.rm(tempDir, {recursive: true, force: true})
+  }
+}
+
+describe('export command', () => {
+  it('should export roadmap to file', async () => {
+    const roadmap = createTestRoadmap()
+
+    await withTempRoadmap(roadmap, async ({tempDir}) => {
+      const outputPath = path.join(tempDir, 'output.md')
+      const cmd = new Export(['-o', outputPath], {} as any)
+      await cmd.run()
+
+      const content = await fs.readFile(outputPath, 'utf8')
+      expect(content).to.include('Test Project')
+    })
+  })
+})
+```
+
+### 8.8 Plugin Installation and Distribution
+
+#### Installation Methods
+
+```bash
+# From npm registry
+prt plugins install my-prt-plugin
+
+# From GitHub repository
+prt plugins install username/my-prt-plugin
+
+# From local directory (development)
+cd /path/to/my-prt-plugin
+npm run build
+prt plugins link
+
+# Uninstall
+prt plugins uninstall my-prt-plugin
+
+# List installed plugins
+prt plugins
+```
+
+#### Publishing to npm
+
+```bash
+# Build the plugin
+npm run build
+
+# Test locally
+prt plugins link
+prt my-command --help
+
+# Publish (ensure package.json version is updated)
+npm publish
+```
+
+### 8.9 Best Practices
+
+1. **Import from `/dist/` paths** - Always use compiled output paths, never source
+2. **Include `.js` extension** - Required for ES modules
+3. **Use services, not utilities** - Services are the stable public API
+4. **Separate I/O from logic** - Commands handle I/O, services handle business logic
+5. **Handle errors gracefully** - Use PRT's error classes when appropriate
+6. **Test with fixtures** - Create mock roadmaps for testing
+7. **Declare peer dependencies** - Ensures version compatibility with PRT
+8. **Follow oclif patterns** - Use flags, args, and examples consistently
+9. **Document commands** - Provide description and examples in command class
+10. **Keep commands thin** - Business logic belongs in services
+
+### 8.10 Reference Implementation
+
+See `examples/plugins/example-prt-plugin/` for a complete working example:
+
+| File | Description |
+|------|-------------|
+| `ARCHITECTURE.md` | Detailed plugin architecture documentation |
+| `README.md` | User-facing documentation with usage examples |
+| Implementation | Demonstrates export command with filtering, sorting, and multiple output formats |
+
+The example plugin implements a markdown export feature that demonstrates:
+- Service-based architecture
+- Filter and sort integration with `taskQueryService`
+- Multiple output formats
+- Comprehensive flag handling
+- Testing patterns
+
+### 8.11 Future Extension Points
+
+The following extension points are planned for future implementation:
+
+#### Validation Hooks (⚡ Recommended)
+
+```typescript
+// Future: src/hooks/validation.hook.ts
 export interface ValidationHook {
   validate(task: Task, roadmap: Roadmap): ValidationResult
 }
 
-// Custom validation
 export class CustomBusinessRulesHook implements ValidationHook {
   validate(task: Task): ValidationResult {
-    // Custom logic
+    // Custom validation logic
   }
 }
 ```
 
-### 4. Export/Import Plugins (⚡ Recommended)
+#### Export/Import Plugins (⚡ Recommended)
 
 ```typescript
-// RECOMMENDED: Future plugin architecture
+// Future: Plugin interface for data export/import
 export interface ExportPlugin {
   export(roadmap: Roadmap): Promise<void>
 }
 
-// Examples:
+// Potential implementations:
 // - GitHubIssuesExporter
 // - JiraExporter
-// - MarkdownExporter
+// - MarkdownExporter (see example-prt-plugin)
 // - CSVExporter
 ```
 
-### 5. Integration Points (⚡ Future)
+#### Integration Points (⚡ Future)
 
-Potential integrations:
+Potential integrations for future development:
 - GitHub Issues sync
 - Jira ticket import/export
 - Slack notifications

@@ -1507,13 +1507,13 @@
       "details": "Expand Section 8 (Extension Points) with detailed guidance on implementing oclif plugins for PRT: plugin structure, service imports, command patterns, testing strategies, and best practices. Reference example-prt-plugin as the canonical example",
       "id": "P-071",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Update root ARCHITECTURE.md with plugin implementation guide",
       "type": "planning",
-      "updatedAt": "2026-01-23T00:18:56.575Z"
+      "updatedAt": "2026-01-23T00:42:19.411Z"
     }
   ]
 }
