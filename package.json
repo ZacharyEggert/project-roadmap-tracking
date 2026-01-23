@@ -1,7 +1,7 @@
 {
   "name": "project-roadmap-tracking",
   "description": "CLI based project task tracking",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "author": "ZacharyEggert",
   "bin": {
     "prt": "./bin/run.js"

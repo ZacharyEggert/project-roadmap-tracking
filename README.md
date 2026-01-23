@@ -166,7 +166,7 @@ $ npm install -g project-roadmap-tracking
 $ prt COMMAND
 running command...
 $ prt (--version)
-project-roadmap-tracking/0.2.4 linux-x64 node-v20.20.0
+project-roadmap-tracking/0.2.4 darwin-arm64 node-v25.2.1
 $ prt --help [COMMAND]
 USAGE
   $ prt COMMAND
@@ -177,7 +177,12 @@ USAGE
 # Commands
 
 <!-- commands -->
+* [`prt add TITLE`](#prt-add-title)
+* [`prt complete TASKID`](#prt-complete-taskid)
 * [`prt help [COMMAND]`](#prt-help-command)
+* [`prt init [FOLDER]`](#prt-init-folder)
+* [`prt list`](#prt-list)
+* [`prt pass-test TASKID`](#prt-pass-test-taskid)
 * [`prt plugins`](#prt-plugins)
 * [`prt plugins add PLUGIN`](#prt-plugins-add-plugin)
 * [`prt plugins:inspect PLUGIN...`](#prt-pluginsinspect-plugin)
@@ -188,6 +193,67 @@ USAGE
 * [`prt plugins uninstall [PLUGIN]`](#prt-plugins-uninstall-plugin)
 * [`prt plugins unlink [PLUGIN]`](#prt-plugins-unlink-plugin)
 * [`prt plugins update`](#prt-plugins-update)
+* [`prt show TASK`](#prt-show-task)
+* [`prt update TASKID`](#prt-update-taskid)
+* [`prt validate`](#prt-validate)
+
+## `prt add TITLE`
+
+add a new task to the roadmap
+
+```
+USAGE
+  $ prt add TITLE -d <value> -t bug|feature|improvement|planning|research [--no-repo] [-p
+    high|medium|low] [-s not-started|in-progress|completed] [-g <value>] [-v]
+
+ARGUMENTS
+  TITLE  title of the task to add
+
+FLAGS
+  -d, --details=<value>    (required) description of the task to add
+  -g, --tags=<value>       comma-separated list of tags to add to the task
+  -p, --priority=<option>  [default: medium] priority of the task to add
+                           <options: high|medium|low>
+  -s, --status=<option>    [default: not-started] status of the task to add
+                           <options: not-started|in-progress|completed>
+  -t, --type=<option>      (required) type of the task to add
+                           <options: bug|feature|improvement|planning|research>
+  -v, --verbose            show detailed error information including stack traces
+      --no-repo            use legacy direct file I/O instead of repository pattern
+
+DESCRIPTION
+  add a new task to the roadmap
+
+EXAMPLES
+  $ prt add
+```
+
+_See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.4/src/commands/add.ts)_
+
+## `prt complete TASKID`
+
+Mark a task as completed
+
+```
+USAGE
+  $ prt complete TASKID [--no-repo] [-t] [-v]
+
+ARGUMENTS
+  TASKID  ID of the task to complete
+
+FLAGS
+  -t, --tests    mark task as passes-tests
+  -v, --verbose  show detailed error information including stack traces
+      --no-repo  use legacy direct file I/O instead of repository pattern
+
+DESCRIPTION
+  Mark a task as completed
+
+EXAMPLES
+  $ prt complete F-001 --tests
+```
+
+_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.4/src/commands/complete.ts)_
 
 ## `prt help [COMMAND]`
 
@@ -208,6 +274,86 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.2.36/src/commands/help.ts)_
+
+## `prt init [FOLDER]`
+
+initialize a new project roadmap (prt.json and prt.config.json)
+
+```
+USAGE
+  $ prt init [FOLDER] [-d <value>] [-f] [-n <value>] [-v] [--withSampleTasks]
+
+ARGUMENTS
+  [FOLDER]  folder to initialize the project roadmap in
+
+FLAGS
+  -d, --description=<value>  description to print
+  -f, --force                force initialization even if files already exist
+  -n, --name=<value>         name to print
+  -v, --verbose              show detailed error information including stack traces
+      --withSampleTasks      include sample tasks in the initialized roadmap
+
+DESCRIPTION
+  initialize a new project roadmap (prt.json and prt.config.json)
+
+EXAMPLES
+  $ prt init [path/to/directory]
+```
+
+_See code: [src/commands/init.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.4/src/commands/init.ts)_
+
+## `prt list`
+
+list tasks in the project roadmap
+
+```
+USAGE
+  $ prt list [-i] [--no-repo] [-p high|medium|low|h|m|l] [-o dueDate|priority|createdAt] [-s
+    completed|in-progress|not-started] [-v]
+
+FLAGS
+  -i, --incomplete         filter tasks to show in-progress and not-started only
+  -o, --sort=<option>      sort tasks by field (dueDate, priority, createdAt)
+                           <options: dueDate|priority|createdAt>
+  -p, --priority=<option>  filter tasks by priority (high, medium, low)
+                           <options: high|medium|low|h|m|l>
+  -s, --status=<option>    filter tasks by status (completed, in-progress, not-started)
+                           <options: completed|in-progress|not-started>
+  -v, --verbose            show detailed error information including stack traces
+      --no-repo            use legacy direct file I/O instead of repository pattern
+
+DESCRIPTION
+  list tasks in the project roadmap
+
+EXAMPLES
+  $ prt list -p=h --incomplete --sort=createdAt
+```
+
+_See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.4/src/commands/list.ts)_
+
+## `prt pass-test TASKID`
+
+Mark a task as passes-tests
+
+```
+USAGE
+  $ prt pass-test TASKID [--no-repo] [-v]
+
+ARGUMENTS
+  TASKID  ID of the task to mark as passing tests
+
+FLAGS
+  -v, --verbose  show detailed error information including stack traces
+      --no-repo  use legacy direct file I/O instead of repository pattern
+
+DESCRIPTION
+  Mark a task as passes-tests
+
+EXAMPLES
+  $ prt pass-test F-001
+```
+
+_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.4/src/commands/pass-test.ts)_
 
 ## `prt plugins`
 
@@ -498,6 +644,87 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.54/src/commands/plugins/update.ts)_
+
+## `prt show TASK`
+
+show details of a specific task in the project roadmap
+
+```
+USAGE
+  $ prt show TASK [--no-repo] [-v]
+
+ARGUMENTS
+  TASK  task ID to show
+
+FLAGS
+  -v, --verbose  show detailed error information including stack traces
+      --no-repo  use legacy direct file I/O instead of repository pattern
+
+DESCRIPTION
+  show details of a specific task in the project roadmap
+
+EXAMPLES
+  $ prt show F-001
+```
+
+_See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.4/src/commands/show.ts)_
+
+## `prt update TASKID`
+
+Update a task in place
+
+```
+USAGE
+  $ prt update TASKID [--clear-notes] [-d <value>] [--no-repo] [-n <value>] [-s
+    completed|in-progress|not-started] [-t true|false] [--type bug|feature|improvement|planning|research] [-v]
+
+ARGUMENTS
+  TASKID  ID of the task to update
+
+FLAGS
+  -d, --deps=<value>     update the dependencies of the task (comma-separated list of task IDs)
+  -n, --notes=<value>    append notes to the task
+  -s, --status=<option>  set the status of the task (completed, in-progress, not-started)
+                         <options: completed|in-progress|not-started>
+  -t, --tested=<option>  update whether the task passes tests
+                         <options: true|false>
+  -v, --verbose          show detailed error information including stack traces
+      --clear-notes      clear all notes from the task
+      --no-repo          use legacy direct file I/O instead of repository pattern
+      --type=<option>    update the task type (reassigns task ID and cascades to all references)
+                         <options: bug|feature|improvement|planning|research>
+
+DESCRIPTION
+  Update a task in place
+
+EXAMPLES
+  $ prt update F-001 --status=completed --tested=true --notes="Fixed all bugs"
+
+  $ prt update F-002 --deps="F-001" --clear-notes
+```
+
+_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.4/src/commands/update.ts)_
+
+## `prt validate`
+
+Validate roadmap structure, task data, and check for circular dependencies
+
+```
+USAGE
+  $ prt validate [--no-repo] [-v]
+
+FLAGS
+  -v, --verbose  show detailed error information including stack traces
+      --no-repo  use legacy direct file I/O instead of repository pattern
+
+DESCRIPTION
+  Validate roadmap structure, task data, and check for circular dependencies
+
+EXAMPLES
+  $ prt validate
+```
+
+_See code: [src/commands/validate.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.4/src/commands/validate.ts)_
 <!-- commandsstop -->
 
 ## Development
