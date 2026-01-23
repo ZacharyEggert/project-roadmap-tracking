@@ -140,6 +140,7 @@ IDs are auto-generated sequentially per task type.
 * [Add a new feature](#add-a-new-feature)
 * [List all high-priority tasks](#list-all-high-priority-tasks)
 * [Show task details](#show-task-details)
+* [Show task details with dependencies](#show-task-details-with-dependencies)
 * [Update task status](#update-task-status)
 * [Complete a task](#complete-a-task)
 * [Validate roadmap integrity](#validate-roadmap-integrity)
@@ -169,7 +170,7 @@ $ npm install -g project-roadmap-tracking
 $ prt COMMAND
 running command...
 $ prt (--version)
-project-roadmap-tracking/0.2.5 linux-x64 node-v20.20.0
+project-roadmap-tracking/0.2.6 linux-x64 node-v20.20.0
 $ prt --help [COMMAND]
 USAGE
   $ prt COMMAND
