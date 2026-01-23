@@ -15,7 +15,7 @@ A modern, production-ready CLI tool for managing project tasks and roadmaps with
 - 🔍 **Powerful Filtering**: Filter and sort tasks by multiple criteria
 - 📊 **Validation**: Comprehensive roadmap validation with detailed error reporting
 - ⚡ **Performance**: LRU caching and file watching for optimal performance
-- 🏗️ **Modern Architecture**: Service layer, repository pattern, and 98.78% test coverage
+- 🏗️ **Modern Architecture**: Service layer, repository pattern, and 96.81% test coverage
 - 📦 **Configuration**: Multi-level config inheritance (project → user → global)
 - 🔄 **Backward Compatible**: Legacy mode via `--no-repo` flag
 
@@ -166,7 +166,7 @@ $ npm install -g project-roadmap-tracking
 $ prt COMMAND
 running command...
 $ prt (--version)
-project-roadmap-tracking/0.2.0 darwin-arm64 node-v24.12.0
+project-roadmap-tracking/0.2.1 darwin-arm64 node-v25.2.1
 $ prt --help [COMMAND]
 USAGE
   $ prt COMMAND
@@ -228,7 +228,7 @@ EXAMPLES
   $ prt add
 ```
 
-_See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/add.ts)_
+_See code: [src/commands/add.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.1/src/commands/add.ts)_
 
 ## `prt complete TASKID`
 
@@ -253,7 +253,7 @@ EXAMPLES
   $ prt complete F-001 --tests
 ```
 
-_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/complete.ts)_
+_See code: [src/commands/complete.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.1/src/commands/complete.ts)_
 
 ## `prt help [COMMAND]`
 
@@ -300,7 +300,7 @@ EXAMPLES
   $ prt init [path/to/directory]
 ```
 
-_See code: [src/commands/init.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.1/src/commands/init.ts)_
 
 ## `prt list`
 
@@ -329,7 +329,7 @@ EXAMPLES
   $ prt list -p=h --incomplete --sort=createdAt
 ```
 
-_See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/list.ts)_
+_See code: [src/commands/list.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.1/src/commands/list.ts)_
 
 ## `prt pass-test TASKID`
 
@@ -353,7 +353,7 @@ EXAMPLES
   $ prt pass-test F-001
 ```
 
-_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/pass-test.ts)_
+_See code: [src/commands/pass-test.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.1/src/commands/pass-test.ts)_
 
 ## `prt plugins`
 
@@ -667,7 +667,7 @@ EXAMPLES
   $ prt show F-001
 ```
 
-_See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/show.ts)_
+_See code: [src/commands/show.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.1/src/commands/show.ts)_
 
 ## `prt update TASKID`
 
@@ -676,7 +676,7 @@ Update a task in place
 ```
 USAGE
   $ prt update TASKID [--clear-notes] [-d <value>] [--no-repo] [-n <value>] [-s
-    completed|in-progress|not-started] [-t true|false] [-v]
+    completed|in-progress|not-started] [-t true|false] [--type bug|feature|improvement|planning|research] [-v]
 
 ARGUMENTS
   TASKID  ID of the task to update
@@ -691,6 +691,8 @@ FLAGS
   -v, --verbose          show detailed error information including stack traces
       --clear-notes      clear all notes from the task
       --no-repo          use legacy direct file I/O instead of repository pattern
+      --type=<option>    update the task type (reassigns task ID and cascades to all references)
+                         <options: bug|feature|improvement|planning|research>
 
 DESCRIPTION
   Update a task in place
@@ -701,7 +703,7 @@ EXAMPLES
   $ prt update F-002 --deps="F-001" --clear-notes
 ```
 
-_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/update.ts)_
+_See code: [src/commands/update.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.1/src/commands/update.ts)_
 
 ## `prt validate`
 
@@ -722,7 +724,7 @@ EXAMPLES
   $ prt validate
 ```
 
-_See code: [src/commands/validate.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.0/src/commands/validate.ts)_
+_See code: [src/commands/validate.ts](https://github.com/ZacharyEggert/project-roadmap-tracking/blob/v0.2.1/src/commands/validate.ts)_
 <!-- commandsstop -->
 
 ## Development
@@ -769,7 +771,7 @@ prt COMMAND
 
 ### Testing
 
-PRT has comprehensive test coverage (98.78%):
+PRT has comprehensive test coverage (96.81%):
 
 - **Unit tests**: Services, repositories, utilities, errors
 - **Command tests**: All CLI commands
@@ -795,10 +797,10 @@ yarn test:coverage:summary
 For detailed architecture documentation, including design patterns, service layer architecture, repository pattern, and migration path, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 Key architectural features:
-- ✓ Service layer for business logic (99.89% coverage)
-- ✓ Repository pattern with caching and file watching (96.06% coverage)
+- ✓ Service layer for business logic (97.43% coverage)
+- ✓ Repository pattern with caching and file watching (94.7% coverage)
 - ✓ Custom error hierarchy with error codes (100% coverage)
-- ✓ Comprehensive test suite (98.78% overall coverage)
+- ✓ Comprehensive test suite (96.81% overall coverage)
 - ✓ Backward compatible legacy mode
 
 ### Contributing

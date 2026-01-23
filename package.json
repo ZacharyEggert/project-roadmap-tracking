@@ -1,7 +1,7 @@
 {
   "name": "project-roadmap-tracking",
   "description": "CLI based project task tracking",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "ZacharyEggert",
   "bin": {
     "prt": "./bin/run.js"
@@ -44,7 +44,15 @@
   ],
   "homepage": "https://github.com/ZacharyEggert/project-roadmap-tracking",
   "keywords": [
-    "oclif"
+    "oclif",
+		"cli",
+		"project",
+		"roadmap",
+		"tracking",
+		"tasks",
+		"productivity",
+		"management",
+		"prt"
   ],
   "license": "MIT",
   "main": "dist/index.js",

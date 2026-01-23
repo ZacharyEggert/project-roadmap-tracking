@@ -1,7 +1,7 @@
 # ARCHITECTURE.md
 
-**Version:** 0.3.0
-**Last Updated:** 2026-01-22
+**Version:** 0.2.0
+**Last Updated:** 2026-01-23
 **Status:** Living document - evolves with the codebase
 
 ## Table of Contents
@@ -49,7 +49,7 @@ Start simple, add complexity only when needed. The current MVP architecture is i
 
 ## System Architecture
 
-### Current Architecture (v0.3.0)
+### Current Architecture (v0.2.0)
 
 ```
 ┌─────────────────────────────────────┐
@@ -92,13 +92,13 @@ Start simple, add complexity only when needed. The current MVP architecture is i
 
 ### Architecture Achievement
 
-The current architecture (v0.3.0) now fully implements the recommended layered architecture pattern:
+The current architecture (v0.2.0) now fully implements the recommended layered architecture pattern:
 
 - ✓ **CLI Layer**: Thin command handlers using oclif framework
 - ✓ **Service Layer**: Complete business logic abstraction
 - ✓ **Repository Layer**: Full implementation with caching and file watching
 - ✓ **Error Handling**: Custom error hierarchy with error codes
-- ✓ **Testing**: 98.78% code coverage
+- ✓ **Testing**: 96.81% code coverage
 
 **Backward Compatibility**: All commands support both the modern repository pattern (default) and legacy direct file I/O (via `--no-repo` flag).
 
@@ -401,7 +401,7 @@ export class ConfigRepository {
 
 ## Data Flow
 
-### Current Flow (v0.3.0)
+### Current Flow (v0.2.0)
 
 **Modern Pattern Flow** (default, with repositories):
 ```
@@ -1131,19 +1131,19 @@ Potential integrations for future development:
 
 ## Testing Strategy
 
-### Current State (v0.3.0)
+### Current State (v0.2.0)
 
-**Test Coverage: 98.78%** 🎉
+**Test Coverage: 96.81%** 🎉
 
 - ✓ Comprehensive test suite (Mocha + Chai + c8)
-- ✓ Unit tests for all services (99.89% coverage)
+- ✓ Unit tests for all services (97.43% coverage)
   - `test/unit/services/task.service.test.ts`
   - `test/unit/services/task-query.service.test.ts`
   - `test/unit/services/roadmap.service.test.ts`
   - `test/unit/services/task-dependency.service.test.ts`
   - `test/unit/services/display.service.test.ts`
   - `test/unit/services/error-handler.service.test.ts`
-- ✓ Unit tests for repositories (96.06% coverage)
+- ✓ Unit tests for repositories (94.7% coverage)
   - `test/unit/repositories/roadmap.repository.test.ts`
   - `test/unit/repositories/config.repository.test.ts`
 - ✓ Unit tests for errors (100% coverage)
@@ -1467,16 +1467,16 @@ interface TaskIndex {
 
 **Goal:** Extract business logic from commands into services
 
-**Status:** ✓ Complete with 99.89% service coverage
+**Status:** ✓ Complete with 97.43% service coverage
 
 **Implemented:**
 1. ✓ Created `src/services/` with six services:
-   - `task.service.ts` - Task lifecycle management
-   - `task-query.service.ts` - Filtering and sorting
-   - `roadmap.service.ts` - File I/O and validation
-   - `task-dependency.service.ts` - Dependency validation
-   - `display.service.ts` - Output formatting
-   - `error-handler.service.ts` - Unified error handling
+   - `task.service.ts` - Task lifecycle management (81.95% coverage)
+   - `task-query.service.ts` - Filtering and sorting (99.36% coverage)
+   - `roadmap.service.ts` - File I/O and validation (100% coverage)
+   - `task-dependency.service.ts` - Dependency validation (100% coverage)
+   - `display.service.ts` - Output formatting (100% coverage)
+   - `error-handler.service.ts` - Unified error handling (100% coverage)
 2. ✓ All business logic extracted from commands
 3. ✓ Comprehensive unit test suite
 4. ✓ All commands use service-based pattern
@@ -1486,11 +1486,11 @@ interface TaskIndex {
 
 **Goal:** Abstract data access behind repositories with caching
 
-**Status:** ✓ Complete with 96.06% repository coverage
+**Status:** ✓ Complete with 94.7% repository coverage
 
 **Implemented:**
-1. ✓ `RoadmapRepository` with LRU cache and file watching
-2. ✓ `ConfigRepository` with multi-level inheritance
+1. ✓ `RoadmapRepository` with LRU cache and file watching (94.42% coverage)
+2. ✓ `ConfigRepository` with multi-level inheritance (94.91% coverage)
 3. ✓ All commands support `--no-repo` flag for backward compatibility
 4. ✓ Comprehensive unit tests with mocking
 5. ✓ Singleton pattern for ease of use
@@ -1524,7 +1524,7 @@ interface TaskIndex {
 
 **Goal:** Achieve >80% test coverage
 
-**Status:** ✓ Exceeded goal with 98.78% coverage! 🎉
+**Status:** ✓ Exceeded goal with 96.81% coverage! 🎉
 
 **Implemented:**
 1. ✓ Comprehensive test suite (Mocha + Chai + c8)
@@ -1534,9 +1534,9 @@ interface TaskIndex {
 5. ✓ Test commands in package.json
 
 **Coverage Breakdown:**
-- Services: 99.89%
+- Services: 97.43%
 - Commands: 97.44%
-- Repositories: 96.06%
+- Repositories: 94.7%
 - Errors: 100%
 - Utilities: 100%
 
