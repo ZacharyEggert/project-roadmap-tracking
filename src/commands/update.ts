@@ -3,9 +3,10 @@ import {Args, Command, Flags} from '@oclif/core'
 import {getDefaultConfigRepository} from '../repositories/config.repository.js'
 import {RoadmapRepository} from '../repositories/roadmap.repository.js'
 import errorHandlerService from '../services/error-handler.service.js'
+import taskService from '../services/task.service.js'
 import {readConfigFile} from '../util/read-config.js'
 import {readRoadmapFile} from '../util/read-roadmap.js'
-import {STATUS, Task, TaskID} from '../util/types.js'
+import {STATUS, Task, TASK_TYPE, TaskID} from '../util/types.js'
 import {updateTaskInRoadmap} from '../util/update-task.js'
 import {validateTaskID} from '../util/validate-task-id.js'
 import {writeRoadmapFile} from '../util/write-roadmap.js'
@@ -40,6 +41,10 @@ export default class Update extends Command {
       description: 'update whether the task passes tests',
       options: ['true', 'false'],
     }),
+    type: Flags.string({
+      description: 'update the task type (reassigns task ID and cascades to all references)',
+      options: [TASK_TYPE.Bug, TASK_TYPE.Feature, TASK_TYPE.Improvement, TASK_TYPE.Planning, TASK_TYPE.Research],
+    }),
     verbose: Flags.boolean({
       char: 'v',
       default: false,
@@ -61,6 +66,26 @@ export default class Update extends Command {
       const roadmap = flags['no-repo']
         ? await readRoadmapFile(config.path)
         : await RoadmapRepository.fromConfig(config).load(config.path)
+
+      // Handle type update separately since it requires ID reassignment and cascading
+      if (flags.type) {
+        const newType = flags.type as TASK_TYPE
+        const oldTaskId = args.taskID
+        const {newTaskId, roadmap: updatedRoadmap} = taskService.updateTaskType(roadmap, oldTaskId, newType)
+
+        await (flags['no-repo']
+          ? writeRoadmapFile(config.path, updatedRoadmap)
+          : RoadmapRepository.fromConfig(config).save(config.path, updatedRoadmap))
+
+        if (newTaskId === oldTaskId) {
+          this.log(`Task ${oldTaskId} was already of type ${newType}. No changes made.`)
+        } else {
+          this.log(`Task ${oldTaskId} has been updated to type ${newType} with new ID ${newTaskId}.`)
+          this.log(`All task references to ${oldTaskId} have been updated to ${newTaskId}.`)
+        }
+
+        return
+      }
 
       const updateObject: Partial<Task> = {}
 

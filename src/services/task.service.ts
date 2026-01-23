@@ -182,6 +182,75 @@ export class TaskService {
       tasks: [...roadmap.tasks.slice(0, taskIndex), updatedTask, ...roadmap.tasks.slice(taskIndex + 1)],
     }
   }
+
+  /**
+   * Updates a task's type, reassigning its ID and cascading the change to all references.
+   * When a task type is changed, a new ID is generated to match the new type prefix.
+   * All other tasks that reference the old ID in their depends-on or blocks arrays
+   * will be updated to reference the new ID.
+   *
+   * @param roadmap - The roadmap containing the task to update
+   * @param taskId - The current ID of the task to update
+   * @param newType - The new task type to assign
+   * @returns An object containing the updated Roadmap and the new task ID
+   * @throws Error if the task with the given ID is not found
+   *
+   * @example
+   * ```typescript
+   * // Change task F-001 to a bug (will become B-001 or next available B-XXX)
+   * const {roadmap: updatedRoadmap, newTaskId} = taskService.updateTaskType(roadmap, 'F-001', TASK_TYPE.Bug);
+   * // All tasks that had 'F-001' in depends-on or blocks will now have the new bug ID
+   * ```
+   */
+  updateTaskType(roadmap: Roadmap, taskId: string, newType: TASK_TYPE): {newTaskId: TaskID; roadmap: Roadmap} {
+    const task = this.findTask(roadmap, taskId)
+    if (!task) {
+      throw new TaskNotFoundError(taskId)
+    }
+
+    // If the type isn't changing, just return the roadmap unchanged with the same task ID
+    if (task.type === newType) {
+      return {newTaskId: taskId as TaskID, roadmap}
+    }
+
+    // Generate a new ID for the new type
+    const newTaskId = this.generateNextId(roadmap, newType)
+
+    // Update the task with the new type and new ID
+    let updatedRoadmap = this.updateTask(roadmap, taskId, {
+      id: newTaskId,
+      type: newType,
+    })
+
+    // Cascade the ID change to all tasks that reference the old ID
+    updatedRoadmap = {
+      ...updatedRoadmap,
+      tasks: updatedRoadmap.tasks.map((t) => {
+        // Skip the task we just updated
+        if (t.id === newTaskId) {
+          return t
+        }
+
+        // Check if this task references the old ID in depends-on or blocks
+        const hasDependency = t['depends-on'].includes(taskId as TaskID)
+        const hasBlock = t.blocks.includes(taskId as TaskID)
+
+        if (!hasDependency && !hasBlock) {
+          return t
+        }
+
+        // Update the references
+        return {
+          ...t,
+          blocks: hasBlock ? t.blocks.map((id) => (id === taskId ? newTaskId : id)) : t.blocks,
+          'depends-on': hasDependency ? t['depends-on'].map((id) => (id === taskId ? newTaskId : id)) : t['depends-on'],
+          updatedAt: new Date().toISOString(),
+        }
+      }),
+    }
+
+    return {newTaskId, roadmap: updatedRoadmap}
+  }
 }
 
 /**

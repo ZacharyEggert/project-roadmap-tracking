@@ -1958,13 +1958,13 @@
       "details": "Add logic to TaskService to update a task's type.\\n\\nUpdating the type should reassign the id as well to match (get new id to prevent collisions), and it should cascade to all other tasks' depends-on and blocks where the task was referenced.\\nThe flag should be implemented in the update command to pass through as well.\\n\\nFile: src/services/task.service.ts\\nTarget: src/commands/update.ts",
       "id": "F-004",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Add update command flags for task type",
       "type": "feature",
-      "updatedAt": "2026-01-23T15:51:03.930Z"
+      "updatedAt": "2026-01-23T15:58:46.759Z"
     }
   ]
 }
