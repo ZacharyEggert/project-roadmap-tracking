@@ -1950,6 +1950,21 @@
       "title": "Complete end-to-end verification",
       "type": "planning",
       "updatedAt": "2026-01-23T00:53:21.861Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T15:51:03.930Z",
+      "depends-on": [],
+      "details": "Add logic to TaskService to update a task's type.\\n\\nUpdating the type should reassign the id as well to match (get new id to prevent collisions), and it should cascade to all other tasks' depends-on and blocks where the task was referenced.\\nThe flag should be implemented in the update command to pass through as well.\\n\\nFile: src/services/task.service.ts\\nTarget: src/commands/update.ts",
+      "id": "F-004",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "not-started",
+      "tags": [],
+      "title": "Add update command flags for task type",
+      "type": "feature",
+      "updatedAt": "2026-01-23T15:51:03.930Z"
     }
   ]
 }
