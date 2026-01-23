@@ -13,6 +13,18 @@ interface CacheEntry {
 }
 
 /**
+ * Detect if we're running in a test environment
+ */
+function isTestEnvironment(): boolean {
+  return (
+    process.env.NODE_ENV === 'test' ||
+    process.env.MOCHA === 'true' ||
+    typeof (globalThis as {describe?: unknown}).describe === 'function' ||
+    typeof (globalThis as {it?: unknown}).it === 'function'
+  )
+}
+
+/**
  * Configuration for RoadmapRepository
  */
 export interface RepositoryConfig {
@@ -35,10 +47,13 @@ export class RoadmapRepository {
   private watchers: Map<string, FSWatcher> = new Map()
 
   constructor(config?: RepositoryConfig) {
+    // Disable file watching in test environments by default
+    const defaultWatchFiles = !isTestEnvironment()
+
     this.config = {
       cacheEnabled: config?.cacheEnabled ?? true,
       maxCacheSize: config?.maxCacheSize ?? 10,
-      watchFiles: config?.watchFiles ?? true,
+      watchFiles: config?.watchFiles ?? defaultWatchFiles,
     }
   }
 
@@ -46,10 +61,13 @@ export class RoadmapRepository {
    * Create a repository instance from a Config object
    */
   static fromConfig(config: Config): RoadmapRepository {
+    // Respect explicit watchFiles setting in config, but default based on environment
+    const defaultWatchFiles = !isTestEnvironment()
+
     return new RoadmapRepository({
       cacheEnabled: config.cache?.enabled ?? true,
       maxCacheSize: config.cache?.maxSize ?? 10,
-      watchFiles: config.cache?.watchFiles ?? true,
+      watchFiles: config.cache?.watchFiles ?? defaultWatchFiles,
     })
   }
 
@@ -195,30 +213,50 @@ export class RoadmapRepository {
    * Set up file watcher for a path
    */
   private setupWatcher(path: string): void {
-    const watcher = watch(path, {
-      awaitWriteFinish: {
-        pollInterval: 100,
-        stabilityThreshold: 250,
-      },
-      persistent: false,
-    })
+    try {
+      const watcher = watch(path, {
+        awaitWriteFinish: {
+          pollInterval: 100,
+          stabilityThreshold: 250,
+        },
+        persistent: false,
+      })
 
-    watcher.on('change', () => {
-      this.invalidate(path)
-    })
+      watcher.on('change', () => {
+        this.invalidate(path)
+      })
 
-    watcher.on('unlink', () => {
-      this.invalidate(path)
-      this.watchers
-        .get(path)
-        ?.close()
-        .catch(() => {
+      watcher.on('unlink', () => {
+        this.invalidate(path)
+        this.watchers
+          .get(path)
+          ?.close()
+          .catch(() => {
+            /* ignore close errors */
+          })
+        this.watchers.delete(path)
+      })
+
+      watcher.on('error', (error) => {
+        // Log error but don't crash - especially important for Windows EPERM errors
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`File watcher error for ${path}:`, (error as Error).message)
+        }
+
+        // Clean up the watcher on error
+        this.watchers.get(path)?.close().catch(() => {
           /* ignore close errors */
         })
-      this.watchers.delete(path)
-    })
+        this.watchers.delete(path)
+      })
 
-    this.watchers.set(path, watcher)
+      this.watchers.set(path, watcher)
+    } catch (error) {
+      // If watcher setup fails (e.g., permission issues), log and continue
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`Failed to set up file watcher for ${path}:`, (error as Error).message)
+      }
+    }
   }
 }
 

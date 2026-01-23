@@ -81,7 +81,7 @@
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "yarn lint",
     "prepack": "oclif manifest && oclif readme",
-    "test": "c8 mocha --loader=tsx/esm --forbid-only 'test/**/*.test.ts'",
+    "test": "NODE_ENV=test c8 mocha --loader=tsx/esm --forbid-only 'test/**/*.test.ts'",
     "test:coverage": "c8 report",
     "test:coverage:summary": "c8 report --reporter=text",
     "version": "oclif readme && git add README.md"

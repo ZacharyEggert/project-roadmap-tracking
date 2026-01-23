@@ -3,6 +3,8 @@
 import type {Command} from '@oclif/core'
 
 import {expect} from 'chai'
+import {tmpdir} from 'node:os'
+import {join} from 'node:path'
 
 import type {Config, Roadmap} from '../../src/util/types.js'
 
@@ -76,12 +78,12 @@ export async function runCommand(
     // Create a minimal mock Config object for oclif commands
     const mockConfig = {
       bin: 'prt',
-      cacheDir: '/tmp/prt-cache',
-      configDir: '/tmp/prt-config',
-      dataDir: '/tmp/prt-data',
+      cacheDir: join(tmpdir(), 'prt-cache'),
+      configDir: join(tmpdir(), 'prt-config'),
+      dataDir: join(tmpdir(), 'prt-data'),
       dirname: 'prt',
-      errlog: '/tmp/prt-error.log',
-      home: '/tmp',
+      errlog: join(tmpdir(), 'prt-error.log'),
+      home: tmpdir(),
       name: 'project-roadmap-tracking',
       pjson: {
         name: 'project-roadmap-tracking',
@@ -91,7 +93,7 @@ export async function runCommand(
       runHook: async () => ({failures: [], successes: []}),
       userAgent: 'prt/1.0.0',
       version: '1.0.0',
-      windows: false,
+      windows: process.platform === 'win32',
     }
 
     // Instantiate and run the command
