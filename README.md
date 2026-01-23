@@ -170,7 +170,7 @@ $ npm install -g project-roadmap-tracking
 $ prt COMMAND
 running command...
 $ prt (--version)
-project-roadmap-tracking/0.2.6 linux-x64 node-v20.20.0
+project-roadmap-tracking/0.2.7 linux-x64 node-v20.20.0
 $ prt --help [COMMAND]
 USAGE
   $ prt COMMAND
@@ -586,11 +586,92 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ### Release Process
 
-1. Update version in `package.json`
-2. Run `yarn prepack` (generates manifest and updates README)
-3. Commit changes
-4. Run `yarn pack` to create tarball
-5. Run `npm publish` to publish to npm registry
+PRT uses a fully automated CI/CD pipeline powered by GitHub Actions. Releases are created automatically when code is pushed to the `master` branch.
+
+#### Automated Release (Standard Process)
+
+1. **Update version** in `package.json`:
+   ```bash
+   # Example: 0.2.6 → 0.2.7
+   npm version patch  # or minor, or major
+   ```
+
+2. **Commit and push** to `master`:
+   ```bash
+   git add package.json
+   git commit -m "chore: bump version to 0.2.7"
+   git push origin master
+   ```
+
+3. **GitHub Actions automatically**:
+   - ✅ Runs test suite (944 tests must pass)
+   - ✅ Validates build and linting
+   - ✅ Creates GitHub release (only if tests pass)
+   - ✅ Publishes to npm registry
+   - ⏱️ Total time: ~4-6 minutes
+
+**Quality Gate:** If tests fail, no release is created. Fix the issues and push again.
+
+#### Manual Release (Fallback)
+
+For emergency releases or when automation is unavailable:
+
+```bash
+# 1. Update version
+npm version patch
+
+# 2. Build and package
+yarn prepack  # generates manifest, updates README
+yarn pack     # creates tarball
+
+# 3. Publish to npm
+npm publish
+
+# 4. Create GitHub release
+gh release create v$(node -p "require('./package.json').version") --generate-notes
+```
+
+#### Required GitHub Secrets
+
+For automated releases, configure these secrets in your GitHub repository:
+
+| Secret | Purpose |
+|--------|---------|
+| `GH_TOKEN` | GitHub API access (repo + workflow scopes) |
+| `GH_EMAIL` | Git commit author email |
+| `GH_USERNAME` | Git commit author name |
+| `NPM_TOKEN` | npm authentication (optional with Trusted Publishing) |
+
+#### npm Authentication
+
+**Option A: Trusted Publishing (Recommended)**
+- More secure (OIDC-based, no long-lived tokens)
+- Configure at: https://www.npmjs.com/settings/project-roadmap-tracking/packages/project-roadmap-tracking/access
+- No `NPM_TOKEN` secret needed
+
+**Option B: Granular Access Token**
+- Generate at: https://www.npmjs.com/settings/~/tokens
+- Permissions: Read and write for `project-roadmap-tracking` package
+- Store as `NPM_TOKEN` GitHub secret
+
+#### CI/CD Workflows
+
+The project uses three GitHub Actions workflows:
+
+1. **`test.yml`** - Runs on feature branches
+   - Tests across Ubuntu/Windows
+   - Tests across Node LTS versions
+   - Fast feedback during development
+
+2. **`onPushToMaster.yml`** - Runs on master push
+   - Test job (build + tests + lint) ← **Quality gate**
+   - Release job (create GitHub release) ← **Only runs if tests pass**
+
+3. **`onRelease.yml`** - Runs when release created
+   - Builds package
+   - Publishes to npm with provenance
+
+For detailed CI/CD architecture, see [ARCHITECTURE.md - CI/CD Pipeline](ARCHITECTURE.md#cicd-pipeline)
 
 ## License
 

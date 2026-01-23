@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.7] - 2026-01-23
+
+### Added
+- **CI/CD Test Validation**: Added test job to release workflow that runs before creating GitHub releases
+- **Quality Gate**: Releases are now only created if all 944 tests pass, TypeScript compiles, and linter succeeds
+
+### Changed
+- Updated `prt show` command to use `-d` flag for showing dependencies instead of `--show-dependencies`
+- Did some background maintenance and dependency updates to make CI/CD happier
+- Release workflow now has test dependency (`needs: test`) to prevent broken code from being released
+
+### Fixed
+- Fixed tests failing on Windows due to previous hardcoded POSIX paths
+
+### Documentation
+- Updated README.md with comprehensive CI/CD pipeline documentation
+- Updated ARCHITECTURE.md with new CI/CD Pipeline section (v0.2.7)
+- Documented automated release process and quality gates
+- Added GitHub Actions workflow architecture diagrams
+- Updated all version references from 0.2.0 to 0.2.7
+- Documented npm Trusted Publishing and token-based authentication options
+
+
 ## [0.2.1] - 2026-01-23
 
 ### Added

@@ -1,6 +1,6 @@
 # ARCHITECTURE.md
 
-**Version:** 0.2.0
+**Version:** 0.2.7
 **Last Updated:** 2026-01-23
 **Status:** Living document - evolves with the codebase
 
@@ -15,10 +15,11 @@
 7. [Dependency Management](#dependency-management)
 8. [Extension Points](#extension-points)
 9. [Testing Strategy](#testing-strategy)
-10. [Type System](#type-system)
-11. [Error Handling](#error-handling)
-12. [Performance Considerations](#performance-considerations)
-13. [Migration Path](#migration-path)
+10. [CI/CD Pipeline](#cicd-pipeline)
+11. [Type System](#type-system)
+12. [Error Handling](#error-handling)
+13. [Performance Considerations](#performance-considerations)
+14. [Migration Path](#migration-path)
 
 ---
 
@@ -49,7 +50,7 @@ Start simple, add complexity only when needed. The current MVP architecture is i
 
 ## System Architecture
 
-### Current Architecture (v0.2.0)
+### Current Architecture (v0.2.7)
 
 ```
 ┌─────────────────────────────────────┐
@@ -92,7 +93,7 @@ Start simple, add complexity only when needed. The current MVP architecture is i
 
 ### Architecture Achievement
 
-The current architecture (v0.2.0) now fully implements the recommended layered architecture pattern:
+The current architecture (v0.2.7) now fully implements the recommended layered architecture pattern:
 
 - ✓ **CLI Layer**: Thin command handlers using oclif framework
 - ✓ **Service Layer**: Complete business logic abstraction
@@ -401,7 +402,7 @@ export class ConfigRepository {
 
 ## Data Flow
 
-### Current Flow (v0.2.0)
+### Current Flow (v0.2.7)
 
 **Modern Pattern Flow** (default, with repositories):
 ```
@@ -841,7 +842,7 @@ export default class Export extends Command {
   },
   "peerDependencies": {
     "@oclif/core": "^4.0.0",
-    "project-roadmap-tracking": "^0.2.0"
+    "project-roadmap-tracking": "^0.2.7"
   },
   "devDependencies": {
     "@oclif/core": "^4.0.0",
@@ -850,7 +851,7 @@ export default class Export extends Command {
     "@types/node": "^18",
     "chai": "^4",
     "mocha": "^10",
-    "project-roadmap-tracking": "^0.2.0",
+    "project-roadmap-tracking": "^0.2.7",
     "tsx": "^4",
     "typescript": "^5"
   }
@@ -1131,7 +1132,7 @@ Potential integrations for future development:
 
 ## Testing Strategy
 
-### Current State (v0.2.0)
+### Current State (v0.2.7)
 
 **Test Coverage: 96.81%** 🎉
 
@@ -1243,6 +1244,329 @@ export const taskFactory = {
   }
 }
 ```
+
+---
+
+## CI/CD Pipeline
+
+### Overview
+
+PRT uses a comprehensive GitHub Actions-based CI/CD pipeline that ensures code quality and automates the release process. The pipeline consists of three workflows that work together to test, release, and publish the package.
+
+### Workflow Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     GitHub Actions Pipeline                      │
+└─────────────────────────────────────────────────────────────────┘
+                                │
+                ┌───────────────┴───────────────┐
+                │                               │
+        ┌───────▼────────┐            ┌────────▼────────┐
+        │  test.yml      │            │ onPushToMaster  │
+        │  (Feature      │            │     .yml        │
+        │   Branches)    │            │  (Master Push)  │
+        └────────────────┘            └─────────────────┘
+                │                               │
+                │                      ┌────────▼────────┐
+                │                      │   Test Job      │
+                │                      │  - Build        │
+                │                      │  - Test Suite   │
+                │                      │  - Lint         │
+                │                      └────────┬────────┘
+                │                               │
+                │                      ┌────────▼────────┐
+                │                      │  Release Job    │
+                │                      │  - Version      │
+                │                      │    Check        │
+                │                      │  - README       │
+                │                      │    Update       │
+                │                      │  - Create       │
+                │                      │    Release      │
+                │                      └────────┬────────┘
+                │                               │
+                │                      ┌────────▼────────┐
+                │                      │ onRelease.yml   │
+                │                      │  (on: release)  │
+                │                      │  - Build        │
+                │                      │  - Publish npm  │
+                │                      └─────────────────┘
+                │
+     ┌──────────┴──────────┐
+     │                     │
+┌────▼─────┐         ┌────▼─────┐
+│ Ubuntu   │         │ Windows  │
+│ Multiple │         │ Multiple │
+│  Node    │         │  Node    │
+│ Versions │         │ Versions │
+└──────────┘         └──────────┘
+```
+
+### 1. Test Workflow (`.github/workflows/test.yml`)
+
+**Triggers:** Push to any branch except `main`, manual dispatch
+
+**Purpose:** Comprehensive testing across multiple environments
+
+**Matrix Testing:**
+- Operating Systems: `ubuntu-latest`, `windows-latest`
+- Node Versions: `lts/-1` (previous LTS), `lts/*` (current LTS), `latest`
+- Total: 6 test configurations
+
+**Steps:**
+1. Checkout code
+2. Setup Node.js with yarn caching
+3. Install dependencies (`yarn`)
+4. Build TypeScript (`yarn build`)
+5. Run test suite (`yarn test`)
+   - Executes 944 tests
+   - Runs linter via posttest hook
+   - Generates coverage report
+
+**Benefits:**
+- Catches OS-specific issues before merge
+- Ensures compatibility across Node versions
+- Fast feedback loop for developers
+
+### 2. Release Workflow (`.github/workflows/onPushToMaster.yml`)
+
+**Triggers:** Push to `master` branch
+
+**Purpose:** Automated versioning and GitHub release creation with test validation
+
+**Jobs:**
+
+#### Job 1: Test (New - Added 2026-01-23)
+Validates code quality before creating releases:
+
+```yaml
+test:
+  runs-on: ubuntu-latest
+  steps:
+    - Checkout code
+    - Setup Node.js LTS with yarn cache
+    - Install dependencies
+    - Build project (yarn build)
+    - Run test suite (yarn test)
+      - 944 tests must pass
+      - Linter must pass
+      - Build must succeed
+```
+
+**Critical:** The release job only runs if tests pass (`needs: test`).
+
+#### Job 2: Release (Dependent on Test)
+Creates GitHub releases only after tests pass:
+
+```yaml
+release:
+  runs-on: ubuntu-latest
+  needs: test  # ← BLOCKS RELEASE IF TESTS FAIL
+  steps:
+    - Check if version exists (skip if already released)
+    - Setup git credentials
+    - Generate oclif README (if needed)
+    - Commit README updates (if any)
+    - Create GitHub release with auto-generated notes
+```
+
+**Version Check Logic:**
+```bash
+# Skip release if version already exists
+package_version=$(node -p "require('./package.json').version")
+exists=$(gh api repos/${{ github.repository }}/releases/tags/v$package_version)
+
+if version exists:
+  - Skip release creation
+  - Show warning message
+else:
+  - Proceed with release
+```
+
+**Benefits:**
+- ✅ **Quality Gate:** Broken code cannot be released
+- ✅ **Automated:** No manual intervention required
+- ✅ **Fast Feedback:** Immediate notification if tests fail
+- ✅ **Self-Contained:** All validation in one workflow
+- ✅ **Idempotent:** Safe to re-run (version check prevents duplicates)
+
+**Example Workflow Run:**
+```
+Push to master (v0.2.7)
+    ↓
+Test Job Starts
+    ↓
+✅ Build: Success (TypeScript compiles)
+✅ Tests: 944 passing
+✅ Lint: No errors
+    ↓
+Release Job Starts (needs: test satisfied)
+    ↓
+Version Check: v0.2.7 does not exist
+    ↓
+README Update: No changes needed
+    ↓
+✅ GitHub Release Created: v0.2.7
+    ↓
+onRelease.yml triggered...
+```
+
+**If Tests Fail:**
+```
+Push to master (v0.2.7)
+    ↓
+Test Job Starts
+    ↓
+❌ Tests: 1 test failing
+    ↓
+Release Job: ⊘ Skipped (needs: test not satisfied)
+    ↓
+❌ No release created
+❌ No npm publish
+```
+
+### 3. Publish Workflow (`.github/workflows/onRelease.yml`)
+
+**Triggers:** GitHub release created (from `onPushToMaster.yml`)
+
+**Purpose:** Automated npm publishing
+
+**Steps:**
+1. Checkout code at release tag
+2. Setup Node.js with npm registry authentication
+3. Install dependencies
+4. Build project
+5. Run prepack (generate manifest, update README)
+6. Publish to npm with provenance
+   - Uses npm Trusted Publishing (OIDC) or NPM_TOKEN
+   - Provenance attestation for supply chain security
+   - Public access
+7. Run postpack cleanup
+
+**Authentication Options:**
+
+**Option A: Trusted Publishing (Recommended)**
+- No secrets needed
+- OIDC-based authentication
+- More secure (short-lived tokens)
+- Configure at npm package settings
+
+**Option B: Access Token (Fallback)**
+- Store `NPM_TOKEN` in GitHub secrets
+- Granular access token with read/write permissions
+- Workflow automatically uses if Trusted Publishing not configured
+
+**Benefits:**
+- Fully automated publishing
+- Supply chain security via provenance
+- No manual npm publish commands
+- Consistent package builds
+
+### Complete Release Flow
+
+```
+Developer Workflow:
+1. Update version in package.json (e.g., 0.2.6 → 0.2.7)
+2. Commit changes
+3. Push to master
+
+Automated Pipeline:
+4. test.yml runs on feature branches during development
+5. onPushToMaster.yml runs when merged to master:
+   a. Test job: Build + Test + Lint (MUST PASS)
+   b. Release job: Create GitHub release (only if tests passed)
+6. onRelease.yml triggers automatically:
+   a. Build package
+   b. Publish to npm registry
+7. Package available on npm within minutes
+```
+
+### Required GitHub Secrets
+
+| Secret | Required | Purpose |
+|--------|----------|---------|
+| `GH_TOKEN` | Yes | GitHub API access for creating releases |
+| `GH_EMAIL` | Yes | Git commit author email |
+| `GH_USERNAME` | Yes | Git commit author name |
+| `NPM_TOKEN` | Optional* | npm publish authentication (if not using Trusted Publishing) |
+
+*Trusted Publishing (OIDC) is preferred and doesn't require `NPM_TOKEN`.
+
+### Workflow Best Practices
+
+1. **Test Before Release**
+   - All code must pass 944 tests before release
+   - Linter must pass
+   - TypeScript must compile
+   - No manual approval needed (automated quality gate)
+
+2. **Version Management**
+   - Update `package.json` version manually
+   - Workflow detects version changes
+   - Skips release if version already exists
+   - Semantic versioning recommended (MAJOR.MINOR.PATCH)
+
+3. **README Synchronization**
+   - `oclif readme` runs automatically on release
+   - Commits README updates to master
+   - Ensures command documentation stays current
+
+4. **Release Notes**
+   - GitHub auto-generates release notes from commits
+   - Conventional commit messages improve notes quality
+   - Co-Authored-By credits are preserved
+
+### Monitoring and Debugging
+
+**View Workflow Runs:**
+```bash
+# GitHub Actions tab in repository
+https://github.com/ZacharyEggert/project-roadmap-tracking/actions
+```
+
+**Common Issues:**
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Release skipped | Version already exists | Update version in package.json |
+| Test job failed | Tests, lint, or build failed | Fix code locally, push again |
+| Publish failed | npm auth issue | Check NPM_TOKEN or Trusted Publishing setup |
+| README commit failed | Git credentials missing | Verify GH_EMAIL and GH_USERNAME secrets |
+
+### Performance Characteristics
+
+- **Test Workflow:** ~2-3 minutes per matrix job (6 jobs in parallel)
+- **Release Workflow:**
+  - Test job: ~1-2 minutes
+  - Release job: ~30-60 seconds (if tests pass)
+- **Publish Workflow:** ~1-2 minutes
+- **Total Time (dev → npm):** ~4-6 minutes
+
+### Future Enhancements (⚡)
+
+Potential CI/CD improvements:
+
+1. **Automated Changelog Generation**
+   - Generate CHANGELOG.md from conventional commits
+   - Include in release notes
+
+2. **Release Candidate Pipeline**
+   - Publish beta versions for testing
+   - Promote to stable after validation
+
+3. **Deployment Previews**
+   - Test package installation in isolated environment
+   - Validate CLI commands work as expected
+
+4. **Performance Benchmarks**
+   - Track test execution time
+   - Monitor bundle size
+   - Alert on regressions
+
+5. **Security Scanning**
+   - Dependabot integration (✓ already enabled)
+   - CodeQL analysis
+   - npm audit in CI
 
 ---
 
