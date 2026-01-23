@@ -1527,7 +1527,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Initialize plugin package.json",
-      "type": "planning",
+      "type": "improvement",
       "updatedAt": "2026-01-23T00:49:52.155Z"
     },
     {
@@ -1544,7 +1544,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Create TypeScript configuration",
-      "type": "planning",
+      "type": "improvement",
       "updatedAt": "2026-01-23T00:50:13.450Z"
     },
     {
@@ -1561,7 +1561,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Create ESLint configuration",
-      "type": "planning",
+      "type": "improvement",
       "updatedAt": "2026-01-23T00:50:14.899Z"
     },
     {
@@ -1578,7 +1578,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Create directory structure",
-      "type": "planning",
+      "type": "improvement",
       "updatedAt": "2026-01-23T00:50:16.329Z"
     },
     {
@@ -1595,7 +1595,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Create plugin entry point",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:50:17.700Z"
     },
     {
@@ -1612,7 +1612,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Implement MarkdownExporterService base structure",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:01.710Z"
     },
     {
@@ -1629,7 +1629,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Implement header and metadata generation",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:03.186Z"
     },
     {
@@ -1646,7 +1646,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Implement statistics generation",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:04.582Z"
     },
     {
@@ -1663,7 +1663,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Implement task sections generation",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:05.968Z"
     },
     {
@@ -1680,7 +1680,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Implement task formatting",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:07.349Z"
     },
     {
@@ -1700,7 +1700,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Integrate all service methods",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:08.722Z"
     },
     {
@@ -1718,7 +1718,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Implement export command structure",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:42.138Z"
     },
     {
@@ -1735,7 +1735,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Implement config and roadmap loading",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:43.578Z"
     },
     {
@@ -1752,7 +1752,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Implement filtering and service integration",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:45.041Z"
     },
     {
@@ -1769,7 +1769,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Implement output handling",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:51:46.465Z"
     },
     {
@@ -1786,7 +1786,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Create test fixtures",
-      "type": "planning",
+      "type": "improvement",
       "updatedAt": "2026-01-23T00:52:29.632Z"
     },
     {
@@ -1804,7 +1804,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Unit tests for service - header and metadata",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:52:31.251Z"
     },
     {
@@ -1822,7 +1822,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Unit tests for service - statistics",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:52:32.826Z"
     },
     {
@@ -1840,7 +1840,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Unit tests for service - task formatting",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:52:34.192Z"
     },
     {
@@ -1860,7 +1860,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Unit tests for service - complete export",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:52:35.545Z"
     },
     {
@@ -1878,7 +1878,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Integration tests for export command",
-      "type": "planning",
+      "type": "feature",
       "updatedAt": "2026-01-23T00:52:36.918Z"
     },
     {
@@ -1895,7 +1895,7 @@
       "status": "not-started",
       "tags": [],
       "title": "Create sample export output",
-      "type": "planning",
+      "type": "improvement",
       "updatedAt": "2026-01-23T00:53:17.735Z"
     },
     {
