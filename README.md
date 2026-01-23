@@ -166,7 +166,7 @@ $ npm install -g project-roadmap-tracking
 $ prt COMMAND
 running command...
 $ prt (--version)
-project-roadmap-tracking/0.2.3 linux-x64 node-v20.20.0
+project-roadmap-tracking/0.2.4 linux-x64 node-v20.20.0
 $ prt --help [COMMAND]
 USAGE
   $ prt COMMAND
