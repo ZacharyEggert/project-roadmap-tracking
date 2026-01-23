@@ -1,4 +1,4 @@
-import {Ajv, type ValidateFunction} from 'ajv'
+import Ajv, {type ValidateFunction} from 'ajv'
 import {readFile, stat} from 'node:fs/promises'
 import {homedir} from 'node:os'
 import {join} from 'node:path'
@@ -98,7 +98,7 @@ export class ConfigRepository {
     }
 
     // Initialize JSON schema validator
-    const ajv = new Ajv({allErrors: true, strict: false})
+    const ajv = new Ajv({allErrors: true})
     this.validateSchema = ajv.compile(ConfigRepository.configSchema)
   }
 
@@ -284,7 +284,7 @@ export class ConfigRepository {
         }
 
         const errorDetails: ValidationErrorDetail[] = this.validateSchema.errors.map((err) => ({
-          field: err.instancePath || 'config',
+          field: err.dataPath || 'config',
           message: err.message || 'Unknown error',
           type: 'structure',
         }))
