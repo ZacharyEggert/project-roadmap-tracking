@@ -1,5 +1,4 @@
-import Ajv from 'ajv'
-import type {ValidateFunction} from 'ajv'
+import Ajv, {type ValidateFunction} from 'ajv'
 import {readFile, stat} from 'node:fs/promises'
 import {homedir} from 'node:os'
 import {join} from 'node:path'
