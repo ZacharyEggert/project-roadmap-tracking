@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-01-23
+
+### Changed
+- Updated documentation to reflect accurate test coverage metrics
+- Corrected ARCHITECTURE.md with current version (0.2.1) and accurate test coverage (96.81%)
+- Corrected README.md with accurate test coverage across all sections
+- Regenerated oclif manifest and command documentation via prepack
+
+### Fixed
+- Test coverage reporting in documentation now matches actual coverage:
+  - Overall: 96.81% (previously reported as 98.78%)
+  - Services: 97.43% (previously reported as 99.89%)
+  - Repositories: 94.7% (previously reported as 96.06%)
+  - Commands: 97.44% (unchanged)
+  - Errors: 100% (unchanged)
+  - Utilities: 100% (unchanged)
+- Detailed per-service coverage breakdown added to ARCHITECTURE.md:
+  - task.service.ts: 81.95%
+  - task-query.service.ts: 99.36%
+  - roadmap.service.ts: 100%
+  - task-dependency.service.ts: 100%
+  - display.service.ts: 100%
+  - error-handler.service.ts: 100%
+
+### Documentation
+- All references to version numbers updated from 0.2.0 to 0.2.1
+- Last updated date changed to 2026-01-23 in ARCHITECTURE.md
+- Maintained consistency across README.md, ARCHITECTURE.md, and package.json
+
 ## [0.2.0] - 2026-01-22
 
 ### Added
@@ -30,9 +59,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated documentation (README.md and ARCHITECTURE.md) to reflect current state
 
 ### Improved
-- **Test Coverage**: Achieved 98.78% code coverage across all layers
-  - Services: 99.89%
-  - Repositories: 96.06%
+- **Test Coverage**: Achieved 96.81% code coverage across all layers
+  - Services: 97.43%
+  - Repositories: 94.7%
   - Commands: 97.44%
   - Errors: 100%
   - Utilities: 100%
