@@ -1462,13 +1462,13 @@
       "details": "Create comprehensive task breakdown for building the example-prt-plugin, including architecture design, MarkdownExporterService implementation, export command, testing, and documentation",
       "id": "P-068",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "in-progress",
+      "status": "completed",
       "tags": [],
       "title": "Add tasks to prt for example-prt-plugin development",
       "type": "planning",
-      "updatedAt": "2026-01-23T00:19:55.463Z"
+      "updatedAt": "2026-01-23T00:53:48.051Z"
     },
     {
       "blocks": [],
@@ -1514,6 +1514,442 @@
       "title": "Update root ARCHITECTURE.md with plugin implementation guide",
       "type": "planning",
       "updatedAt": "2026-01-23T00:42:19.411Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:49:52.154Z",
+      "depends-on": [],
+      "details": "Create package.json with oclif configuration, peer dependencies (@oclif/core ^4, project-roadmap-tracking ^0.3.0), scripts (build, test, lint), and ES module settings. Set bin=\"prt\" to extend PRT CLI.",
+      "id": "P-072",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Initialize plugin package.json",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:49:52.155Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:49:53.755Z",
+      "depends-on": [
+        "P-072"
+      ],
+      "details": "Create tsconfig.json with Node16 module resolution, ES2022 target, outDir=dist, and strict mode enabled. Match PRT's TypeScript configuration for compatibility.",
+      "id": "P-073",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Create TypeScript configuration",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:50:13.450Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:49:55.187Z",
+      "depends-on": [
+        "P-072"
+      ],
+      "details": "Create .eslintrc.json extending PRT's linting rules. Ensure consistency with main project code style.",
+      "id": "P-074",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "not-started",
+      "tags": [],
+      "title": "Create ESLint configuration",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:50:14.899Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:49:56.630Z",
+      "depends-on": [
+        "P-072"
+      ],
+      "details": "Create src/, src/commands/, src/services/, test/, test/commands/, test/services/, and test/fixtures/ directories. Create placeholder index.ts files.",
+      "id": "P-075",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Create directory structure",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:50:16.329Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:49:58.171Z",
+      "depends-on": [
+        "P-075"
+      ],
+      "details": "Create src/index.ts that exports all commands for oclif discovery. Keep it minimal - oclif auto-discovers commands from the commands directory.",
+      "id": "P-076",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Create plugin entry point",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:50:17.700Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:50:42.947Z",
+      "depends-on": [
+        "P-075"
+      ],
+      "details": "Create src/services/markdown-exporter.service.ts with class structure, ExportOptions interface, and main export(roadmap, options) method signature. Import PRT types (Roadmap, Task, etc.) from dist/util/types.js.",
+      "id": "P-077",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Implement MarkdownExporterService base structure",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:01.710Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:50:44.473Z",
+      "depends-on": [
+        "P-077"
+      ],
+      "details": "Implement generateHeader() and generateMetadata() private methods. Header shows project name/description, metadata shows creation date, last updated, version info.",
+      "id": "P-078",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Implement header and metadata generation",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:03.186Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:50:45.865Z",
+      "depends-on": [
+        "P-077"
+      ],
+      "details": "Implement generateStatistics() using roadmapService.getStats(). Show task counts by status, type, and priority with visual formatting.",
+      "id": "P-079",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Implement statistics generation",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:04.582Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:50:47.236Z",
+      "depends-on": [
+        "P-077"
+      ],
+      "details": "Implement generateTaskSections() to group and sort tasks. Support grouping by status/type/priority (configurable via options). Use taskQueryService for filtering and sorting.",
+      "id": "P-080",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Implement task sections generation",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:05.968Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:50:48.646Z",
+      "depends-on": [
+        "P-077"
+      ],
+      "details": "Implement formatTask() to render individual task markdown with ID, title, type, status, tests, dates, details, notes, tags, and dependencies. Use dependency graph to show Depends On and Blocks sections.",
+      "id": "P-081",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Implement task formatting",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:07.349Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:50:50.162Z",
+      "depends-on": [
+        "P-078",
+        "P-079",
+        "P-080",
+        "P-081"
+      ],
+      "details": "Complete the main export() method to orchestrate all generation methods. Apply filtering options (--no-completed, --minimal) and assemble final markdown output.",
+      "id": "P-082",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Integrate all service methods",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:08.722Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:51:29.792Z",
+      "depends-on": [
+        "P-075",
+        "P-082"
+      ],
+      "details": "Create src/commands/export.ts extending oclif Command. Define all flags: --output/-o (file path), --no-completed (hide completed), --minimal (compact output), --group-by (status/type/priority), --sort-by, and filtering flags (--status, --priority, --type, --tags).",
+      "id": "P-083",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Implement export command structure",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:42.138Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:51:31.281Z",
+      "depends-on": [
+        "P-083"
+      ],
+      "details": "In export command's run() method, implement config loading via readConfigFile() and roadmap loading via roadmapService.load(). Add error handling for missing files.",
+      "id": "P-084",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Implement config and roadmap loading",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:43.578Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:51:32.682Z",
+      "depends-on": [
+        "P-084"
+      ],
+      "details": "Apply flag-based filtering using taskQueryService.filter(). Build ExportOptions object from parsed flags. Call MarkdownExporterService.export() with filtered roadmap and options.",
+      "id": "P-085",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Implement filtering and service integration",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:45.041Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:51:34.032Z",
+      "depends-on": [
+        "P-085"
+      ],
+      "details": "Implement file writing logic (if --output specified) or stdout output. Add success messages. Handle write errors gracefully.",
+      "id": "P-086",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Implement output handling",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:51:46.465Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:52:11.159Z",
+      "depends-on": [
+        "P-075"
+      ],
+      "details": "Create test/fixtures/ with sample roadmaps (empty roadmap, single task, complex roadmap with dependencies, roadmap with all task types). Include valid and edge cases.",
+      "id": "P-087",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Create test fixtures",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:52:29.632Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:52:12.725Z",
+      "depends-on": [
+        "P-078",
+        "P-087"
+      ],
+      "details": "Create test/services/markdown-exporter.service.test.ts. Test generateHeader() and generateMetadata() with various fixture roadmaps. Verify markdown format and content accuracy.",
+      "id": "P-088",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Unit tests for service - header and metadata",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:52:31.251Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:52:14.201Z",
+      "depends-on": [
+        "P-079",
+        "P-087"
+      ],
+      "details": "Test generateStatistics() with roadmaps containing different task distributions. Verify counts are accurate for status, type, and priority breakdowns.",
+      "id": "P-089",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Unit tests for service - statistics",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:52:32.826Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:52:15.680Z",
+      "depends-on": [
+        "P-081",
+        "P-087"
+      ],
+      "details": "Test formatTask() with tasks containing various combinations of details, notes, tags, dependencies. Verify markdown output format, dependency rendering, and edge cases (empty fields).",
+      "id": "P-090",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Unit tests for service - task formatting",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:52:34.192Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:52:17.127Z",
+      "depends-on": [
+        "P-082",
+        "P-088",
+        "P-089",
+        "P-090"
+      ],
+      "details": "Test complete export() method with all option combinations (--no-completed, --minimal, different grouping/sorting). Use golden file comparison for known-good outputs.",
+      "id": "P-091",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Unit tests for service - complete export",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:52:35.545Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:52:18.612Z",
+      "depends-on": [
+        "P-086",
+        "P-087"
+      ],
+      "details": "Create test/commands/export.test.ts. Test command execution with temp roadmap files, verify file output, test all flags, test error cases (missing config, invalid paths).",
+      "id": "P-092",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "not-started",
+      "tags": [],
+      "title": "Integration tests for export command",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:52:36.918Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:52:57.600Z",
+      "depends-on": [
+        "P-086"
+      ],
+      "details": "Create examples/sample-export.md by running the export command against the main PRT roadmap (or a test roadmap). Demonstrates real-world plugin output.",
+      "id": "P-093",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "low",
+      "status": "not-started",
+      "tags": [],
+      "title": "Create sample export output",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:53:17.735Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:52:58.975Z",
+      "depends-on": [
+        "P-086"
+      ],
+      "details": "Run yarn build and verify TypeScript compilation succeeds. Run oclif manifest generation to create oclif.manifest.json. Verify command is discoverable.",
+      "id": "P-094",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "not-started",
+      "tags": [],
+      "title": "Generate oclif manifest",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:53:19.107Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:53:07.842Z",
+      "depends-on": [
+        "P-091",
+        "P-092"
+      ],
+      "details": "Run full test suite (yarn test). Verify all tests pass. Check coverage report (aim for >95% coverage on service and command code).",
+      "id": "P-095",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Verify tests pass",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:53:20.484Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:53:09.216Z",
+      "depends-on": [
+        "P-094",
+        "P-095"
+      ],
+      "details": "Run yarn build && yarn lint to verify no type errors or linting issues. Test plugin installation with prt plugins link from plugin directory. Run prt export --help and prt export -o test-output.md against a real roadmap. Mark P-068 complete only after all checks pass.",
+      "id": "P-096",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "high",
+      "status": "not-started",
+      "tags": [],
+      "title": "Complete end-to-end verification",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:53:21.861Z"
     }
   ]
 }
