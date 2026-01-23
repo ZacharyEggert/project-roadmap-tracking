@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
       - uses: actions/setup-node@v4
       - name: Check if version already exists
         id: version-check
@@ -43,7 +45,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -am "chore: update README.md"
-            git push -u origin ${{ github.ref_name }}
+            git push origin master
           fi
       - name: Create Github Release
         uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5
@@ -51,7 +53,7 @@ jobs:
         with:
           name: ${{ steps.version-check.outputs.tag }}
           tag: ${{ steps.version-check.outputs.tag }}
-          commit: ${{ github.ref_name }}
+          commit: master
           token: ${{ secrets.GH_TOKEN }}
           skipIfReleaseExists: true
           generateReleaseNotes: true
