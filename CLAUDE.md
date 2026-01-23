@@ -344,10 +344,54 @@ Tests use Mocha + Chai and are located in `test/` directory. The test structure 
 
 ## Release Process
 
+### Automated Release (Recommended)
+
+Releases are fully automated via GitHub Actions:
+
+1. Update version in `package.json`
+2. Commit and push to `master` branch
+3. GitHub Actions automatically:
+   - Checks if version already exists (skips if it does)
+   - Updates README via `oclif readme` if needed
+   - Creates a GitHub release with auto-generated release notes
+   - Publishes to npm registry
+
+**Required Setup:**
+
+1. **npm Authentication** (choose one):
+
+   **Option A: Trusted Publishing** (recommended, more secure):
+   - Go to https://www.npmjs.com/settings/project-roadmap-tracking/packages/project-roadmap-tracking/access
+   - Navigate to "Publishing Access" → Configure "Trusted Publishers"
+   - Add GitHub Actions as trusted publisher:
+     - Provider: GitHub Actions
+     - Repository: ZacharyEggert/project-roadmap-tracking
+     - Workflow: .github/workflows/onRelease.yml
+     - Environment: (leave blank)
+   - No npm token needed! Uses OIDC authentication.
+
+   **Option B: Granular Access Token** (fallback):
+   - Go to https://www.npmjs.com/settings/~/tokens
+   - Generate new token → Granular Access Token
+   - Select packages: project-roadmap-tracking
+   - Permissions: Read and write
+   - Add as GitHub secret: `NPM_TOKEN`
+   - The workflow will automatically use this if Trusted Publishing isn't configured
+
+2. **GitHub Secrets** (required):
+   - `GH_TOKEN` - GitHub personal access token with `repo` and `workflow` scopes
+   - `GH_EMAIL` - Your git email (from `git config user.email`)
+   - `GH_USERNAME` - Your git username (from `git config user.name`)
+
+### Manual Release
+
+If you need to release manually:
+
 1. Update version in `package.json`
 2. Run `yarn prepack` (generates manifest and updates README)
 3. Commit changes
 4. Run `yarn pack` to create tarball
 5. Run `npm publish` to publish to npm registry
+6. Create GitHub release: `gh release create v{VERSION} --generate-notes`
 
 The `prepack` script automatically runs `oclif manifest` and `oclif readme` to keep generated files in sync.
