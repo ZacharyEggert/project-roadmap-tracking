@@ -1477,13 +1477,13 @@
       "details": "Document plugin structure, oclif integration, MarkdownExporterService design, markdown format specification, and how the plugin leverages existing PRT services (RoadmapService, TaskQueryService, DisplayService)",
       "id": "P-069",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Spec out examples/plugins/example-prt-plugin/ARCHITECTURE.md",
       "type": "planning",
-      "updatedAt": "2026-01-23T00:18:42.563Z"
+      "updatedAt": "2026-01-23T00:24:08.409Z"
     },
     {
       "blocks": [],
@@ -1492,13 +1492,13 @@
       "details": "Document how to install the plugin (prt plugins install/link), usage of the export command with examples, markdown output format, and configuration options. Target audience: plugin users and developers learning from the example",
       "id": "P-070",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Build README.md for example-prt-plugin describing plugin use",
       "type": "planning",
-      "updatedAt": "2026-01-23T00:18:47.830Z"
+      "updatedAt": "2026-01-23T00:24:14.560Z"
     },
     {
       "blocks": [],
