@@ -160,6 +160,10 @@ IDs are auto-generated sequentially per task type.
 * [Run a specific test file](#run-a-specific-test-file)
 * [Generate coverage report](#generate-coverage-report)
 * [View coverage summary](#view-coverage-summary)
+* [1. Update version](#1-update-version)
+* [2. Build and package](#2-build-and-package)
+* [3. Publish to npm](#3-publish-to-npm)
+* [4. Create GitHub release](#4-create-github-release)
 <!-- tocstop -->
 
 # Usage
