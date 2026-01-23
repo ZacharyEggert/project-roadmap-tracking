@@ -1454,6 +1454,66 @@
       "title": "Test task for P-022",
       "type": "feature",
       "updatedAt": "2026-01-17T05:31:14.416Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:18:35.982Z",
+      "depends-on": [],
+      "details": "Create comprehensive task breakdown for building the example-prt-plugin, including architecture design, MarkdownExporterService implementation, export command, testing, and documentation",
+      "id": "P-068",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "in-progress",
+      "tags": [],
+      "title": "Add tasks to prt for example-prt-plugin development",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:19:55.463Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:18:42.562Z",
+      "depends-on": [],
+      "details": "Document plugin structure, oclif integration, MarkdownExporterService design, markdown format specification, and how the plugin leverages existing PRT services (RoadmapService, TaskQueryService, DisplayService)",
+      "id": "P-069",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "not-started",
+      "tags": [],
+      "title": "Spec out examples/plugins/example-prt-plugin/ARCHITECTURE.md",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:18:42.563Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:18:47.829Z",
+      "depends-on": [],
+      "details": "Document how to install the plugin (prt plugins install/link), usage of the export command with examples, markdown output format, and configuration options. Target audience: plugin users and developers learning from the example",
+      "id": "P-070",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "not-started",
+      "tags": [],
+      "title": "Build README.md for example-prt-plugin describing plugin use",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:18:47.830Z"
+    },
+    {
+      "blocks": [],
+      "createdAt": "2026-01-23T00:18:56.575Z",
+      "depends-on": [],
+      "details": "Expand Section 8 (Extension Points) with detailed guidance on implementing oclif plugins for PRT: plugin structure, service imports, command patterns, testing strategies, and best practices. Reference example-prt-plugin as the canonical example",
+      "id": "P-071",
+      "notes": "",
+      "passes-tests": false,
+      "priority": "medium",
+      "status": "not-started",
+      "tags": [],
+      "title": "Update root ARCHITECTURE.md with plugin implementation guide",
+      "type": "planning",
+      "updatedAt": "2026-01-23T00:18:56.575Z"
     }
   ]
 }
