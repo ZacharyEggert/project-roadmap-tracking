@@ -1675,13 +1675,13 @@
       "details": "Implement formatTask() to render individual task markdown with ID, title, type, status, tests, dates, details, notes, tags, and dependencies. Use dependency graph to show Depends On and Blocks sections.",
       "id": "P-081",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Implement task formatting",
       "type": "feature",
-      "updatedAt": "2026-01-23T00:51:07.349Z"
+      "updatedAt": "2026-01-25T18:37:54.988Z"
     },
     {
       "blocks": [],
@@ -1695,13 +1695,13 @@
       "details": "Complete the main export() method to orchestrate all generation methods. Apply filtering options (--no-completed, --minimal) and assemble final markdown output.",
       "id": "P-082",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Integrate all service methods",
       "type": "feature",
-      "updatedAt": "2026-01-23T00:51:08.722Z"
+      "updatedAt": "2026-01-25T18:37:59.364Z"
     },
     {
       "blocks": [],

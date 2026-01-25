@@ -31,6 +31,12 @@ export interface MarkdownExportOptions {
   includeStats?: boolean
 
   /**
+   * Use minimal output format (compact single-line tasks, no stats/metadata)
+   * @default false
+   */
+  minimal?: boolean
+
+  /**
    * Field to sort tasks by
    * @default 'priority'
    */
@@ -85,21 +91,32 @@ export class MarkdownExporterService {
    */
   export(roadmap: Roadmap, options: MarkdownExportOptions = {}): string {
     const sections: string[] = []
+    const isMinimal = options.minimal || false
 
-    // Add header section (title and description)
+    // Add header section (title and description) - always included
     sections.push(this.generateHeader(roadmap))
 
     // Conditionally add metadata section
-    if (options.includeMetadata !== false) {
+    // In minimal mode, default to false unless explicitly set to true
+    const includeMetadata = isMinimal
+      ? (options.includeMetadata === true)
+      : (options.includeMetadata !== false)
+
+    if (includeMetadata) {
       sections.push(this.generateMetadata(roadmap))
     }
 
     // Conditionally add statistics section
-    if (options.includeStats !== false) {
+    // In minimal mode, default to false unless explicitly set to true
+    const includeStats = isMinimal
+      ? (options.includeStats === true)
+      : (options.includeStats !== false)
+
+    if (includeStats) {
       sections.push(this.generateStatistics(roadmap))
     }
 
-    // Add task sections
+    // Add task sections (will use minimal formatting if options.minimal is true)
     sections.push(this.generateTaskSections(roadmap, options))
 
     // Join all sections with horizontal rules
@@ -107,27 +124,211 @@ export class MarkdownExporterService {
   }
 
   /**
-   * Formats a single task as a markdown list item.
+   * Formats a date string to readable format.
+   *
+   * @param dateString - ISO date string
+   * @returns Formatted date (YYYY-MM-DD)
+   */
+  private formatDate(dateString: null | string | undefined): string {
+    if (!dateString) return 'N/A'
+
+    try {
+      const date = new Date(dateString)
+      return date.toISOString().split('T')[0]
+    } catch {
+      return dateString
+    }
+  }
+
+  /**
+   * Formats task status as human-readable text with symbol.
+   *
+   * @param status - The task status to format
+   * @returns Status symbol (✓, ~, ○)
+   */
+  private formatStatusSymbol(status: STATUS): string {
+    const statusMap: Record<STATUS, string> = {
+      [STATUS.Completed]: '✓',
+      [STATUS.InProgress]: '~',
+      [STATUS.NotStarted]: '○',
+    }
+
+    return statusMap[status] || '○'
+  }
+
+  /**
+   * Formats task status as human-readable text.
+   *
+   * @param status - The task status to format
+   * @returns Status text (Completed, In Progress, Not Started)
+   */
+  private formatStatusText(status: STATUS): string {
+    return status
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+
+  /**
+   * Formats a single task as a detailed markdown block.
    *
    * @param task - The task to format
-   * @returns Markdown formatted task list item
-   *
-   * @example
-   * Output format:
-   * ```markdown
-   * - [F-001] **Implement authentication** (High Priority) - JWT-based auth system
-   * ```
+   * @param minimal - Use minimal single-line format
+   * @returns Markdown formatted task block
    */
-  private formatTask(task: Task): string {
-    // Humanize priority
+  private formatTask(task: Task, minimal = false): string {
+    // Minimal mode: single-line format (original simple format)
+    if (minimal) {
+      return this.formatTaskMinimal(task)
+    }
+
+    // Detailed mode: full task information
+    const lines: string[] = []
+
+    // Task heading and metadata lines
+    lines.push(`### [${task.id}] ${task.title}`, '', ...this.formatTaskMetadata(task), '')
+
+    // Details section
+    if (task.details) {
+      lines.push('**Details:**', task.details, '')
+    }
+
+    // Dependencies section and optional fields
+    lines.push(...this.formatTaskDependencies(task), ...this.formatTaskOptionalFields(task))
+
+    // Notes section (if present)
+    if (task.notes) {
+      lines.push('', '**Notes:**', task.notes)
+    }
+
+    return lines.join('\n')
+  }
+
+  /**
+   * Formats task dependencies (depends-on and blocks).
+   *
+   * @param task - The task to format
+   * @returns Array of dependency line strings
+   */
+  private formatTaskDependencies(task: Task): string[] {
+    const lines: string[] = []
+
+    if (task['depends-on'] && task['depends-on'].length > 0) {
+      lines.push(`**Depends On:** ${task['depends-on'].join(', ')}`)
+    }
+
+    if (task.blocks && task.blocks.length > 0) {
+      lines.push(`**Blocks:** ${task.blocks.join(', ')}`)
+    }
+
+    // Add spacing after dependencies if they exist
+    if (lines.length > 0) {
+      lines.push('')
+    }
+
+    return lines
+  }
+
+  /**
+   * Formats task metadata lines (type, status, tests, priority, dates).
+   *
+   * @param task - The task to format
+   * @returns Array of metadata line strings
+   */
+  private formatTaskMetadata(task: Task): string[] {
+    const typeLabel = this.formatTaskType(task.type)
+    const statusSymbol = this.formatStatusSymbol(task.status)
+    const statusText = this.formatStatusText(task.status)
+    const testSymbol = this.formatTestStatus(task['passes-tests'])
     const priorityMap: Record<string, string> = {
       high: 'High',
       low: 'Low',
       medium: 'Medium',
     }
     const priorityLabel = priorityMap[task.priority] || task.priority
+    const createdDate = this.formatDate(task.createdAt)
+    const updatedDate = this.formatDate(task.updatedAt)
 
+    return [
+      `**Type:** ${typeLabel} | **Status:** ${statusSymbol} ${statusText} | **Tests:** ${testSymbol}`,
+      `**Priority:** ${priorityLabel} | **Created:** ${createdDate} | **Updated:** ${updatedDate}`,
+    ]
+  }
+
+  /**
+   * Formats a task in minimal single-line format.
+   *
+   * @param task - The task to format
+   * @returns Single-line markdown format
+   */
+  private formatTaskMinimal(task: Task): string {
+    const priorityMap: Record<string, string> = {
+      high: 'High',
+      low: 'Low',
+      medium: 'Medium',
+    }
+    const priorityLabel = priorityMap[task.priority] || task.priority
     return `- [${task.id}] **${task.title}** (${priorityLabel} Priority)`
+  }
+
+  /**
+   * Formats optional task fields (tags, assignedTo, dueDate, effort, github-refs).
+   *
+   * @param task - The task to format
+   * @returns Array of optional field line strings
+   */
+  private formatTaskOptionalFields(task: Task): string[] {
+    const lines: string[] = []
+
+    if (task.tags && task.tags.length > 0) {
+      lines.push(`**Tags:** ${task.tags.join(', ')}`)
+    }
+
+    if (task.assignedTo) {
+      lines.push(`**Assigned To:** ${task.assignedTo}`)
+    }
+
+    if (task.dueDate) {
+      lines.push(`**Due Date:** ${this.formatDate(task.dueDate)}`)
+    }
+
+    if (task.effort !== null && task.effort !== undefined) {
+      lines.push(`**Effort:** ${task.effort}`)
+    }
+
+    if (task['github-refs'] && task['github-refs'].length > 0) {
+      lines.push(`**GitHub Refs:** ${task['github-refs'].join(', ')}`)
+    }
+
+    return lines
+  }
+
+  /**
+   * Formats task type as human-readable text.
+   *
+   * @param type - The task type to format
+   * @returns Capitalized type name
+   */
+  private formatTaskType(type: TASK_TYPE): string {
+    const typeMap: Record<TASK_TYPE, string> = {
+      [TASK_TYPE.Bug]: 'Bug',
+      [TASK_TYPE.Feature]: 'Feature',
+      [TASK_TYPE.Improvement]: 'Improvement',
+      [TASK_TYPE.Planning]: 'Planning',
+      [TASK_TYPE.Research]: 'Research',
+    }
+
+    return typeMap[type] || type
+  }
+
+  /**
+   * Formats test status as symbol.
+   *
+   * @param passesTests - Whether task passes tests
+   * @returns Test symbol (✓ or ✗)
+   */
+  private formatTestStatus(passesTests: boolean): string {
+    return passesTests ? '✓' : '✗'
   }
 
   /**
@@ -247,6 +448,7 @@ export class MarkdownExporterService {
     const groupBy = options.groupBy || 'status'
     const sortBy = options.taskSortBy || 'priority'
     const includeCompleted = options.includeCompletedTasks !== false
+    const minimal = options.minimal || false
 
     // Filter tasks
     let {tasks} = roadmap
@@ -266,8 +468,8 @@ export class MarkdownExporterService {
       // Sort tasks within the group
       const sortedTasks = taskQueryService.sort(groupTasks, sortBy, SortOrder.Descending)
 
-      // Format section
-      const taskLines = sortedTasks.map((task) => this.formatTask(task))
+      // Format section with minimal flag
+      const taskLines = sortedTasks.map((task) => this.formatTask(task, minimal))
       sections.push(`## ${groupName}\n\n${taskLines.join('\n')}`)
     }
 
