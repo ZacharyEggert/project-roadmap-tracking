@@ -1,6 +1,6 @@
 {
   "name": "@prt/export-to-file",
-  "version": "1.0.0",
+  "version": "0.2.7",
   "description": "oclif plugin for PRT that exports roadmaps to markdown files",
   "author": "PRT Contributors",
   "license": "MIT",
