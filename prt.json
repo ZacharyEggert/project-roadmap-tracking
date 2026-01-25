@@ -1624,13 +1624,13 @@
       "details": "Implement generateHeader() and generateMetadata() private methods. Header shows project name/description, metadata shows creation date, last updated, version info.",
       "id": "P-078",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Implement header and metadata generation",
       "type": "feature",
-      "updatedAt": "2026-01-23T00:51:03.186Z"
+      "updatedAt": "2026-01-25T18:25:34.271Z"
     },
     {
       "blocks": [],
@@ -1641,13 +1641,13 @@
       "details": "Implement generateStatistics() using roadmapService.getStats(). Show task counts by status, type, and priority with visual formatting.",
       "id": "P-079",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Implement statistics generation",
       "type": "feature",
-      "updatedAt": "2026-01-23T00:51:04.582Z"
+      "updatedAt": "2026-01-25T18:25:35.923Z"
     },
     {
       "blocks": [],
@@ -1658,13 +1658,13 @@
       "details": "Implement generateTaskSections() to group and sort tasks. Support grouping by status/type/priority (configurable via options). Use taskQueryService for filtering and sorting.",
       "id": "P-080",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Implement task sections generation",
       "type": "feature",
-      "updatedAt": "2026-01-23T00:51:05.968Z"
+      "updatedAt": "2026-01-25T18:25:37.500Z"
     },
     {
       "blocks": [],

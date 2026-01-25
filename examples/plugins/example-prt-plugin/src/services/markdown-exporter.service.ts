@@ -1,4 +1,6 @@
-import {Roadmap, Task} from 'project-roadmap-tracking/dist/util/types.js'
+import roadmapService from 'project-roadmap-tracking/dist/services/roadmap.service.js'
+import taskQueryService, {SortOrder} from 'project-roadmap-tracking/dist/services/task-query.service.js'
+import {PRIORITY, Roadmap, STATUS, Task, TASK_TYPE} from 'project-roadmap-tracking/dist/util/types.js'
 
 /**
  * Configuration options for markdown export
@@ -107,7 +109,7 @@ export class MarkdownExporterService {
   /**
    * Formats a single task as a markdown list item.
    *
-   * @param _task - The task to format
+   * @param task - The task to format
    * @returns Markdown formatted task list item
    *
    * @example
@@ -115,19 +117,23 @@ export class MarkdownExporterService {
    * ```markdown
    * - [F-001] **Implement authentication** (High Priority) - JWT-based auth system
    * ```
-   *
-   * @private
-   * TODO: Implementation in P-081
    */
-  private formatTask(_task: Task): string {
-    // TODO: Implementation in P-081
-    return ''
+  private formatTask(task: Task): string {
+    // Humanize priority
+    const priorityMap: Record<string, string> = {
+      high: 'High',
+      low: 'Low',
+      medium: 'Medium',
+    }
+    const priorityLabel = priorityMap[task.priority] || task.priority
+
+    return `- [${task.id}] **${task.title}** (${priorityLabel} Priority)`
   }
 
   /**
    * Generates the header section with project title and description.
    *
-   * @param _roadmap - The roadmap containing metadata
+   * @param roadmap - The roadmap containing metadata
    * @returns Markdown formatted header section
    *
    * @example
@@ -136,19 +142,15 @@ export class MarkdownExporterService {
    * # Project Name
    * Project description text
    * ```
-   *
-   * @private
-   * TODO: Implementation in P-078
    */
-  private generateHeader(_roadmap: Roadmap): string {
-    // TODO: Implementation in P-078
-    return ''
+  private generateHeader(roadmap: Roadmap): string {
+    return `# ${roadmap.metadata.name}\n\n${roadmap.metadata.description}`
   }
 
   /**
    * Generates the metadata section with version, dates, and creator.
    *
-   * @param _roadmap - The roadmap containing metadata
+   * @param roadmap - The roadmap containing metadata
    * @returns Markdown formatted metadata section
    *
    * @example
@@ -159,13 +161,15 @@ export class MarkdownExporterService {
    * - **Created At**: 2024-01-15
    * - **Version**: 1.0.0
    * ```
-   *
-   * @private
-   * TODO: Implementation in P-078
    */
-  private generateMetadata(_roadmap: Roadmap): string {
-    // TODO: Implementation in P-078
-    return ''
+  private generateMetadata(roadmap: Roadmap): string {
+    const lines = [
+      '## Metadata',
+      `- **Created By**: ${roadmap.metadata.createdBy}`,
+      `- **Created At**: ${roadmap.metadata.createdAt}`,
+    ]
+
+    return lines.join('\n')
   }
 
   /**
@@ -174,7 +178,7 @@ export class MarkdownExporterService {
    * Uses roadmapService.getStats() to calculate statistics and formats them
    * as a markdown section with counts by status, type, and priority.
    *
-   * @param _roadmap - The roadmap to analyze
+   * @param roadmap - The roadmap to analyze
    * @returns Markdown formatted statistics section
    *
    * @example
@@ -186,13 +190,34 @@ export class MarkdownExporterService {
    * - **In Progress**: 10
    * - **Not Started**: 17
    * ```
-   *
-   * @private
-   * TODO: Implementation in P-079
    */
-  private generateStatistics(_roadmap: Roadmap): string {
-    // TODO: Implementation in P-079
-    return ''
+  private generateStatistics(roadmap: Roadmap): string {
+    const stats = roadmapService.getStats(roadmap)
+
+    const lines = [
+      '## Statistics',
+      '',
+      '### By Status',
+      `- **Completed**: ${stats.byStatus.completed}`,
+      `- **In Progress**: ${stats.byStatus['in-progress']}`,
+      `- **Not Started**: ${stats.byStatus['not-started']}`,
+      '',
+      '### By Type',
+      `- **Features**: ${stats.byType.feature}`,
+      `- **Bugs**: ${stats.byType.bug}`,
+      `- **Improvements**: ${stats.byType.improvement}`,
+      `- **Planning**: ${stats.byType.planning}`,
+      `- **Research**: ${stats.byType.research}`,
+      '',
+      '### By Priority',
+      `- **High**: ${stats.byPriority.high}`,
+      `- **Medium**: ${stats.byPriority.medium}`,
+      `- **Low**: ${stats.byPriority.low}`,
+      '',
+      `**Total Tasks**: ${stats.totalTasks}`,
+    ]
+
+    return lines.join('\n')
   }
 
   /**
@@ -202,8 +227,8 @@ export class MarkdownExporterService {
    * sorts them within each group by taskSortBy field, and formats each task
    * using formatTask().
    *
-   * @param _roadmap - The roadmap containing tasks
-   * @param _options - Export options for grouping and sorting
+   * @param roadmap - The roadmap containing tasks
+   * @param options - Export options for grouping and sorting
    * @returns Markdown formatted task sections
    *
    * @example
@@ -216,13 +241,82 @@ export class MarkdownExporterService {
    * ## In Progress
    * - [F-002] **Add dashboard** (Medium Priority)
    * ```
-   *
-   * @private
-   * TODO: Implementation in P-080
    */
-  private generateTaskSections(_roadmap: Roadmap, _options: MarkdownExportOptions): string {
-    // TODO: Implementation in P-080
-    return ''
+  private generateTaskSections(roadmap: Roadmap, options: MarkdownExportOptions): string {
+    // Get configuration with defaults
+    const groupBy = options.groupBy || 'status'
+    const sortBy = options.taskSortBy || 'priority'
+    const includeCompleted = options.includeCompletedTasks !== false
+
+    // Filter tasks
+    let {tasks} = roadmap
+    if (!includeCompleted) {
+      // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
+      tasks = taskQueryService.filter(tasks, {status: [STATUS.NotStarted, STATUS.InProgress]})
+    }
+
+    // Group tasks by the specified field
+    const groups = this.groupTasks(tasks, groupBy)
+
+    // Generate sections for each group
+    const sections: string[] = []
+    for (const [groupName, groupTasks] of Object.entries(groups)) {
+      if (groupTasks.length === 0) continue
+
+      // Sort tasks within the group
+      const sortedTasks = taskQueryService.sort(groupTasks, sortBy, SortOrder.Descending)
+
+      // Format section
+      const taskLines = sortedTasks.map((task) => this.formatTask(task))
+      sections.push(`## ${groupName}\n\n${taskLines.join('\n')}`)
+    }
+
+    return sections.join('\n\n')
+  }
+
+  /**
+   * Groups tasks by the specified field.
+   *
+   * @param tasks - The tasks to group
+   * @param groupBy - Field to group by (status, type, or priority)
+   * @returns Object mapping group names to task arrays
+   */
+  private groupTasks(tasks: Array<Task>, groupBy: 'priority' | 'status' | 'type'): Record<string, Array<Task>> {
+    const groups: Record<string, Array<Task>> = {}
+
+    switch (groupBy) {
+    case 'priority': {
+      // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
+      groups['High Priority'] = taskQueryService.filter(tasks, {priority: PRIORITY.High})
+      // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
+      groups['Medium Priority'] = taskQueryService.filter(tasks, {priority: PRIORITY.Medium})
+      // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
+      groups['Low Priority'] = taskQueryService.filter(tasks, {priority: PRIORITY.Low})
+
+    break;
+    }
+
+    case 'status': {
+      groups['Not Started'] = taskQueryService.getByStatus(tasks, STATUS.NotStarted)
+      groups['In Progress'] = taskQueryService.getByStatus(tasks, STATUS.InProgress)
+      groups.Completed = taskQueryService.getByStatus(tasks, STATUS.Completed)
+    
+    break;
+    }
+
+    case 'type': {
+      groups.Features = taskQueryService.getByType(tasks, TASK_TYPE.Feature)
+      groups.Bugs = taskQueryService.getByType(tasks, TASK_TYPE.Bug)
+      groups.Improvements = taskQueryService.getByType(tasks, TASK_TYPE.Improvement)
+      groups.Planning = taskQueryService.getByType(tasks, TASK_TYPE.Planning)
+      groups.Research = taskQueryService.getByType(tasks, TASK_TYPE.Research)
+    
+    break;
+    }
+    // No default
+    }
+
+    return groups
   }
 }
 
