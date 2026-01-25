@@ -1,0 +1,81 @@
+{
+  "name": "example-prt-plugin",
+  "version": "1.0.0",
+  "description": "Example oclif plugin for PRT that demonstrates how to extend the PRT CLI with custom commands",
+  "author": "PRT Contributors",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "prt": "./bin/run.js"
+  },
+  "files": [
+    "./bin",
+    "./dist",
+    "./oclif.manifest.json"
+  ],
+  "scripts": {
+    "build": "shx rm -rf dist && tsc",
+    "test": "cross-env NODE_ENV=test c8 mocha --loader=tsx/esm --forbid-only 'test/**/*.test.ts'",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier 'src/**/*.{ts,tsx}' 'test/**/*.{ts,tsx}' --write",
+    "prepack": "oclif manifest && oclif readme",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "yarn lint"
+  },
+  "oclif": {
+    "bin": "prt",
+    "dirname": "prt",
+    "commands": "./dist/commands"
+  },
+  "peerDependencies": {
+    "@oclif/core": "^4",
+    "project-roadmap-tracking": "^0.3.0"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1",
+    "@oclif/prettier-config": "^0.2.1",
+    "@oclif/test": "^4",
+    "@types/chai": "^4",
+    "@types/mocha": "^10",
+    "@types/node": "^18",
+    "c8": "^10.1.3",
+    "chai": "^4",
+    "cross-env": "^10.1.0",
+    "eslint": "^9",
+    "eslint-config-oclif": "^6",
+    "eslint-config-prettier": "^10",
+    "mocha": "^10",
+    "oclif": "^4",
+    "prettier": "^3.8.1",
+    "shx": "^0.3.3",
+    "ts-node": "^10",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZacharyEggert/project-roadmap-tracking.git",
+    "directory": "examples/plugins/example-prt-plugin"
+  },
+  "keywords": [
+    "oclif",
+    "plugin",
+    "prt",
+    "project-roadmap-tracking",
+    "export",
+    "markdown"
+  ],
+  "c8": {
+    "reporter": [
+      "lcov",
+      "html"
+    ],
+    "reports-dir": "./coverage"
+  }
+}

@@ -1522,13 +1522,13 @@
       "details": "Create package.json with oclif configuration, peer dependencies (@oclif/core ^4, project-roadmap-tracking ^0.3.0), scripts (build, test, lint), and ES module settings. Set bin=\"prt\" to extend PRT CLI.",
       "id": "P-072",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Initialize plugin package.json",
       "type": "improvement",
-      "updatedAt": "2026-01-23T00:49:52.155Z"
+      "updatedAt": "2026-01-25T17:48:31.651Z"
     },
     {
       "blocks": [],
@@ -1539,13 +1539,13 @@
       "details": "Create tsconfig.json with Node16 module resolution, ES2022 target, outDir=dist, and strict mode enabled. Match PRT's TypeScript configuration for compatibility.",
       "id": "P-073",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Create TypeScript configuration",
       "type": "improvement",
-      "updatedAt": "2026-01-23T00:50:13.450Z"
+      "updatedAt": "2026-01-25T17:48:33.263Z"
     },
     {
       "blocks": [],
