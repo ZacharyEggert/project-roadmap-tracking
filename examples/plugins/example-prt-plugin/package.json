@@ -32,7 +32,7 @@
   },
   "peerDependencies": {
     "@oclif/core": "^4",
-    "project-roadmap-tracking": "^0.3.0"
+    "project-roadmap-tracking": "^0.2.7"
   },
   "devDependencies": {
     "@eslint/compat": "^1",
