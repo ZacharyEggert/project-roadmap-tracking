@@ -1,4 +1,4 @@
-# example-prt-plugin Architecture
+# @prt/export-to-file Architecture
 
 **Version:** 1.0.0
 **Last Updated:** 2026-01-22
@@ -20,7 +20,7 @@
 
 ### Purpose
 
-The `example-prt-plugin` demonstrates how to build oclif plugins that extend the PRT CLI tool. It implements a markdown export feature that converts `prt.json` roadmaps into well-structured, human-readable markdown documents.
+The `@prt/export-to-file` plugin extends the PRT CLI tool with markdown export functionality. It converts `prt.json` roadmaps into well-structured, human-readable markdown documents and serves as a reference implementation for building PRT plugins.
 
 ### Key Features
 
@@ -44,7 +44,7 @@ The `example-prt-plugin` demonstrates how to build oclif plugins that extend the
 ### Directory Layout
 
 ```
-example-prt-plugin/
+export-to-file/
 ├── package.json              # Plugin manifest with oclif config
 ├── tsconfig.json             # TypeScript configuration
 ├── README.md                 # User-facing documentation
@@ -99,13 +99,13 @@ oclif automatically discovers plugins installed via:
 
 ```bash
 # From npm registry
-prt plugins install example-prt-plugin
+prt plugins install @prt/export-to-file
 
 # From GitHub
-prt plugins install ZacharyEggert/example-prt-plugin
+prt plugins install ZacharyEggert/project-roadmap-tracking#examples/plugins/export-to-file
 
 # Local development (symlink)
-cd /path/to/example-prt-plugin
+cd /path/to/export-to-file
 prt plugins link
 ```
 
@@ -115,7 +115,7 @@ Commands are registered via `package.json`:
 
 ```json
 {
-  "name": "example-prt-plugin",
+  "name": "@prt/export-to-file",
   "version": "1.0.0",
   "oclif": {
     "bin": "prt",

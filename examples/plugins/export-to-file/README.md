@@ -1,6 +1,6 @@
-# example-prt-plugin
+# @prt/export-to-file
 
-An example oclif plugin for [PRT (Project Roadmap Tracking)](https://github.com/ZacharyEggert/project-roadmap-tracking) that demonstrates how to extend the PRT CLI with custom commands.
+An oclif plugin for [PRT (Project Roadmap Tracking)](https://github.com/ZacharyEggert/project-roadmap-tracking) that exports roadmaps to markdown files.
 
 This plugin adds a `prt export` command that converts your `prt.json` roadmap into a well-structured, human-readable markdown document.
 
@@ -22,13 +22,13 @@ This plugin adds a `prt export` command that converts your `prt.json` roadmap in
 ### Install from npm
 
 ```bash
-prt plugins install example-prt-plugin
+prt plugins install @prt/export-to-file
 ```
 
 ### Install from GitHub
 
 ```bash
-prt plugins install ZacharyEggert/example-prt-plugin
+prt plugins install ZacharyEggert/project-roadmap-tracking#examples/plugins/export-to-file
 ```
 
 ### Install for Local Development
@@ -36,7 +36,7 @@ prt plugins install ZacharyEggert/example-prt-plugin
 ```bash
 # Clone the repository
 git clone https://github.com/ZacharyEggert/project-roadmap-tracking.git
-cd project-roadmap-tracking/examples/plugins/example-prt-plugin
+cd project-roadmap-tracking/examples/plugins/export-to-file
 
 # Install dependencies
 npm install
@@ -317,7 +317,7 @@ You can create a `.prtrc.json` in your project with export defaults (future feat
 You can use the `MarkdownExporterService` directly in your own code:
 
 ```typescript
-import {MarkdownExporterService} from 'example-prt-plugin'
+import {MarkdownExporterService} from '@prt/export-to-file'
 import roadmapService from 'project-roadmap-tracking/dist/services/roadmap.service.js'
 
 // Load roadmap
@@ -348,7 +348,7 @@ This plugin serves as a reference implementation for building PRT plugins. Key l
 ### 1. Plugin Structure
 
 ```
-example-prt-plugin/
+export-to-file/
 ├── package.json           # oclif config: bin="prt", commands path
 ├── src/
 │   ├── index.ts          # Export commands

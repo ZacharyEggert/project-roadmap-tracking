@@ -1,7 +1,7 @@
 {
-  "name": "example-prt-plugin",
+  "name": "@prt/export-to-file",
   "version": "1.0.0",
-  "description": "Example oclif plugin for PRT that demonstrates how to extend the PRT CLI with custom commands",
+  "description": "oclif plugin for PRT that exports roadmaps to markdown files",
   "author": "PRT Contributors",
   "license": "MIT",
   "type": "module",
@@ -61,7 +61,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ZacharyEggert/project-roadmap-tracking.git",
-    "directory": "examples/plugins/example-prt-plugin"
+    "directory": "examples/plugins/export-to-file"
   },
   "keywords": [
     "oclif",

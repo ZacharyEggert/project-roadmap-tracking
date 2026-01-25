@@ -634,7 +634,7 @@ PRT plugins are oclif plugins that:
 - Follow consistent patterns for maintainability
 - Can be distributed via npm or installed from GitHub
 
-**Reference Implementation:** See `examples/plugins/example-prt-plugin/` for a complete working example.
+**Reference Implementation:** See `examples/plugins/export-to-file/` for a complete working example.
 
 ### 8.2 Plugin Architecture
 
@@ -1070,7 +1070,7 @@ npm publish
 
 ### 8.10 Reference Implementation
 
-See `examples/plugins/example-prt-plugin/` for a complete working example:
+See `examples/plugins/export-to-file/` for a complete working example:
 
 | File | Description |
 |------|-------------|
@@ -1115,7 +1115,7 @@ export interface ExportPlugin {
 // Potential implementations:
 // - GitHubIssuesExporter
 // - JiraExporter
-// - MarkdownExporter (see example-prt-plugin)
+// - MarkdownExporter (see @prt/export-to-file)
 // - CSVExporter
 ```
 
