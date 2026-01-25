@@ -1713,13 +1713,13 @@
       "details": "Create src/commands/export.ts extending oclif Command. Define all flags: --output/-o (file path), --no-completed (hide completed), --minimal (compact output), --group-by (status/type/priority), --sort-by, and filtering flags (--status, --priority, --type, --tags).",
       "id": "P-083",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Implement export command structure",
       "type": "feature",
-      "updatedAt": "2026-01-23T00:51:42.138Z"
+      "updatedAt": "2026-01-25T19:03:10.034Z"
     },
     {
       "blocks": [],
@@ -1730,13 +1730,13 @@
       "details": "In export command's run() method, implement config loading via readConfigFile() and roadmap loading via roadmapService.load(). Add error handling for missing files.",
       "id": "P-084",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Implement config and roadmap loading",
       "type": "feature",
-      "updatedAt": "2026-01-23T00:51:43.578Z"
+      "updatedAt": "2026-01-25T19:03:14.429Z"
     },
     {
       "blocks": [],
