@@ -1556,13 +1556,13 @@
       "details": "Create .eslintrc.json extending PRT's linting rules. Ensure consistency with main project code style.",
       "id": "P-074",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "medium",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Create ESLint configuration",
       "type": "improvement",
-      "updatedAt": "2026-01-23T00:50:14.899Z"
+      "updatedAt": "2026-01-25T17:53:44.083Z"
     },
     {
       "blocks": [],
@@ -1573,13 +1573,13 @@
       "details": "Create src/, src/commands/, src/services/, test/, test/commands/, test/services/, and test/fixtures/ directories. Create placeholder index.ts files.",
       "id": "P-075",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Create directory structure",
       "type": "improvement",
-      "updatedAt": "2026-01-23T00:50:16.329Z"
+      "updatedAt": "2026-01-25T17:53:45.678Z"
     },
     {
       "blocks": [],
@@ -1590,13 +1590,13 @@
       "details": "Create src/index.ts that exports all commands for oclif discovery. Keep it minimal - oclif auto-discovers commands from the commands directory.",
       "id": "P-076",
       "notes": "",
-      "passes-tests": false,
+      "passes-tests": true,
       "priority": "high",
-      "status": "not-started",
+      "status": "completed",
       "tags": [],
       "title": "Create plugin entry point",
       "type": "feature",
-      "updatedAt": "2026-01-23T00:50:17.700Z"
+      "updatedAt": "2026-01-25T17:53:47.273Z"
     },
     {
       "blocks": [],
